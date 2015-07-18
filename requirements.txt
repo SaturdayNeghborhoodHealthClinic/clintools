@@ -2,5 +2,6 @@ Django==1.8.3
 django-angular==0.7.15
 django-bootstrap3==6.1.0
 django-bootstrap3-datetimepicker==2.2.3
+-e git+https://github.com/Brown-University-Library/django-shibboleth-remoteuser.git@ee4abe32681d1f4caa17e6ee897f32985f1e6c33#egg=django-shibboleth-remoteuser
 requests==2.7.0
 wheel==0.24.0

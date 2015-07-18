@@ -43,6 +43,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'bootstrap3_datetime',
     'djangular',
+    'shibboleth',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -54,7 +55,12 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'shibboleth.middleware.ShibbolethRemoteUserMiddleware',
 )
+
+AUTHENTICATION_BACKENDS = [
+  'shibboleth.backends.ShibbolethRemoteUserBackend',
+]
 
 ROOT_URLCONF = 'clintools.urls'
 
@@ -75,6 +81,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'clintools.wsgi.application'
+
+SHIBBOLETH_ATTRIBUTE_MAP = {
+   "wustlEduId": (True, "wustl-pk"),
+#   "cn": (False, "first_name"),
+   "givenName": (False, "first_name"),
+   "sn": (False, "last_name"),
+#   "mail": (False, "email"),
+}
+
+LOGIN_URL = 'https://pttrack.snhc.wustl.edu/Shibboleth.sso/Login'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
