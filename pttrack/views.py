@@ -1,9 +1,11 @@
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect, HttpResponseServerError
+from django.http import HttpResponseRedirect, HttpResponseServerError, HttpResponse
 from django.views.generic.edit import FormView, UpdateView
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
+from django.core import serializers
 import django.utils.timezone
+
 
 from . import models as mymodels
 from . import forms as myforms
@@ -115,7 +117,6 @@ class ProviderCreate(FormView):
         user.email = form.cleaned_data['provider_email']
         user.first_name = provider.first_name
         user.last_name = provider.last_name
-        
         user.save()
         provider.save()
         form.save_m2m()
@@ -355,6 +356,12 @@ def all_patients(request):
                   'pttrack/patient_list.html',
                   {'zipped_list': zipped_list,
                     'title': "All Patients"})
+
+
+def all_patients_data(request):
+    patients = mymodels.Patient.objects.all().order_by('first_name')
+    data = serializers.serialize('json', patients)
+    return HttpResponse(data, content_type='application/json')
 
 
 def patient_activate_detail(request, pk):

@@ -17,6 +17,41 @@ Osler: {{ title | default:"All Patients"}}
     <p> Sort by: <strong>[ field ]</strong> in <strong>[ ascending/descending ]</strong> order <button type="submit" class="btn btn-success">Sort</button></p>
 </div> -->
 
+<script>
+function filter_patients() {
+  var ajx = $.ajax({
+            url: "/pttrack/refresh",
+            type: "GET",
+            dataType: 'json',
+          });
+  ajx.done(function(data) {
+    filter_success(data);
+    });
+  }
+function filter_success(data){
+  $( ".search_results" ).empty();
+
+  for (i=0; i < data.length; ++i) {
+      var obj = data[i]['fields'];
+      var patient = {};
+      var input = $('#search_box').val();
+
+      patient['address'] = obj['address'];
+      patient['last_name'] = obj['last_name']
+      patient['first_name'] = obj['first_name']
+      patient['gender'] = obj['gender']
+
+      var lower_last = patient['last_name'].toLowerCase()
+      var lower_first = patient['first_name'].toLowerCase()
+
+      if (lower_last.indexOf(input.toLowerCase()) > -1 || lower_first.indexOf(input.toLowerCase()) > -1) {
+        $('.search_results').append(patient.first_name + '&nbsp;' + patient.last_name + '&emsp;' + patient.gender + '&emsp;'+ patient.address + '<hr>');
+      }
+  }
+}
+
+</script>
+
 <div class="container">
 <ul class="nav nav-pills">
     {% for combination in zipped_list %}
@@ -37,6 +72,12 @@ Osler: {{ title | default:"All Patients"}}
         {% endif %}
             <h3>{{ combination.0 }}</h3>
             <table class="table">
+            <form onkeypress="filter_patients();" id='search_bar'>
+                <h2>Search:</h2>
+                <input type="text" name="search" id='search_box' onkeypress="filter_patients()";><br>
+            </form>
+            <br>
+            <br>
                 <tr><th>Name</th><th>Age / Gender</th><th>Latest Activity</th><th>Next AI Due</th><th>Status</th></td>
                 {% for patient in combination.1 %}
                     <tr>
@@ -65,7 +106,11 @@ Osler: {{ title | default:"All Patients"}}
                     {% endif %}
                     </tr>
                 {% endfor %}
-            </table>
+
+                </table>
+                <div class='search_results'>
+
+                </div>
         </div>
     {% endfor %}
 </div>
