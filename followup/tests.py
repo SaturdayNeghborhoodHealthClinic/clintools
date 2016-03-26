@@ -70,8 +70,6 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
         '''
         from selenium.webdriver.support.ui import Select
 
-        self.selenium.implicitly_wait(10)
-
         self.selenium.get('%s%s' % (self.live_server_url,
                                     reverse('new-followup',
                                             args=(1, 'referral'))))
@@ -127,12 +125,8 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
         # and lose the data we entered
         elements['has_appointment'].click()
 
-        # referesh elements in dictionary, perhaps because the dictionary now
-        # contains stale DOM elements?
-        for element in ['contact_resolution', 'contact_method',
-                        'referral_type', 'has_appointment', 'apt_location',
-                        'pt_showed', 'noapt_reason', 'noshow_reason']:
-            elements[element] = self.selenium.find_element_by_name(element)
+        # should trigger the error
+        self.selenium.find_element_by_name('contact_resolution')
 
         self.assertTrue(elements['noapt_reason'].is_displayed())
         self.assertTrue(not elements['pt_showed'].is_displayed())
