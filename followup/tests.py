@@ -125,6 +125,8 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
         # and lose the data we entered
         elements['has_appointment'].click()
 
+        print self.selenium.page_source
+
         import time
         time.sleep(5)
 
