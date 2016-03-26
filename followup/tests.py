@@ -86,9 +86,6 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
         Select(elements['contact_method']).select_by_index(1)
         Select(elements['referral_type']).select_by_index(1)
 
-        # should trigger the error
-        self.selenium.find_element_by_name('contact_resolution')
-
         COMMENT = "This is a comment."
         self.selenium.find_element_by_id("id_comments").send_keys(COMMENT)
 
@@ -102,9 +99,6 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
         Select(elements['noapt_reason']).select_by_visible_text(
             str(NOAPT_REASON))
 
-        # should trigger the error
-        self.selenium.find_element_by_name('contact_resolution')
-
         # double-tap on the 'has_appointment' should clear the state of 
         # 'noshow_reason' element
         elements['has_appointment'].click()
@@ -115,10 +109,6 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
             Select(elements['noapt_reason']).first_selected_option.text)
 
         elements['has_appointment'].click()
-
-        # should trigger the error
-        self.selenium.find_element_by_name('contact_resolution')
-
 
         # with 'has_appointment' checked, we should now see pt_showed
         self.assertTrue(not elements['noapt_reason'].is_displayed())
