@@ -74,6 +74,9 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
                                     reverse('new-followup',
                                             args=(1, 'referral'))))
 
+        print self.selenium.title
+        # pg_src = self.selenium.page_source
+
         elements = {}
         for element in ['contact_resolution', 'contact_method',
                         'referral_type', 'has_appointment', 'apt_location',
@@ -125,10 +128,7 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
         # and lose the data we entered
         elements['has_appointment'].click()
 
-        print self.selenium.page_source
-
-        import time
-        time.sleep(5)
+        print self.selenium.title
 
         # should trigger the error
         self.selenium.find_element_by_name('contact_resolution')
