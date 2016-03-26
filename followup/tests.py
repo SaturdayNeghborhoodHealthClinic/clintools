@@ -70,11 +70,11 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
         '''
         from selenium.webdriver.support.ui import Select
 
+        self.selenium.implicitly_wait(10)
+
         self.selenium.get('%s%s' % (self.live_server_url,
                                     reverse('new-followup',
                                             args=(1, 'referral'))))
-
-        
 
         elements = {}
         for element in ['contact_resolution', 'contact_method',
