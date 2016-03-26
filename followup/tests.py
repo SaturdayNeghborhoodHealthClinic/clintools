@@ -125,6 +125,9 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
         # and lose the data we entered
         elements['has_appointment'].click()
 
+        import time
+        time.sleep(5)
+
         # should trigger the error
         self.selenium.find_element_by_name('contact_resolution')
 
