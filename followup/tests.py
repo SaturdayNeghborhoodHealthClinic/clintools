@@ -126,22 +126,16 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
             APT_LOCATION))
         Select(elements['pt_showed']).select_by_value("Yes")
 
-        print self.selenium.title
-
         # if we uncheck 'has_appointment', we go back to the initial state,
         # and lose the data we entered
         elements['has_appointment'].click()
 
-        print self.selenium.title
+        # wait unil to_apt is displayed before running asserts. Maybe this will fix the Travis build.
+        WebDriverWait(selenium, 10).until(
+            EC.visibility_of['contact_resolution'])
 
         # should trigger the error
         self.selenium.find_element_by_name('contact_resolution')
-
-        print self.selenium.page_source
-
-        # wait unil to_apt is displayed before running asserts. Maybe this will fix the Travis build.
-        WebDriverWait(selenium, 10).until(
-            EC.visibility_of['noapt_reason'])
 
         self.assertTrue(elements['noapt_reason'].is_displayed())
         self.assertTrue(not elements['pt_showed'].is_displayed())
