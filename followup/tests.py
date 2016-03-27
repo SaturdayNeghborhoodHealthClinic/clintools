@@ -130,9 +130,10 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
         # and lose the data we entered
         elements['has_appointment'].click()
 
+        from selenium.webdriver.common.by import By
         # wait unil to_apt is displayed before running asserts. Maybe this will fix the Travis build.
         WebDriverWait(self.selenium, 10).until(
-            EC.visibility_of(elements['contact_resolution']))
+            EC.visibility_of_element_located((By.NAME, 'contact_resolution')))
 
         # should trigger the error
         self.selenium.find_element_by_name('contact_resolution')
