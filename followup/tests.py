@@ -129,11 +129,16 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
         Select(elements['pt_showed']).select_by_value("Yes")
 
         print "3", self.selenium.title
+        import time
+        time.sleep(3)
+
+        self.selenium.find_element_by_name('contact_resolution')
 
         # if we uncheck 'has_appointment', we go back to the initial state,
         # and lose the data we entered
         self.selenium.find_element_by_name('has_appointment').click()
 
+        time.sleep(3)
         print "4", self.selenium.title
 
         # should trigger the error
