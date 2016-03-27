@@ -131,7 +131,7 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
         elements['has_appointment'].click()
 
         # wait unil to_apt is displayed before running asserts. Maybe this will fix the Travis build.
-        WebDriverWait(selenium, 10).until(
+        WebDriverWait(self.selenium, 10).until(
             EC.visibility_of['contact_resolution'])
 
         # should trigger the error
