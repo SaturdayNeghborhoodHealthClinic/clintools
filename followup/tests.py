@@ -124,6 +124,8 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
             APT_LOCATION))
         Select(elements['pt_showed']).select_by_value("Yes")
 
+        print self.selenium.title
+
         # if we uncheck 'has_appointment', we go back to the initial state,
         # and lose the data we entered
         elements['has_appointment'].click()
