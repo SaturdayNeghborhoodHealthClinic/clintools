@@ -8,8 +8,6 @@ from django.core.urlresolvers import reverse
 # For live tests.
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.webdriver.firefox.webdriver import WebDriver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 from pttrack.models import Gender, Patient, Provider, ProviderType
 
@@ -106,14 +104,14 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
 
         # double-tap on the 'has_appointment' should clear the state of 
         # 'noshow_reason' element
-        elements['has_appointment'].click()
-        elements['has_appointment'].click()
+        self.selenium.find_element_by_name('has_appointment').click()
+        self.selenium.find_element_by_name('has_appointment').click()
 
         self.assertNotEqual(
             str(NOAPT_REASON),
             Select(elements['noapt_reason']).first_selected_option.text)
 
-        elements['has_appointment'].click()
+        self.selenium.find_element_by_name('has_appointment').click()
 
         # with 'has_appointment' checked, we should now see pt_showed
         self.assertTrue(not elements['noapt_reason'].is_displayed())
@@ -126,14 +124,13 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
             APT_LOCATION))
         Select(elements['pt_showed']).select_by_value("Yes")
 
+        print self.selenium.title
+
         # if we uncheck 'has_appointment', we go back to the initial state,
         # and lose the data we entered
-        elements['has_appointment'].click()
+        self.selenium.find_element_by_name('has_appointment').click()
 
-        from selenium.webdriver.common.by import By
-        # wait unil to_apt is displayed before running asserts. Maybe this will fix the Travis build.
-        WebDriverWait(self.selenium, 10).until(
-            EC.visibility_of_element_located((By.NAME, 'contact_resolution')))
+        print self.selenium.title
 
         # should trigger the error
         self.selenium.find_element_by_name('contact_resolution')
