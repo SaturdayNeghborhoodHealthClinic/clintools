@@ -136,6 +136,8 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
 
         # if we uncheck 'has_appointment', we go back to the initial state,
         # and lose the data we entered
+        print self.selenium.find_element_by_name('has_appointment').text()
+        print self.selenium.find_element_by_name('has_appointment').location()
         self.selenium.find_element_by_name('has_appointment').click()
 
         time.sleep(10)
