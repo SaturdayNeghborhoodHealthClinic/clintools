@@ -74,7 +74,7 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
                                     reverse('new-followup',
                                             args=(1, 'referral'))))
 
-        print self.selenium.title
+        print "0", self.selenium.title
         # pg_src = self.selenium.page_source
 
         elements = {}
@@ -102,6 +102,8 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
         Select(elements['noapt_reason']).select_by_visible_text(
             str(NOAPT_REASON))
 
+        print "1", self.selenium.title
+
         # double-tap on the 'has_appointment' should clear the state of 
         # 'noshow_reason' element
         self.selenium.find_element_by_name('has_appointment').click()
@@ -112,6 +114,8 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
             Select(elements['noapt_reason']).first_selected_option.text)
 
         self.selenium.find_element_by_name('has_appointment').click()
+
+        print "2", self.selenium.title
 
         # with 'has_appointment' checked, we should now see pt_showed
         self.assertTrue(not elements['noapt_reason'].is_displayed())
@@ -124,13 +128,13 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
             APT_LOCATION))
         Select(elements['pt_showed']).select_by_value("Yes")
 
-        print self.selenium.title
+        print "3", self.selenium.title
 
         # if we uncheck 'has_appointment', we go back to the initial state,
         # and lose the data we entered
         self.selenium.find_element_by_name('has_appointment').click()
 
-        print self.selenium.title
+        print "4", self.selenium.title
 
         # should trigger the error
         self.selenium.find_element_by_name('contact_resolution')
