@@ -128,11 +128,11 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
             APT_LOCATION))
         Select(elements['pt_showed']).select_by_value("Yes")
 
-        print "3", self.selenium.title
         import time
         time.sleep(3)
 
-        self.selenium.find_element_by_name('contact_resolution')
+        print "3", self.selenium.title
+        time.sleep(3)
 
         # if we uncheck 'has_appointment', we go back to the initial state,
         # and lose the data we entered
