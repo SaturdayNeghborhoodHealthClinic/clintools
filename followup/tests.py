@@ -135,6 +135,8 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
         # should trigger the error
         self.selenium.find_element_by_name('contact_resolution')
 
+        print self.selenium.page_source
+
         self.assertTrue(elements['noapt_reason'].is_displayed())
         self.assertTrue(not elements['pt_showed'].is_displayed())
         self.assertTrue(not elements['noshow_reason'].is_displayed())
