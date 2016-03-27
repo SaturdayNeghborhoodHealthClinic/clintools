@@ -8,6 +8,8 @@ from django.core.urlresolvers import reverse
 # For live tests.
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from pttrack.models import Gender, Patient, Provider, ProviderType
 
@@ -136,6 +138,10 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
         self.selenium.find_element_by_name('contact_resolution')
 
         print self.selenium.page_source
+
+        # wait unil to_apt is displayed before running asserts. Maybe this will fix the Travis build.
+        WebDriverWait(selenium, 10).until(
+            EC.visibility_of['noapt_reason'])
 
         self.assertTrue(elements['noapt_reason'].is_displayed())
         self.assertTrue(not elements['pt_showed'].is_displayed())
