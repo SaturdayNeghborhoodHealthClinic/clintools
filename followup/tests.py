@@ -74,8 +74,7 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
                                     reverse('new-followup',
                                             args=(1, 'referral'))))
 
-        print "0", self.selenium.title
-        # pg_src = self.selenium.page_source
+        
 
         elements = {}
         for element in ['contact_resolution', 'contact_method',
@@ -102,20 +101,16 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
         Select(elements['noapt_reason']).select_by_visible_text(
             str(NOAPT_REASON))
 
-        print "1", self.selenium.title
-
         # double-tap on the 'has_appointment' should clear the state of 
         # 'noshow_reason' element
-        self.selenium.find_element_by_name('has_appointment').click()
-        self.selenium.find_element_by_name('has_appointment').click()
+        elements['has_appointment'].click()
+        elements['has_appointment'].click()
 
         self.assertNotEqual(
             str(NOAPT_REASON),
             Select(elements['noapt_reason']).first_selected_option.text)
 
-        self.selenium.find_element_by_name('has_appointment').click()
-
-        print "2", self.selenium.title
+        elements['has_appointment'].click()
 
         # with 'has_appointment' checked, we should now see pt_showed
         self.assertTrue(not elements['noapt_reason'].is_displayed())
@@ -128,27 +123,9 @@ class FollowupLiveTesting(StaticLiveServerTestCase):
             APT_LOCATION))
         Select(elements['pt_showed']).select_by_value("Yes")
 
-        import time, os, os.path
-        time.sleep(10)
-
-        print "3", self.selenium.title
-        time.sleep(10)
-
         # if we uncheck 'has_appointment', we go back to the initial state,
         # and lose the data we entered
-        dirname = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-        print self.selenium.save_screenshot(dirname+"/screenshot1.png")
-        print self.selenium.find_element_by_name('has_appointment').text
-        print self.selenium.find_element_by_name('has_appointment').location
-        self.selenium.find_element_by_name('has_appointment').click()
-
-        time.sleep(10)
-        print self.selenium.save_screenshot(dirname+"/screenshot2.png")
-        print "4", self.selenium.title
-
-        # should trigger the error
-        self.selenium.find_element_by_name('contact_resolution')
+        elements['has_appointment'].click()
 
         self.assertTrue(elements['noapt_reason'].is_displayed())
         self.assertTrue(not elements['pt_showed'].is_displayed())
