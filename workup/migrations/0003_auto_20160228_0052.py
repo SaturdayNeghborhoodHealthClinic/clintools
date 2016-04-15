@@ -18,6 +18,11 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='historicalworkup',
+            name='height',
+            field=models.PositiveSmallIntegerField(null=True, blank=True),
+        ),
+        migrations.AddField(
+            model_name='historicalworkup',
             name='imaging_voucher_amount',
             field=models.PositiveSmallIntegerField(null=True, blank=True),
         ),
@@ -27,9 +32,19 @@ class Migration(migrations.Migration):
             field=models.PositiveSmallIntegerField(null=True, blank=True),
         ),
         migrations.AddField(
+            model_name='historicalworkup',
+            name='weight',
+            field=models.PositiveSmallIntegerField(null=True, blank=True),
+        ),
+        migrations.AddField(
             model_name='workup',
             name='got_imaging_voucher',
             field=models.BooleanField(default=False),
+        ),
+        migrations.AddField(
+            model_name='workup',
+            name='height',
+            field=models.PositiveSmallIntegerField(null=True, blank=True),
         ),
         migrations.AddField(
             model_name='workup',
@@ -39,6 +54,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='workup',
             name='patient_pays_imaging',
+            field=models.PositiveSmallIntegerField(null=True, blank=True),
+        ),
+        migrations.AddField(
+            model_name='workup',
+            name='weight',
             field=models.PositiveSmallIntegerField(null=True, blank=True),
         ),
     ]

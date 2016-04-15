@@ -61,10 +61,6 @@ class ActionItemForm(ModelForm):
         widgets = {'due_date': DateTimePicker(options={"format": "YYYY-MM-DD",
                                                        "pickTime": False})}
 
-    def __init__(self, *args, **kwargs):
-        super(ActionItemForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper(self)
-        self.helper.add_input(Submit('submit', 'Submit'))
 
 class ProviderForm(ModelForm):
 
@@ -88,12 +84,9 @@ class ProviderForm(ModelForm):
         self.helper['clinical_roles'].wrap(InlineCheckboxes)
         self.helper.add_input(Submit('submit', 'Submit'))
 
+
+
 class DocumentForm(ModelForm):
     class Meta:
         model = models.Document
         exclude = ['patient', 'author', 'author_type']
-
-    def __init__(self, *args, **kwargs):
-        super(DocumentForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper(self)
-        self.helper.add_input(Submit('submit', 'Submit'))
