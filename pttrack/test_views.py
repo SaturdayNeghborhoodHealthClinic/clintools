@@ -376,7 +376,9 @@ class ProviderCreateTest(TestCase):
 
         # Test for proper resubmission behavior.
         n_provider = len(models.Provider.objects.all())
-        WebDriver().back()
+
+        response = self.client.get(reverse('new-provider'))
+        # self.assertRedirects(response, reverse('new-provider')+'?next='+final_url)
 
         # POST a form with new names
         form_data['first_name'] = 'Janet'
@@ -549,6 +551,8 @@ class ActionItemTest(TestCase):
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
+        print models.ProviderType.objects.all()[2].staff_view
 
         #pt2, pt3 should be present since pt 1 is not past due
         self.assertEqual(len(response.context['zipped_list'][1][1]), 2)

@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pttrack', '0003_auto_20160119_1459'),
+        ('pttrack', '0004_auto_20160228_0052'),
     ]
 
     operations = [
@@ -22,12 +22,12 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('creation_date', models.DateField(null=True, blank=True)),
-                ('has_insurance', models.BooleanField(default=False)),
-                ('ER_visit_last_year', models.BooleanField(default=False, verbose_name=b'Visited ER in the past year')),
+                ('has_insurance', models.NullBooleanField()),
+                ('ER_visit_last_year', models.NullBooleanField(verbose_name=b'Visited ER in the past year')),
                 ('last_date_physician_visit', models.DateField(null=True, verbose_name=b'Date Last Visited Patient', blank=True)),
-                ('lives_alone', models.BooleanField(default=False)),
+                ('lives_alone', models.NullBooleanField()),
                 ('dependents', models.PositiveSmallIntegerField(null=True, verbose_name=b'Number of Dependents', blank=True)),
-                ('currently_employed', models.BooleanField(default=False)),
+                ('currently_employed', models.NullBooleanField()),
             ],
         ),
         migrations.CreateModel(
@@ -68,7 +68,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='demographics',
             name='chronic_condition',
-            field=models.ManyToManyField(to='demographics.ChronicCondition', null=True, blank=True),
+            field=models.ManyToManyField(to='demographics.ChronicCondition', blank=True),
         ),
         migrations.AddField(
             model_name='demographics',
@@ -83,7 +83,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='demographics',
             name='resource_access',
-            field=models.ManyToManyField(to='demographics.ResourceAccess', null=True, verbose_name=b'Access to Resources', blank=True),
+            field=models.ManyToManyField(to='demographics.ResourceAccess', verbose_name=b'Access to Resources', blank=True),
         ),
         migrations.AddField(
             model_name='demographics',

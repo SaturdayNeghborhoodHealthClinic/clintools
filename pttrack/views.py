@@ -110,8 +110,7 @@ class ProviderCreate(FormView):
         # check that user did not previously create a provider
         if not hasattr(self.request.user, 'provider'):
             provider.associated_user = self.request.user
-            # populate the User object with the email and name data from the
-            # Provider form
+            # populate the User object with the email and name data from the Provider form
             user = provider.associated_user
             user.email = form.cleaned_data['provider_email']
             user.first_name = provider.first_name
@@ -341,7 +340,6 @@ def phone_directory(request):
 
 def all_patients(request):
     pt_list_last = list(mymodels.Patient.objects.all().order_by('last_name'))
-    pt_list_first = list(mymodels.Patient.objects.all().order_by('first_name'))
     pt_list_latest = list(mymodels.Patient.objects.all())
 
     def bylatestKey(pt):
@@ -354,10 +352,10 @@ def all_patients(request):
 
     pt_list_latest.sort(key = bylatestKey, reverse=True)
 
-    zipped_list = zip(["Alphabetized by Last Name", "Alphabetized by First Name", "Ordered by Latest Activity"],
-                        [pt_list_last, pt_list_first, pt_list_latest],
-                        ['ptlast', 'ptfirst', 'ptlatest'],
-                        [False, False, True])
+    zipped_list = zip(["Alphabetized by Last Name", "Ordered by Latest Activity"],
+                        [pt_list_last, pt_list_latest],
+                        ['ptlast', 'ptlatest'],
+                        [False, True]) # active tab
     return render(request,
                   'pttrack/patient_list.html',
                   {'zipped_list': zipped_list,
