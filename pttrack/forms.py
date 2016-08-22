@@ -11,12 +11,12 @@ from . import models
 
 # pylint: disable=I0011,E1305
 
+
 class PatientForm(ModelForm):
     class Meta:
         model = models.Patient
         exclude = ['needs_workup', 'demographics']
 
-    
     def __init__(self, *args, **kwargs):
         super(PatientForm, self).__init__(*args, **kwargs)
 
@@ -27,11 +27,14 @@ class PatientForm(ModelForm):
         self.helper.field_class = 'col-lg-8'
         self.helper['languages'].wrap(InlineCheckboxes)
         self.helper['ethnicities'].wrap(InlineCheckboxes)
+
         self.helper.add_input(Submit('submit', 'Submit'))
 
     def clean(self):
 
         cleaned_data = super(ModelForm, self).clean()
+
+        # handle alternative contact info
 
         N_ALTS = 5
 
@@ -65,6 +68,7 @@ class ActionItemForm(ModelForm):
         super(ActionItemForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.add_input(Submit('submit', 'Submit'))
+
 
 class ProviderForm(ModelForm):
 

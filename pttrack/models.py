@@ -1,15 +1,19 @@
 '''The datamodels for the Osler core'''
+import os
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.timezone import now
-import os
+from django.core.validators import RegexValidator
 from django.core.urlresolvers import reverse
 
 from simple_history.models import HistoricalRecords
+
 from . import validators
 
 # pylint: disable=I0011,missing-docstring,E1305
+
 
 def make_filepath(instance, filename):
     '''
@@ -23,7 +27,6 @@ def make_filepath(instance, filename):
 
         Copypasta from https://djangosnippets.org/snippets/2819/
     '''
-
 
     field_name = 'image'
     carry_on = True
@@ -155,7 +158,6 @@ class Patient(Person):
     country = models.CharField(max_length=100,
                                default="USA")
 
-
     pcp_preferred_zip = models.CharField(max_length=5,
                                          validators=[validators.validate_zip],
                                          blank=True,
@@ -168,8 +170,9 @@ class Patient(Person):
 
     ethnicities = models.ManyToManyField(Ethnicity)
 
-    ssn = models.CharField(max_length=9,
-                           validators=[validators.validate_ssn],
+    ssn = models.CharField(max_length=11,
+                           validators=[RegexValidator(
+                               regex=validators.SSN_REGEX)],
                            blank=True,
                            null=True)
 

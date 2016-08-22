@@ -2,7 +2,7 @@ import datetime
 
 from django.test import TestCase
 
-from .models import Language, Gender, Ethnicity, ContactMethod
+from .models import Language, Gender, Ethnicity, ContactMethod, Patient
 from . import forms
 
 
@@ -32,6 +32,26 @@ class TestPatientCreateForms(TestCase):
                 ContactMethod.objects.create(
                     name="Tin Cans + String").pk,
         }
+
+    def test_create_ssn(self):
+        '''Verify that SSNs are cleaned in the form properly.'''
+
+        form_data = self.valid_pt_dict
+        form_data['ssn'] = '001121234'
+
+        form = forms.PatientForm(data=form_data)
+        self.assertNotEqual(form['ssn'].errors, [])
+
+        form_data = self.valid_pt_dict
+        form_data['ssn'] = '001-12-1234'
+
+        form = forms.PatientForm(data=form_data)
+        self.assertEqual(form['ssn'].errors, [])
+        self.assertEqual(form['ssn'].data, '001-12-1234')
+
+        form.save()
+
+        self.assertEqual(Patient.objects.last().ssn, form['ssn'].data)
 
     def test_missing_alt_phone(self):
         '''Missing the alternative phone w/o alt phone owner should fail.'''
