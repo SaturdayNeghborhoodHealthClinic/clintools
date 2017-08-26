@@ -252,6 +252,35 @@ class DocumentCreate(NoteFormView):
         return HttpResponseRedirect(reverse("patient-detail", args=(pt.id,)))
 
 
+class ProgressNoteUpdate(NoteUpdate):
+    template_name = "pttrack/form-update.html"
+    model = mymodels.ProgressNote
+    form_class = myforms.ProgressNoteForm
+    note_type = 'Psych Progress Note'
+
+    def get_success_url(self):
+        doc = self.object
+        return reverse("progress-note-detail", args=(doc.id, ))
+
+
+class ProgressNoteCreate(NoteFormView):
+    template_name = 'pttrack/form_submission.html'
+    form_class = myforms.ProgressNoteForm
+    note_type = 'Psych Progress Note'
+
+    def form_valid(self, form):
+        doc = form.save(commit=False)
+
+        pt = get_object_or_404(mymodels.Patient, pk=self.kwargs['pt_id'])
+        doc.patient = pt
+        doc.author = self.request.user.provider
+        doc.author_type = get_current_provider_type(self.request)
+
+        doc.save()
+
+        return HttpResponseRedirect(reverse("patient-detail", args=(pt.id,)))
+
+
 def choose_clintype(request):
     RADIO_CHOICE_KEY = 'radio-roles'
 

@@ -108,3 +108,14 @@ class DocumentForm(ModelForm):
         super(DocumentForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.add_input(Submit('submit', 'Submit'))
+
+class ProgressNoteForm(ModelForm):
+    class Meta:
+        model = models.ProgressNote
+        exclude = ['patient', 'author', 'author_type']
+
+    def __init__(self, *args, **kwargs):
+        super(ProgressNoteForm,self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.add_input(Submit('submit', 'Submit'))
+
