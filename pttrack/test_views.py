@@ -265,7 +265,8 @@ class LiveTesting(StaticLiveServerTestCase):
             # since they're redirects.
             if url.name in ['choose-clintype', 'done-action-item',
                             'reset-action-item', 'document-detail',
-                            'document-update', 'update-action-item']:
+                            'document-update', 'update-action-item',
+                            'progress-note-detail', 'progress-note-update']:
                 # TODO: add test data for documents so document-detail and
                 # document-update can be tested as well.
                 continue
@@ -625,6 +626,23 @@ class ViewsExistTest(TestCase):
 
     def test_provider_urls(self):
         response = self.client.get(reverse('new-provider'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_progressnote_urls(self):
+        response = self.client.get(reverse('new-progress-note', args=(1,)))
+        self.assertEqual(response.status_code, 200)
+
+        psych_note = models.ProgressNote.objects.create(
+            title="Depression",
+            text="so sad does testing work???",
+            patient=models.Patient.objects.get(id=1),
+            author=models.Provider.objects.get(id=1),
+            author_type=models.ProviderType.objects.first())
+        
+        response = self.client.get(reverse('progress-note-detail', args=(psych_note.pk,)))
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(reverse('progress-note-update', args=(psych_note.pk,)))
         self.assertEqual(response.status_code, 200)
 
     def test_document_urls(self):
