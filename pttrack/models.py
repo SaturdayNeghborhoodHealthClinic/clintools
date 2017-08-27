@@ -389,14 +389,7 @@ class ProgressNote(Note):
 
     def short_text(self):
         return self.title
-
-    def attribution(self):
-        '''Builds an attribution string of the form Doe, John on DATE'''
-        return " ".join([str(self.author), "on", str(self.written_datetime.date())])
-
-    def __unicode__(self):
-        return " ".join(["Progress Note", str(self.patient),
-                         "on", str(self.written_datetime.date())])
+        
 
 class ActionItem(Note):
     instruction = models.ForeignKey(ActionInstruction)
