@@ -242,8 +242,7 @@ class DocumentCreate(NoteFormView):
     def form_valid(self, form):
         doc = form.save(commit=False)
 
-        pt = get_object_or_404(mymodels.Patient, pk=self.kwargs['pt_id'])
-        doc.patient = pt
+        doc.patient = get_object_or_404(mymodels.Patient, pk=self.kwargs['pt_id'])
         doc.author = self.request.user.provider
         doc.author_type = get_current_provider_type(self.request)
 
@@ -259,8 +258,8 @@ class ProgressNoteUpdate(NoteUpdate):
     note_type = 'Psych Progress Note'
 
     def get_success_url(self):
-        doc = self.object
-        return reverse("progress-note-detail", args=(doc.id, ))
+        pnote = self.object
+        return reverse("progress-note-detail", args=(pnote.id, ))
 
 
 class ProgressNoteCreate(NoteFormView):
@@ -269,14 +268,14 @@ class ProgressNoteCreate(NoteFormView):
     note_type = 'Psych Progress Note'
 
     def form_valid(self, form):
-        doc = form.save(commit=False)
+        pnote = form.save(commit=False)
 
         pt = get_object_or_404(mymodels.Patient, pk=self.kwargs['pt_id'])
-        doc.patient = pt
-        doc.author = self.request.user.provider
-        doc.author_type = get_current_provider_type(self.request)
+        pnote.patient = pt
+        pnote.author = self.request.user.provider
+        pnote.author_type = get_current_provider_type(self.request)
 
-        doc.save()
+        pnote.save()
 
         return HttpResponseRedirect(reverse("patient-detail", args=(pt.id,)))
 
