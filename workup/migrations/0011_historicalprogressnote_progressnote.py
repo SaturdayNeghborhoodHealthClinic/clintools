@@ -9,27 +9,12 @@ from django.conf import settings
 class Migration(migrations.Migration):
 
     dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('pttrack', '0010_auto_20170623_1300'),
+        ('workup', '0010_decimal_fields_and_validation'),
     ]
 
     operations = [
-        migrations.CreateModel(
-            name='ProgressNote',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('written_datetime', models.DateTimeField(auto_now_add=True)),
-                ('last_modified', models.DateTimeField(auto_now=True)),
-                ('title', models.CharField(max_length=200)),
-                ('text', models.TextField()),
-                ('author', models.ForeignKey(to='pttrack.Provider')),
-                ('author_type', models.ForeignKey(to='pttrack.ProviderType')),
-                ('patient', models.ForeignKey(to='pttrack.Patient')),
-            ],
-            options={
-                'abstract': False,
-            },
-        ),
-
         migrations.CreateModel(
             name='HistoricalProgressNote',
             fields=[
@@ -50,6 +35,22 @@ class Migration(migrations.Migration):
                 'ordering': ('-history_date', '-history_id'),
                 'get_latest_by': 'history_date',
                 'verbose_name': 'historical progress note',
+            },
+        ),
+        migrations.CreateModel(
+            name='ProgressNote',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('written_datetime', models.DateTimeField(auto_now_add=True)),
+                ('last_modified', models.DateTimeField(auto_now=True)),
+                ('title', models.CharField(max_length=200)),
+                ('text', models.TextField()),
+                ('author', models.ForeignKey(to='pttrack.Provider')),
+                ('author_type', models.ForeignKey(to='pttrack.ProviderType')),
+                ('patient', models.ForeignKey(to='pttrack.Patient')),
+            ],
+            options={
+                'abstract': False,
             },
         ),
     ]

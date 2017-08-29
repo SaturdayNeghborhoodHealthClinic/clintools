@@ -380,15 +380,6 @@ class Document(Note):
 
     def short_text(self):
         return self.title
-
-class ProgressNote(Note):
-    title = models.CharField(max_length=200)
-    text = models.TextField()
-
-    history = HistoricalRecords()
-
-    def short_text(self):
-        return self.title
         
 
 class ActionItem(Note):
