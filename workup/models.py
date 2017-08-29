@@ -39,6 +39,15 @@ class ClinicDate(models.Model):
         return str(self.clinic_type)+" ("+str(self.clinic_date)+")"
 
 
+class ProgressNote(Note):
+    title = models.CharField(max_length=200)
+    text = models.TextField()
+
+    history = HistoricalRecords()
+
+    def short_text(self):
+        return self.title
+
 class Workup(Note):
     '''Datamodel of a workup. Has fields specific to each part of an exam,
     along with SNHC-specific info about where the patient has been referred for

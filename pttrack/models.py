@@ -380,7 +380,7 @@ class Document(Note):
 
     def short_text(self):
         return self.title
-
+        
 
 class ActionItem(Note):
     instruction = models.ForeignKey(ActionInstruction)
