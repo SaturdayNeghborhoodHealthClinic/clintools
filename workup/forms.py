@@ -244,6 +244,15 @@ class WorkupForm(ModelForm):
                         'Systolic blood pressure must be strictly greater '
                         'than diastolic blood pressure.')
 
+class ProgressNoteForm(ModelForm):
+    class Meta:
+        model = models.ProgressNote
+        exclude = ['patient', 'author', 'author_type']
+
+    def __init__(self, *args, **kwargs):
+        super(ProgressNoteForm,self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.add_input(Submit('submit', 'Submit'))
 
 class ClinicDateForm(ModelForm):
     '''Form for the creation of a clinic date.'''

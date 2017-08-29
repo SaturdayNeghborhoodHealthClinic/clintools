@@ -628,33 +628,6 @@ class ViewsExistTest(TestCase):
         response = self.client.get(reverse('new-provider'))
         self.assertEqual(response.status_code, 200)
 
-    def test_progressnote_urls(self):
-        url = reverse('new-progress-note', args=(1,))
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-
-        form_data={
-        'title':'Depression',
-        'text':'so sad does testing work???',
-        'patient':models.Patient.objects.get(id=1),
-        'author':models.Provider.objects.get(id=1),
-        'author_type':models.ProviderType.objects.first()
-        }
-
-        response = self.client.post(url, form_data)
-        self.assertRedirects(response, reverse('patient-detail', args=(1,)))
-        
-        url=reverse('progress-note-update', args=(1,))
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-
-        form_data['text']='actually not so bad'
-
-        response = self.client.post(url, form_data)
-        self.assertRedirects(response, reverse('progress-note-detail', args=(1,)))
-
-
-
     def test_document_urls(self):
         '''
         Test the views showing documents, as well as the integrity of path
