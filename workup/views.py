@@ -118,6 +118,35 @@ class WorkupUpdate(NoteUpdate):
         return reverse('workup', args=(self.object.id,))
 
 
+class ProgressNoteUpdate(NoteUpdate):
+    template_name = "pttrack/form-update.html"
+    model = mymodels.ProgressNote
+    form_class = myforms.ProgressNoteForm
+    note_type = 'Psych Progress Note'
+
+    def get_success_url(self):
+        pnote = self.object
+        return reverse("progress-note-detail", args=(pnote.id, ))
+
+
+class ProgressNoteCreate(NoteFormView):
+    template_name = 'pttrack/form_submission.html'
+    form_class = myforms.ProgressNoteForm
+    note_type = 'Psych Progress Note'
+
+    def form_valid(self, form):
+        pnote = form.save(commit=False)
+
+        pt = get_object_or_404(mymodels.Patient, pk=self.kwargs['pt_id'])
+        pnote.patient = pt
+        pnote.author = self.request.user.provider
+        pnote.author_type = get_current_provider_type(self.request)
+
+        pnote.save()
+
+        return HttpResponseRedirect(reverse("patient-detail", args=(pt.id,)))
+
+
 class ClinicDateCreate(FormView):
     '''A view for creating a new ClinicDate. On submission, it redirects to
     the new-workup view.'''

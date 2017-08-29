@@ -242,8 +242,7 @@ class DocumentCreate(NoteFormView):
     def form_valid(self, form):
         doc = form.save(commit=False)
 
-        pt = get_object_or_404(mymodels.Patient, pk=self.kwargs['pt_id'])
-        doc.patient = pt
+        doc.patient = get_object_or_404(mymodels.Patient, pk=self.kwargs['pt_id'])
         doc.author = self.request.user.provider
         doc.author_type = get_current_provider_type(self.request)
 
