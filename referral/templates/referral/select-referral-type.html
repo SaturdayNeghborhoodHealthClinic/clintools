@@ -1,0 +1,23 @@
+{% extends "pttrack/base.html" %}
+
+{% load bootstrap3 %}
+
+{% block title %}
+Choose a referral type
+{% endblock %}
+
+{% block header %}
+<h1>Choose a Referral Type</h1>
+<p>Each patient should be provided referrals for ongoing care to 2 FQHCs from a pre-screened list of FQHCs. Specialty referral refers to any non-FQHC referral (e.g., the COH).</p>
+{% endblock %}
+
+{% block content %}
+
+<div class="container text-center">
+  <div class="btn-group">
+    <a class="btn btn-primary" href="{% url 'new-followup' ftype='referral' pt_id=pt.pk %}" role="button">Create FQHC Referral</a>
+    <a class="btn btn-warning" href="{% url 'new-followup' ftype='general' pt_id=pt.pk %}" role="button">Create Specialty Referral</a>
+  </div>
+</div>
+
+{% endblock %}

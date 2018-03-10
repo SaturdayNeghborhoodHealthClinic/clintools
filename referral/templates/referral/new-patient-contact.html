@@ -1,0 +1,24 @@
+{% extends "pttrack/base.html" %}
+
+{% block title %}
+New patient contact
+{% endblock %}
+
+{% block header %}
+<h1>New patient contact</h1>
+{% if patient %}
+<p class="lead">Referral for <em><a href="{% url 'patient-detail' pk=patient.id %}">{{ patient.name }}</a></em></p>
+{% endif %}
+<p class="lead">Referral to {{referral.location}}</p>
+<p class="lead">Followup requested for {{followup.due_date}}</p>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  {% load crispy_forms_tags %}
+  {% crispy form %}
+</div>
+
+{% endblock %}
