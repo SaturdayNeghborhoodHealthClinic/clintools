@@ -18,13 +18,14 @@ Patient Details: {{ patient.last_name }}, {{ patient.first_name }} {{ patient.mi
 		</a></h2>
 		<p class="lead">{{ patient.age }} y/o {{ patient.ethnicities.iterator | join:", " }} {{ patient.gender | lower }}</p>
 		<p class="lead"><strong>Status:</strong> {{ patient.status }}</p>
+		<p class="lead"><strong>Referral Status:</strong> {{ referral_status }}</p>
+		<p class="lead"><strong>Referrals:</strong> {{ referrals.iterator | join:", " }}</p>
 		<p class="lead"><strong>Case Manager:</strong> {{ patient.case_manager }}
 		{% if patient.case_manager_2 != None %}
 		; {{ patient.case_manager_2 }}
 		{% endif %}
 		</p>
 		{% if request.session.staff_view %}
-		<p class="lead"><strong>Outcome:</strong> {{ patient.outcome }} <a href="{% url 'patient-update' pk=patient.id %}"><small>{% bootstrap_icon "pencil" %}</small></a></p>
 			{% if patient.needs_workup %}
   	    <p class="lead"> Patient is Active <a href="{% url 'patient-activate-detail' pk=patient.id %}">{% bootstrap_icon "remove-circle" %}</a></p>
       {% endif %}
@@ -32,7 +33,6 @@ Patient Details: {{ patient.last_name }}, {{ patient.first_name }} {{ patient.mi
     	  <p class="lead"> Patient is Inactive <a href="{% url 'patient-activate-detail' pk=patient.id %}">{% bootstrap_icon "play-circle" %}</a></p>
       {% endif %}
     {% else %}
-    <p class="lead"><strong>Outcome:</strong> {{ patient.outcome }}</p>
       {% if patient.needs_workup %}
 	      <p class="lead"> Patient is Active </p>
       {% endif %}
@@ -50,6 +50,8 @@ Patient Details: {{ patient.last_name }}, {{ patient.first_name }} {{ patient.mi
     <a class="btn btn-warning pull-left btn-block" href="{% url 'new-document' pt_id=patient.pk %}" role="button">Upload Document or Prescription</a>
     <a class="btn btn-primary pull-left btn-block" href="{% url 'followup-choice' pt_id=patient.pk %}" role="button">Create New Followup</a>
     <a class="btn btn-danger pull-left btn-block" href="{% url 'new-progress-note' pt_id=patient.pk %}" role="button">Create New Psych Progress Note</a>
+    <a class="btn btn-danger pull-left btn-block" href="{% url 'new-referral' pt_id=patient.pk %}" role="button">Create New Referral</a>
+    <a class="btn btn-danger pull-left btn-block" href="{% url 'select-referral' pt_id=patient.pk %}" role="button">New Referral Followup</a>
 	</div>
 </div>
 {% endblock %}
@@ -202,7 +204,11 @@ Patient Details: {{ patient.last_name }}, {{ patient.first_name }} {{ patient.mi
 									{% else %}
 										<p><a href="{% url 'reset-action-item' ai_id=action_item.pk %}"/> {% bootstrap_icon "check" %}</a>
 									{% endif %}
-									<strong><a href="{% url 'update-action-item' pk=action_item.pk%}">{{ action_item.instruction }}:</a></strong> {{ action_item.comments }}</p>
+									{% if action_item.class_name == "ActionItem" %}
+										<strong><a href="{% url 'update-action-item' pk=action_item.pk%}">{{ action_item.instruction }}:</a></strong> {{ action_item.comments }}</p>
+									{% else %}
+										<strong><a href="{% url 'new-patient-contact' pt_id=patient.id referral_id=action_item.referral.pk followup_id=action_item.pk%}">Referral:</a></strong> {{ action_item.contact_instructions }}</p>
+									{% endif %}
 									{% if action_item.priority %}
 									<h4 class="text-left" style="color:red"><b>PRIORITY</b></h4>
 									{% endif %}

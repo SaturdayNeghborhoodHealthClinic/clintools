@@ -32,6 +32,7 @@ INSTALLED_APPS = (
     'bootstrap3_datetime',
     'simple_history',
     'rest_framework',
+    'referral',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -95,3 +96,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 # Medical Settings
 OSLER_MAX_SYSTOLIC = 400
 OSLER_MIN_DIASTOLIC = 40
+
+OSLER_TODO_LIST_MANAGERS = [
+    ('pttrack', 'ActionItem'),
+    ('referral', 'FollowupRequest')]

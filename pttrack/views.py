@@ -1,10 +1,13 @@
+
+from django.conf import settings
+from django.apps import apps
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, HttpResponseServerError
 from django.views.generic.edit import FormView, UpdateView
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-
+from referral.models import Referral
 from . import models as mymodels
 from . import forms as myforms
 import json
@@ -331,19 +334,54 @@ def patient_detail(request, pk):
 
     pt = get_object_or_404(mymodels.Patient, pk=pk)
 
-    #   Special zipped list of action item types so they can be looped over. 
-    #   List 1: Labels for the panel objects of the action items 
+    #   Special zipped list of action item types so they can be looped over.
+    #   List 1: Labels for the panel objects of the action items
     #   List 2: Action Item lists based on type (active, pending, completed)
     #   List 3: Title labels for the action items
     #   List 4: True and False determines if the link should be for done_action_item or update_action_item
 
-    zipped_ai_list = zip(['collapse5', 'collapse6', 'collapse7'], [pt.active_action_items(), pt.inactive_action_items(), pt.done_action_items()],
-                            ['Active Action Items', 'Pending Action Items', 'Completed Action Items'], [True, True, False])
+    active_ais = []
+    inactive_ais = []
+    done_ais = []
+
+    for app, model in settings.OSLER_TODO_LIST_MANAGERS:
+        ai = apps.get_model(app, model)
+
+        active_ais.extend(ai.objects.get_active(patient=pt))
+        inactive_ais.extend(ai.objects.get_inactive(patient=pt))
+        done_ais.extend(ai.objects.get_completed(patient=pt))
+
+    zipped_ai_list = zip(['collapse5', 'collapse6', 'collapse7'],
+                         [active_ais, inactive_ais, done_ais],
+                         ['Active Action Items', 'Pending Action Items', 'Completed Action Items'],
+                         [True, True, False])
+
+    # Add referral status (successful only if patient has successfully
+    # completed all referrals)
+    referrals = Referral.objects.filter(patient=pt)
+    overall_referral_status = True
+    for referral in referrals:
+        print(referral.referral_status_id) #QUESTION
+        referral_status = True
+        if referral.referral_status_id != 'S':
+            referral_status = False
+        overall_referral_status = overall_referral_status and referral_status
+
+    referral_status_output = ""
+    if overall_referral_status:
+        referral_status_output = "Successful"
+    else:
+        referral_status_output = "Not successful"
+
+    # Note code above needs to be changed (not sure how to deal with multiple referrals)
+
 
     return render(request,
                   'pttrack/patient_detail.html',
                   {'zipped_ai_list': zipped_ai_list,
-                    'patient': pt})
+                   'referral_status': referral_status_output,
+                   'referrals': referrals,
+                   'patient': pt})
 
 
 def all_patients(request):

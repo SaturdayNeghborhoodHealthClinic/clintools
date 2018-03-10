@@ -384,18 +384,54 @@ class Document(Note):
         return self.title
 
 
-class ActionItem(Note):
-    instruction = models.ForeignKey(ActionInstruction)
-    due_date = models.DateField(help_text="MM/DD/YYYY or YYYY-MM-DD")
-    priority = models.BooleanField(default=False, help_text='Check this box if this action item is high priority')
-    comments = models.TextField()
+class CompleteableManager(models.Manager):
+
+    def get_active(self, patient):
+        return self.get_queryset()\
+                .filter(patient=patient)\
+                .filter(completion_author=None)\
+                .filter(due_date__lte=now().date())\
+                .order_by('completion_date')
+
+    def get_inactive(self, patient):
+
+        return self.get_queryset()\
+                .filter(patient=patient)\
+                .filter(completion_author=None)\
+                .filter(due_date__gt=now().date())\
+                .order_by('completion_date')
+
+    def get_completed(self, patient):
+
+        return self.get_queryset()\
+                .filter(patient=patient)\
+                .exclude(completion_author=None)\
+                .order_by('completion_date')
+
+    # implement get inactive and get done;
+    # note also this class should drop-in and work
+    # for other completeables as well.
+
+
+class CompletableMixin(models.Model):
+    """CompleteableMixin is for anything that goes in that list of
+    stuff on the Patient detail page. They can be marked as
+    complete.
+    """
+
+    class Meta:
+        abstract = True
+
     completion_date = models.DateTimeField(blank=True, null=True)
     completion_author = models.ForeignKey(
         Provider,
         blank=True, null=True,
-        related_name="action_items_completed")
+        related_name="%(app_label)s_%(class)s_completed")
+    due_date = models.DateField(help_text="MM/DD/YYYY or YYYY-MM-DD")
 
-    history = HistoricalRecords()
+    def done(self):
+        """Return true if this ActionItem has been marked as done."""
+        return self.completion_date is not None
 
     def mark_done(self, provider):
         self.completion_date = now()
@@ -405,9 +441,19 @@ class ActionItem(Note):
         self.completion_author = None
         self.completion_date = None
 
-    def done(self):
-        '''Returns true if this ActionItem has been marked as done'''
-        return self.completion_date is not None
+
+class ActionItem(Note, CompletableMixin):
+    instruction = models.ForeignKey(ActionInstruction)
+    priority = models.BooleanField(
+        default=False,
+        help_text='Check this box if this action item is high priority')
+    comments = models.TextField()
+
+    history = HistoricalRecords()
+    objects = CompleteableManager()
+
+    def class_name(self):
+        return self.__class__.__name__
 
     def attribution(self):
         if self.done():

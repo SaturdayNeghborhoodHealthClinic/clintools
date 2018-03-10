@@ -68,6 +68,9 @@
 				"__init__.py"
 			],
 			"path": "demographics"
+		},
+		{
+			"path": "referral"
 		}
 	]
 }
