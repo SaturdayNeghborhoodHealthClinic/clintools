@@ -361,9 +361,8 @@ def patient_detail(request, pk):
     referrals = Referral.objects.filter(patient=pt)
     overall_referral_status = True
     for referral in referrals:
-        print(referral.referral_status_id) #QUESTION
         referral_status = True
-        if referral.referral_status_id != 'S':
+        if referral.status_id != 'S':
             referral_status = False
         overall_referral_status = overall_referral_status and referral_status
 

@@ -15,8 +15,8 @@ Choose a referral type
 
 <div class="container text-center">
   <div class="btn-group">
-    <a class="btn btn-primary" href="{% url 'new-followup' ftype='referral' pt_id=pt.pk %}" role="button">Create FQHC Referral</a>
-    <a class="btn btn-warning" href="{% url 'new-followup' ftype='general' pt_id=pt.pk %}" role="button">Create Specialty Referral</a>
+    <a class="btn btn-primary" href="{% url 'new-referral' rtype='fqhc' pt_id=pt.pk %}" role="button">Create FQHC Referral</a>
+    <a class="btn btn-warning" href="{% url 'new-referral' rtype='specialty' pt_id=pt.pk %}" role="button">Create Specialty Referral</a>
   </div>
 </div>
 

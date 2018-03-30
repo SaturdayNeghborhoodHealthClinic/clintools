@@ -50,7 +50,7 @@ Patient Details: {{ patient.last_name }}, {{ patient.first_name }} {{ patient.mi
     <a class="btn btn-warning pull-left btn-block" href="{% url 'new-document' pt_id=patient.pk %}" role="button">Upload Document or Prescription</a>
     <a class="btn btn-primary pull-left btn-block" href="{% url 'followup-choice' pt_id=patient.pk %}" role="button">Create New Followup</a>
     <a class="btn btn-danger pull-left btn-block" href="{% url 'new-progress-note' pt_id=patient.pk %}" role="button">Create New Psych Progress Note</a>
-    <a class="btn btn-danger pull-left btn-block" href="{% url 'new-referral' pt_id=patient.pk %}" role="button">Create New Referral</a>
+    <a class="btn btn-danger pull-left btn-block" href="{% url 'select-referral-type' pt_id=patient.pk %}" role="button">Create New Referral</a>
     <a class="btn btn-danger pull-left btn-block" href="{% url 'select-referral' pt_id=patient.pk %}" role="button">New Referral Followup</a>
 	</div>
 </div>

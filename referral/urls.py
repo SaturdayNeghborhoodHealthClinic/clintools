@@ -3,7 +3,7 @@ from pttrack.urls import wrap_url
 from . import views
 
 unwrapped_urlconf = [  # pylint: disable=invalid-name
-    url(r'^new/(?P<pt_id>[0-9]+)$',
+    url(r'^new-referral/(?P<pt_id>[0-9]+)/(?P<rtype>[\w]+)$',
         views.ReferralCreate.as_view(),
         name='new-referral'),
     url(r'^followup-request/(?P<pt_id>[0-9]+)/(?P<referral_id>[0-9]+)$',

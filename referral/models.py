@@ -1,6 +1,6 @@
 """Data models for referral system."""
 from django.db import models
-from pttrack.models import ReferralLocation, ReferralType, Note, Provider, ContactMethod, CompleteableManager, CompletableMixin
+from pttrack.models import ReferralType, Note, Provider, ContactMethod, CompleteableManager, CompletableMixin
 from followup.models import ContactResult, NoAptReason, NoShowReason
 
 # pylint: disable=I0011,E1305
@@ -14,8 +14,13 @@ from followup.models import ContactResult, NoAptReason, NoShowReason
 #                 .exclude(completion_author=None),
 #             key=lambda fu: fu.completion_date)
 
-class FQHCLocation(models.Model):
+class ReferralLocation(models.Model):
     name = models.CharField(max_length=300)
+    is_fqhc = models.NullBooleanField()
+    is_specialty = models.NullBooleanField()
+
+    def __unicode__(self):
+        return self.name
 
 class ReferralStatus(models.Model):
     REFERRAL_STATUS = (
@@ -24,28 +29,44 @@ class ReferralStatus(models.Model):
         ('U', 'Unsuccessful'),
     )
     name = models.CharField(max_length=50, choices=REFERRAL_STATUS,
-                            primary_key=True) #@Justin, when should I use this?
+                            primary_key=True)
 
 class Referral(Note):
 
+    FQHC_REFERRAL = 'FQHC'
+    SPECIALTY_REFERRAL = 'SPEC'
+
+    REFERRAL_TYPES = (
+        (FQHC_REFERRAL, 'Primary Care (FQHC)'),
+        (SPECIALTY_REFERRAL, 'Specialty')
+    )
+
+    # Note I'm making this a Many to Many field for now since we'd like to be able to select 
+    # multiple choices (maybe can be done on the front end only)
+    location = models.ManyToManyField(ReferralLocation)
     comments = models.TextField(blank=True)
-    referral_status = models.ForeignKey(ReferralStatus)
-
-
-class FQHCReferral(Referral):
-    location = models.ForeignKey(FQHCLocation)
-
+    status = models.ForeignKey(ReferralStatus)
+    kind = models.CharField(max_length=10, choices=REFERRAL_TYPES)
 
     def __str__(self):
         formatted_date = self.written_datetime.strftime("%D")
         return "Referred to %s on %s" % (self.location, formatted_date)
 
-class SpecialtyReferral(Referral):
-    location = models.ForeignKey(ReferralLocation)
 
-    def __str__(self):
-        formatted_date = self.written_datetime.strftime("%D")
-        return "Referred to %s on %s" % (self.location, formatted_date)
+# class FQHCInfo(Referral):
+#     referral = models.OneToOneField(Referral)
+#     location = models.ManyToManyField(FQHCLocation)
+
+#     def __str__(self):
+#         formatted_date = self.written_datetime.strftime("%D")
+#         return "Referred to %s on %s" % (self.FQHC_location, formatted_date)
+
+# class SpecialtyReferral(Referral):
+#     location = models.ForeignKey(ReferralLocation)
+
+#     def __str__(self):
+#         formatted_date = self.written_datetime.strftime("%D")
+#         return "Referred to %s on %s" % (self.location, formatted_date)
 
 class FollowupRequest(Note, CompletableMixin):
 
