@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from django.test import TestCase
 from django.utils.timezone import now
 from django.core.urlresolvers import reverse
@@ -6,7 +8,6 @@ from pttrack.models import Patient, ProviderType
 from pttrack.test_views import build_provider, log_in_provider
 
 from . import models
-from .forms import WorkupForm
 from .tests import wu_dict
 
 
@@ -23,7 +24,8 @@ class ViewsExistTest(TestCase):
             clinic_date=now().date(),
             gcal_id="tmp")
 
-        log_in_provider(self.client, build_provider())
+        self.provider = build_provider()
+        log_in_provider(self.client, self.provider)
 
         self.wu = models.Workup.objects.create(
             clinic_day=models.ClinicDate.objects.first(),
@@ -64,7 +66,7 @@ class ViewsExistTest(TestCase):
 
         response = self.client.post(url, form_data)
         self.assertRedirects(response, reverse('patient-detail', args=(1,)))
-        
+
         url=reverse('progress-note-update', args=(1,))
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -215,16 +217,47 @@ class ViewsExistTest(TestCase):
                 reverse('new-workup', args=(pt_id,)),
                 data=wu_data)
 
-            # print(dir(r))
-            # # print(r.context)
-            # print(r.context['form'].errors)
-
-            # print(provider_type)
-            # with open('./tmp.html', 'wb') as f:
-            #     f.write(r.content)
-
             self.assertRedirects(r, reverse("new-action-item", args=(pt_id,)))
             self.assertEqual(wu_count + 1, models.Workup.objects.all().count())
             self.assertEqual(
                 models.Workup.objects.last().signed(),
                 provider.clinical_roles.first().signs_charts)
+
+    def test_invalid_workup_submit_preserves_units(self):
+
+        # first, craft a workup that has units, but fail to set the
+        # diagnosis categories, so that it will fail to be accepted.
+        wu_data = wu_dict(units=True)
+        pt_id = Patient.objects.first().pk
+
+        r = self.client.post(
+            reverse('new-workup', args=(pt_id,)),
+            data=wu_data)
+
+        print(r.context['form']['chief_complaint'])
+        print(r.context['form']['chief_complaint'].value())
+
+        print(r.context['form']['weight_units'])
+        print(dir(r.context['form']['weight_units']))
+        print(r.context['form']['weight_units'].html_initial_id)
+        print('value:', r.context['form']['weight_units'].value())
+        print([s for s in dir(self) if 'assert' in s])
+
+        # verify we're bounced back to workup-create
+        self.assertEqual(r.status_code, 200)
+        self.assertTemplateUsed(r, 'workup/workup-create.html')
+        self.assertFormError(r, 'form', 'diagnosis_categories',
+                             'This field is required.')
+
+        with open('tmp.html', 'w') as f:
+            f.write(str(r))
+
+        for unit in ['height_units', 'weight_units', 'temperature_units']:
+            self.assertRegexpMatches(
+                str(r), '<input name="%s"' % (unit))
+
+            self.assertEqual(
+                r.context['form'][unit].value(),
+                wu_data[unit])
+
+        assert False
