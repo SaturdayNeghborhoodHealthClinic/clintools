@@ -7,7 +7,7 @@ from django.views.generic.edit import FormView, UpdateView
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from referral.models import Referral
+from referral.models import Referral, FollowupRequest
 from . import models as mymodels
 from . import forms as myforms
 import json
@@ -356,24 +356,28 @@ def patient_detail(request, pk):
                          ['Active Action Items', 'Pending Action Items', 'Completed Action Items'],
                          [True, True, False])
 
-    # Add referral status (successful only if patient has successfully
-    # completed all referrals)
-    referrals = Referral.objects.filter(patient=pt)
-    overall_referral_status = True
-    for referral in referrals:
-        referral_status = True
-        if referral.status_id != 'S':
-            referral_status = False
-        overall_referral_status = overall_referral_status and referral_status
+    # Provide referral list for patient page (includes specialty referrals)
+    referrals = Referral.objects.filter(patient=pt,
+                                        followuprequest__in=FollowupRequest.objects.all())
 
+    # Add FQHC referral status
+    # Note it is possible for a patient to have been referred multiple times
+    # This creates some strage cases (e.g., first referral was lost to followup
+    # but the second one was successful). In these cases, the last referral status
+    # becomes the current status
+    fqhc_referrals = Referral.objects.filter(patient=pt, kind__is_fqhc=True)
+    # If patient has FQHC referrals
     referral_status_output = ""
-    if overall_referral_status:
-        referral_status_output = "Successful"
+    if fqhc_referrals:
+        all_successful = all(referral.status == Referral.STATUS_SUCCESSFUL
+                             for referral in fqhc_referrals)
+        if all_successful:
+            referral_status_output = dict(Referral.REFERRAL_STATUSES)[Referral.STATUS_SUCCESSFUL]
+        else:
+            # Determine referral status based on the last FQHC referral
+            referral_status_output = dict(Referral.REFERRAL_STATUSES)[fqhc_referrals.last().status] 
     else:
-        referral_status_output = "Not successful"
-
-    # Note code above needs to be changed (not sure how to deal with multiple referrals)
-
+        referral_status_output = "No referrals currently"
 
     return render(request,
                   'pttrack/patient_detail.html',

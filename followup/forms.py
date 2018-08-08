@@ -83,7 +83,7 @@ class ReferralFollowup(BaseFollowup):
                         "an appointment?")
         else:
             detail_params = ["noshow_reason", "noapt_reason", "pt_showed"]
-
+            
             for param in detail_params:
                 if cleaned_data.get(param):
                     self.add_error(

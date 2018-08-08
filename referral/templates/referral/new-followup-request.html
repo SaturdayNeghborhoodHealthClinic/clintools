@@ -6,7 +6,15 @@ New followup request
 
 {% block header %}
 <h1>Request referral followup</h1>
-<p class="lead">Referral to {{referral.location}}</p>
+<p class="lead">Referral to 
+{% for ref in referral.location.all %}
+	{{ref.name}}
+	{% if forloop.last %}
+	{% else %}
+	or
+	{% endif %}
+{% endfor %}
+</p>
 {% endblock %}
 
 {% block content %}

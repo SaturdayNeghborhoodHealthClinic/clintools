@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pttrack', '0004_auto_20180213_1616'),
+        ('pttrack', '0005_referrallocation_care_availiable'),
         ('followup', '0001_initial'),
     ]
 
@@ -58,43 +58,16 @@ class Migration(migrations.Migration):
                 ('written_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_modified', models.DateTimeField(auto_now=True)),
                 ('comments', models.TextField(blank=True)),
-                ('kind', models.CharField(max_length=10, choices=[(b'FQHC', b'Primary Care (FQHC)'), (b'SPEC', b'Specialty')])),
+                ('status', models.CharField(default=b'P', max_length=50, choices=[(b'S', b'Successful'), (b'P', b'Pending'), (b'U', b'Unsuccessful')])),
                 ('author', models.ForeignKey(to='pttrack.Provider')),
                 ('author_type', models.ForeignKey(to='pttrack.ProviderType')),
+                ('kind', models.ForeignKey(help_text=b'The kind of care the patient should recieve at the referral location.', to='pttrack.ReferralType')),
+                ('location', models.ManyToManyField(to='pttrack.ReferralLocation')),
+                ('patient', models.ForeignKey(to='pttrack.Patient')),
             ],
             options={
                 'abstract': False,
             },
-        ),
-        migrations.CreateModel(
-            name='ReferralLocation',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(max_length=300)),
-                ('is_fqhc', models.NullBooleanField()),
-                ('is_specialty', models.NullBooleanField()),
-            ],
-        ),
-        migrations.CreateModel(
-            name='ReferralStatus',
-            fields=[
-                ('name', models.CharField(max_length=50, serialize=False, primary_key=True, choices=[(b'S', b'Successful'), (b'P', b'Pending'), (b'U', b'Unsuccessful')])),
-            ],
-        ),
-        migrations.AddField(
-            model_name='referral',
-            name='location',
-            field=models.ManyToManyField(to='referral.ReferralLocation'),
-        ),
-        migrations.AddField(
-            model_name='referral',
-            name='patient',
-            field=models.ForeignKey(to='pttrack.Patient'),
-        ),
-        migrations.AddField(
-            model_name='referral',
-            name='status',
-            field=models.ForeignKey(to='referral.ReferralStatus'),
         ),
         migrations.AddField(
             model_name='patientcontact',

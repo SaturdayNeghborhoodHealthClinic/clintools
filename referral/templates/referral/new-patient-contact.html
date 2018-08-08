@@ -5,11 +5,19 @@ New patient contact
 {% endblock %}
 
 {% block header %}
-<h1>New patient contact</h1>
+<h1>New referral followup</h1>
 {% if patient %}
 <p class="lead">Referral for <em><a href="{% url 'patient-detail' pk=patient.id %}">{{ patient.name }}</a></em></p>
 {% endif %}
-<p class="lead">Referral to {{referral.location}}</p>
+<p class="lead">Referral to 
+{% for ref in referral.location.all %}
+	{{ref.name}}
+	{% if forloop.last %}
+	{% else %}
+	or
+	{% endif %}
+{% endfor %}
+</p>
 <p class="lead">Followup requested for {{followup.due_date}}</p>
 
 {% endblock %}

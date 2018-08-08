@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.timezone import now
+from django.utils.text import slugify
 import os
 from django.core.urlresolvers import reverse
 
@@ -51,23 +52,30 @@ class ContactMethod(models.Model):
 
 
 class ReferralType(models.Model):
-    '''Simple text-contiaining class for storing the different kinds of
-    clinics a patient can be referred to (e.g. PCP, ortho, etc.)'''
+    """The different kind of care availiable at a referral center."""
 
     name = models.CharField(max_length=100, primary_key=True)
+    is_fqhc = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.name
+
+    def slugify(self):
+        return slugify(self.name)
 
 
 class ReferralLocation(models.Model):
-    '''Data model for a referral Location'''
+    """Location that we can refer to."""
 
     name = models.CharField(max_length=300)
     address = models.TextField()
+    care_availiable = models.ManyToManyField(ReferralType)
 
     def __unicode__(self):
-        return self.name
+        if self.address:
+            return self.name + " (" + self.address.splitlines()[0] + ")"
+        else:
+            return self.name
 
 
 class Language(models.Model):
@@ -351,7 +359,7 @@ def require_providers_update():
 
 
 class Note(models.Model):
-    class Meta:  # pylint: disable=W0232,R0903,C1001
+    class Meta:
         abstract = True
 
     author = models.ForeignKey(Provider)

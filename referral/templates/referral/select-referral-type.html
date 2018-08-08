@@ -15,8 +15,9 @@ Choose a referral type
 
 <div class="container text-center">
   <div class="btn-group">
-    <a class="btn btn-primary" href="{% url 'new-referral' rtype='fqhc' pt_id=pt.pk %}" role="button">Create FQHC Referral</a>
-    <a class="btn btn-warning" href="{% url 'new-referral' rtype='specialty' pt_id=pt.pk %}" role="button">Create Specialty Referral</a>
+  	{% for referral_type in referral_types %}
+	    <a class="btn btn-info" href="{% url 'new-referral' rtype=referral_type.slugify pt_id=pt.pk %}" role="button">Create {{referral_type}} referral</a>
+	{% endfor %}
   </div>
 </div>
 
