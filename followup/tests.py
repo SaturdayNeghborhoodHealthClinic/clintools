@@ -278,8 +278,8 @@ class TestReferralFollowupForms(TestCase):
         if noshow_reason:
             form_data['noshow_reason'] = self.noshow_reason
 
-
-        return forms.ReferralFollowup(data=form_data)
+        return forms.ReferralFollowup(data=form_data,
+                                      referral_location_qs=[self.referral_location])
 
     def test_hasapt_pt_noshow(self):
         '''

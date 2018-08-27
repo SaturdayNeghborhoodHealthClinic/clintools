@@ -102,9 +102,6 @@ class PatientContact(Note):
                    ("No", "No"),
                    ("Not yet", "Not yet")]
 
-    # Add question: Did patient attempt to contact FQHC to schedule appointment?
-    # Add question: Which FQHC did the patient contact? 
-
     APPOINTMENT_HELP = "Did the patient make an appointment?"
     has_appointment = models.CharField(APPOINTMENT_HELP, choices=PTSHOW_OPTS,
                                        blank=True, max_length=7)
@@ -115,7 +112,7 @@ class PatientContact(Note):
                                       blank=True,
                                       null=True)
 
-    APPOINTMENT_LOCATION_HELP = "Which provider did the patient contact for an appointment?"
+    APPOINTMENT_LOCATION_HELP = "Where did the patient make an appointment?"
     #location_options = Referral.objects.get(pk=referral.id).location
     #print(location_options)
     appointment_location = models.ManyToManyField(ReferralLocation,

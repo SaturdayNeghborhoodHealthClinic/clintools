@@ -69,17 +69,23 @@ class PatientContactForm(ModelForm):
         model = models.PatientContact
         exclude = ['referral', 'followupRequest', 'patient',
                    'author', 'author_type']
+        widgets = {
+            'appointment_location': forms.CheckboxSelectMultiple()
+        }
 
-    def __init__(self, referral_location_qs, *args, **kwargs):
+    def __init__(self, referral_location_qs=None, *args, **kwargs):
         super(PatientContactForm, self).__init__(*args, **kwargs)
-        self.fields['appointment_location'].queryset = referral_location_qs
+
+        if referral_location_qs is not None:
+            self.fields['appointment_location'].queryset = referral_location_qs
+
         self.helper = FormHelper(self)
         self.helper.add_input(Submit('successful-referral',
-                                     'Successful referral'))
+                                     'Save successful referral'))
         self.helper.add_input(Submit('request-new-followup',
-                                     'Request new followup'))
+                                     'Save and request new followup'))
         self.helper.add_input(Submit('give-up',
-                                     'Close referral - patient lost to followup'))
+                                     'Save unsuccessful referral'))
 
     def clean(self):
         '''Form has some complicated logic around which parts of the form can 
