@@ -100,11 +100,9 @@ INTERNAL_IPS = ('127.0.0.1',) # used for debug toolbar
 OSLER_MAX_SYSTOLIC = 400
 OSLER_MIN_DIASTOLIC = 40
 
-<<<<<<< HEAD
 OSLER_TODO_LIST_MANAGERS = [
     ('pttrack', 'ActionItem'),
     ('referral', 'FollowupRequest')]
-=======
+
 OSLER_MAX_APPOINTMENTS = 5
 OSLER_DEFAULT_APPOINTMENT_HOUR = 9
->>>>>>> master
