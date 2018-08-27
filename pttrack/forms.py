@@ -1,7 +1,8 @@
 '''Forms for the Oser core components.'''
 from bootstrap3_datetime.widgets import DateTimePicker
 from django.forms import ModelForm, EmailField, CheckboxSelectMultiple, \
-    ModelChoiceField
+    ModelChoiceField, ModelMultipleChoiceField
+from django.contrib.auth.forms import AuthenticationForm
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
@@ -19,19 +20,13 @@ class PatientForm(ModelForm):
 
     # limit the options for the case_managers field to Providers with
     # ProviderType with staff_view=True
-    case_manager = ModelChoiceField(
-            required=False,
-            queryset=models.Provider.objects.filter(
-                clinical_roles__in=models.ProviderType.objects.filter(
-                    staff_view=True)).order_by("last_name")
-            )
-            
-    case_manager_2 = ModelChoiceField(
-            required=False,
-            queryset=models.Provider.objects.filter(
-                clinical_roles__in=models.ProviderType.objects.filter(
-                    staff_view=True)).order_by("last_name")
-            )
+
+    case_managers = ModelMultipleChoiceField(
+        required=False,
+        queryset=models.Provider.objects.filter(
+            clinical_roles__in=models.ProviderType.objects.filter(
+                staff_view=True)).distinct().order_by("last_name"),
+        )
 
     def __init__(self, *args, **kwargs):
         super(PatientForm, self).__init__(*args, **kwargs)
@@ -115,3 +110,13 @@ class DocumentForm(ModelForm):
         super(DocumentForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.add_input(Submit('submit', 'Submit'))
+
+
+
+class CrispyAuthenticationForm(AuthenticationForm):
+
+    def __init__(self, *args, **kwargs):
+        super(CrispyAuthenticationForm, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper(self)
+        self.helper.add_input(Submit('submit', 'Login'))

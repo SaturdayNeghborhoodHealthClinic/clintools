@@ -8,10 +8,14 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from referral.models import Referral, FollowupRequest
-from . import models as mymodels
-from . import forms as myforms
-import json
+from django.db.models import Prefetch
 
+from . import models as mymodels
+from workup import models as workupmodels
+from . import forms as myforms
+from appointment.models import Appointment
+import json
+import collections
 import datetime
 
 def get_current_provider_type(request):
@@ -117,7 +121,7 @@ class ProviderCreate(FormView):
             user = provider.associated_user
             user.email = form.cleaned_data['provider_email']
             user.first_name = provider.first_name
-            user.last_name = provider.last_name            
+            user.last_name = provider.last_name
             user.save()
             provider.save()
             form.save_m2m()
@@ -159,7 +163,7 @@ class ProviderUpdate(UpdateView):
         user = provider.associated_user
         user.email = form.cleaned_data['provider_email']
         user.first_name = provider.first_name
-        user.last_name = provider.last_name            
+        user.last_name = provider.last_name
         user.save()
         provider.save()
         form.save_m2m()
@@ -379,34 +383,64 @@ def patient_detail(request, pk):
     else:
         referral_status_output = "No referrals currently"
 
+    appointments = Appointment.objects.filter(patient=pt).order_by('clindate','clintime')
+    # d = collections.OrderedDict()
+    # for a in appointments:
+    #     if a.clindate in d:
+    #         d[a.clindate].append(a)
+    #     else:
+    #         d[a.clindate] = [a]
+
+    future_date_appointments = appointments.filter(
+        clindate__gte=datetime.date.today()).order_by('clindate', 'clintime')
+    previous_date_appointments = appointments.filter(
+        clindate__lt=datetime.date.today()).order_by('-clindate', 'clintime')
+
+    future_apt = collections.OrderedDict()
+    for a in future_date_appointments:
+        if a.clindate in future_apt:
+            future_apt[a.clindate].append(a)
+        else:
+            future_apt[a.clindate] = [a]
+
+    previous_apt = collections.OrderedDict()
+    for a in previous_date_appointments:
+        if a.clindate in previous_apt:
+            previous_apt[a.clindate].append(a)
+        else:
+            previous_apt[a.clindate] = [a]
+
+    zipped_apt_list = zip(
+        ['collapse8', 'collapse9'],
+        [future_date_appointments, previous_date_appointments],
+        ['Future Appointments', 'Past Appointments'],
+        [future_apt, previous_apt])
+
     return render(request,
                   'pttrack/patient_detail.html',
                   {'zipped_ai_list': zipped_ai_list,
                    'referral_status': referral_status_output,
                    'referrals': referrals,
-                   'patient': pt})
+                   'patient': pt,
+                   'appointments_by_date': future_apt,
+                   'zipped_apt_list': zipped_apt_list})
 
 
 def all_patients(request):
-    # lists = [
-    #     {'url': 'sort=last_name',
-    #      'title': "Alphabetized by Last Name",
-    #      'identifier': 'ptlast',
-    #      'active': False },
-    #     {'url': 'sort=latest_workup',
-    #      'title': "Ordered by Latest Activity",
-    #      'identifier': 'ptlatest',
-    #      'active': True }]
+    """
+    Query is written to minimize hits to the database; number of db hits can be
+        see on the django debug toolbar.
+    """
+    patient_list = mymodels.Patient.objects.all() \
+        .order_by('last_name') \
+        .select_related('gender') \
+        .prefetch_related('case_managers') \
+        .prefetch_related(Prefetch('workup_set', queryset=workupmodels.Workup.objects.order_by('clinic_day__clinic_date'))) \
+        .prefetch_related('actionitem_set')
 
-    # api_url = reverse('pt_list_api')[:-1] + '.json/?' # remove last '/' before adding because there no '/' between /api/pt_list and .json, but reverse generates '/api/pt_list/'
+    # Don't know how to prefetch history https://stackoverflow.com/questions/45713517/use-prefetch-related-in-django-simple-history
+    # Source code is https://github.com/treyhunner/django-simple-history/blob/master/simple_history/models.py if we want to try to figure out
 
-    # return render(request,
-    #               'pttrack/patient_list.html',
-    #               {'lists': json.dumps(lists),
-    #                 'title': "All Patients",
-    #                 'api_url': api_url})
-    
-    patient_list = mymodels.Patient.objects.all().order_by('last_name')
     return render(request,
                   'pttrack/all_patients.html',
                   {'object_list': patient_list})

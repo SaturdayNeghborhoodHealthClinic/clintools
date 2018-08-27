@@ -1,9 +1,6 @@
 [![Circle CI](https://circleci.com/gh/SaturdayNeighborhoodHealthClinic/osler.svg?style=svg)](https://circleci.com/gh/SaturdayNeighborhoodHealthClinic/osler)
 [![codecov.io](https://codecov.io/github/SaturdayNeighborhoodHealthClinic/osler/coverage.svg?branch=master)](https://codecov.io/github/SaturdayNeighborhoodHealthClinic)
 
-[![forthebadge](http://forthebadge.com/images/badges/powered-by-electricity.svg)](https://forthebadge.com)
-[![forthebadge](http://forthebadge.com/images/badges/does-not-contain-treenuts.svg)](https://forthebadge.com)
-
 # Osler
 
 This is our osler project, which is a collection for all our
@@ -28,13 +25,21 @@ virtualenv venv
 source venv/bin/activate
 ```
 
-Then use pip install our dependencies with:
+Then use pip install our dependencies.
+
+If you are trying to make a development build run:
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+For a deployment build run:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-(Python dependencies are stored in `requirements.txt`)
+(Python dependencies are stored in `requirements-dev.txt` for a development build and in `requirements.txt` for a deployment build)
 
 One of our dependencies is Pillow, which requires [some other libraries.](https://pillow.readthedocs.org/en/3.0.x/installation.html)
 
@@ -60,7 +65,7 @@ To run tests, run
 python manage.py test
 ```
 
-Remote servers without GUI access may need to [configure headless selenium](http://www.installationpage.com/selenium/how-to-run-selenium-headless-firefox-in-ubuntu/).
+Remote servers without GUI access may need to [configure headless selenium](http://www.installationpage.com/selenium/how-to-run-selenium-headless-firefox-in-ubuntu/). A pretty good tutorial on doing this in the cloud is [here](http://jonathansoma.com/lede/algorithms-2017/servers/setting-up/).
 
 ## Deployment
 
