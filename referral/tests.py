@@ -1,4 +1,5 @@
 from django.test import TestCase
+from itertools import *
 
 from followup.models import ContactMethod, NoAptReason, NoShowReason, ContactResult
 from django.contrib.auth.models import User
@@ -129,6 +130,10 @@ class TestPatientContactForm(TestCase):
         return forms.PatientContactForm(data=form_data)
 
     def test_has_appointment_and_pt_showed(self):
+        """Verify that a provider is selected and no show and no appointment
+        reasons are not selected. There are 16 cases tested here. 
+        Patient showed selection can be either 'No' or 'Not yet'
+        """
         # correct: pt didn't show, noshow reason is supplied
         form = self.build_form(
             contact_successful=True,
@@ -138,11 +143,41 @@ class TestPatientContactForm(TestCase):
             noshow_reason=False,
             pt_showed="Yes")
 
-        print(ReferralLocation.objects.all())
-
-        print(form.errors)
         # Might want to assert a specific error
         self.assertEqual(len(form.errors), 0)
+
+        # Create variable that holds those conditions that shouldn't lead to errors
+        # apt_location = True
+        # noapt_reason = False
+        # noshow_reason = False
+        proper_submission = (True, False, False)
+
+        for form_field_provided in product([False, True], repeat=3):
+            form = self.build_form(
+                contact_successful=True,
+                has_appointment="Yes",
+                apt_location=form_field_provided[0],
+                noapt_reason=form_field_provided[1],
+                noshow_reason=form_field_provided[2],
+                pt_showed="Yes")
+
+            # Use an XOR to determine the number of differences between a
+            # proper submission and the current combination of form fields
+            expected_number_errors = sum(a ^ b for a, b in
+                                         zip(form_field_provided,
+                                             proper_submission))
+            self.assertEqual(len(form.errors), expected_number_errors)
+
+        form = self.build_form(
+            contact_successful=True,
+            has_appointment="Yes",
+            apt_location=False,
+            noapt_reason=False,
+            noshow_reason=False,
+            pt_showed="No")
+
+        self.assertEqual(len(form.errors), 1)
+
 
         # incorrect - no show reason is supplied
 
@@ -152,7 +187,8 @@ class TestPatientContactForm(TestCase):
 
     def test_has_appointment_and_pt_no_show(self):
         """Verify that a provider is selected and a reason is provided for
-        the no show
+        the no show. There are 16 cases tested here. Patient showed selection
+        can be either 'No' or 'Not yet'
         """
         form = self.build_form(
             contact_successful=True,
@@ -165,12 +201,172 @@ class TestPatientContactForm(TestCase):
         self.assertEqual(len(form.errors), 0)
 
         # incorrect - no show reason is not supplied
+        form = self.build_form(
+            contact_successful=True,
+            has_appointment="Yes",
+            apt_location=True,
+            noapt_reason=False,
+            noshow_reason=False,
+            pt_showed="No")
+
+        self.assertEqual(len(form.errors), 1)
+
+        # incorrect - both apt location and no apt reason are supplied
+        form = self.build_form(
+            contact_successful=True,
+            has_appointment="Yes",
+            apt_location=True,
+            noapt_reason=True,
+            noshow_reason=False,
+            pt_showed="No")
+
+        self.assertEqual(len(form.errors), 2)
 
         # incorrect - no appointment reason is supplied
+        form = self.build_form(
+            contact_successful=True,
+            has_appointment="Yes",
+            apt_location=True,
+            noapt_reason=True,
+            noshow_reason=True,
+            pt_showed="No")
+
+        self.assertEqual(len(form.errors), 1)
 
         # incorrect - appointment location is not selected
+        form = self.build_form(
+            contact_successful=True,
+            has_appointment="Yes",
+            apt_location=False,
+            noapt_reason=False,
+            noshow_reason=True,
+            pt_showed="No")
 
-        # Remember to add Not Yets
+        self.assertEqual(len(form.errors), 1)
+
+        # incorrect - no show reason is not supplied, no apt location supplied
+        form = self.build_form(
+            contact_successful=True,
+            has_appointment="Yes",
+            apt_location=False,
+            noapt_reason=False,
+            noshow_reason=False,
+            pt_showed="No")
+
+        self.assertEqual(len(form.errors), 2)
+
+        # incorrect - no apt location and no apt reason is supplied
+        form = self.build_form(
+            contact_successful=True,
+            has_appointment="Yes",
+            apt_location=False,
+            noapt_reason=True,
+            noshow_reason=True,
+            pt_showed="No")
+
+        self.assertEqual(len(form.errors), 2)
+
+        # incorrect - no show reason is not supplied
+        form = self.build_form(
+            contact_successful=True,
+            has_appointment="Yes",
+            apt_location=False,
+            noapt_reason=True,
+            noshow_reason=False,
+            pt_showed="No")
+
+        self.assertEqual(len(form.errors), 3)
+
+        # begin block of tests for "Not yet" for pt showed
+
+        # correct - patient has not yet shown to clinic
+        form = self.build_form(
+            contact_successful=True,
+            has_appointment="Yes",
+            apt_location=True,
+            noapt_reason=False,
+            noshow_reason=False,
+            pt_showed="Not yet")
+
+        self.assertEqual(len(form.errors), 0)
+
+        # incorrect - patient has not yet shown up to clinic,
+        # no show reason is provided
+        form = self.build_form(
+            contact_successful=True,
+            has_appointment="Yes",
+            apt_location=True,
+            noapt_reason=False,
+            noshow_reason=True,
+            pt_showed="Not yet")
+
+        self.assertEqual(len(form.errors), 1)
+
+        # incorrect - no appointment reason is supplied with 'Not yet'
+        form = self.build_form(
+            contact_successful=True,
+            has_appointment="Yes",
+            apt_location=True,
+            noapt_reason=True,
+            noshow_reason=False,
+            pt_showed="Not yet")
+
+        self.assertEqual(len(form.errors), 1)
+
+        # incorrect - no appointment reason and no show reason is supplied
+        form = self.build_form(
+            contact_successful=True,
+            has_appointment="Yes",
+            apt_location=True,
+            noapt_reason=True,
+            noshow_reason=True,
+            pt_showed="Not yet")
+
+        self.assertEqual(len(form.errors), 2)
+
+        # incorrect - no apt location and no apt reason supplied
+        form = self.build_form(
+            contact_successful=True,
+            has_appointment="Yes",
+            apt_location=False,
+            noapt_reason=True,
+            noshow_reason=False,
+            pt_showed="Not yet")
+
+        self.assertEqual(len(form.errors), 2)
+
+        # incorrect - apt location not supplied, no apt reason supplied, no show reason supplied
+        form = self.build_form(
+            contact_successful=True,
+            has_appointment="Yes",
+            apt_location=False,
+            noapt_reason=True,
+            noshow_reason=True,
+            pt_showed="Not yet")
+
+        self.assertEqual(len(form.errors), 3)
+
+        # incorrect - no apt location supplied
+        form = self.build_form(
+            contact_successful=True,
+            has_appointment="Yes",
+            apt_location=False,
+            noapt_reason=False,
+            noshow_reason=False,
+            pt_showed="Not yet")
+
+        self.assertEqual(len(form.errors), 1)
+
+        # incorrect - no apt location supplied and no show reason supplied
+        form = self.build_form(
+            contact_successful=True,
+            has_appointment="Yes",
+            apt_location=False,
+            noapt_reason=False,
+            noshow_reason=True,
+            pt_showed="Not yet")
+
+        self.assertEqual(len(form.errors), 2)
 
 def test_no_appointment(self):
     # verify that there are no errors when a patient has not made an appointment

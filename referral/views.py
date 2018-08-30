@@ -191,7 +191,6 @@ class PatientContactCreate(FormView):
         kwargs['referral_location_qs'] = referral.location.all()
         return kwargs
 
-
     def get_context_data(self, **kwargs):
         context = super(PatientContactCreate, self).get_context_data(**kwargs)
 
@@ -211,7 +210,20 @@ class PatientContactCreate(FormView):
 
         return context
 
+    def form_invalid(self, form):
+        print(form.errors)
+        response = super(FormView, self).form_invalid(form)
+        print(type(response))
+        print(dir(response))
+        print(form.is_bound)
+        print(form._clean_fields)
+        print(form.cleaned_data)
+        # print(response.context_data['form'].errors)
+        # print(response.context_data['form'])
+        return response
+
     def form_valid(self, form):
+        print("we are here")
         pt = get_object_or_404(Patient, pk=self.kwargs['pt_id'])
         referral = get_object_or_404(Referral, pk=self.kwargs['referral_id'])
         followup_request = get_object_or_404(FollowupRequest, pk=self.kwargs['followup_id'])

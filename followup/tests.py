@@ -267,12 +267,11 @@ class TestReferralFollowupForms(TestCase):
         if noshow_reason:
             form_data['noshow_reason'] = self.noshow_reason
 
-        return forms.ReferralFollowup(data=form_data,
-                                      referral_location_qs=[self.referral_location])
+        return forms.ReferralFollowup(data=form_data)
 
     def test_hasapt_pt_noshow(self):
         '''
-        Test correct submission variations for a ReferralFollowup that has an
+        Test correct submission variations for a ReferralFollowup theat has an
         appointment.
         '''
 
