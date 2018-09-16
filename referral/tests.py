@@ -168,22 +168,6 @@ class TestPatientContactForm(TestCase):
                                              proper_submission))
             self.assertEqual(len(form.errors), expected_number_errors)
 
-        form = self.build_form(
-            contact_successful=True,
-            has_appointment="Yes",
-            apt_location=False,
-            noapt_reason=False,
-            noshow_reason=False,
-            pt_showed="No")
-
-        self.assertEqual(len(form.errors), 1)
-
-
-        # incorrect - no show reason is supplied
-
-        # incorrect - no appointment reason is supplied
-
-        # incorrect - no appointment location is selected
 
     def test_has_appointment_and_pt_no_show(self):
         """Verify that a provider is selected and a reason is provided for
@@ -368,14 +352,90 @@ class TestPatientContactForm(TestCase):
 
         self.assertEqual(len(form.errors), 2)
 
-def test_no_appointment(self):
-    # verify that there are no errors when a patient has not made an appointment
-    form = self.build_form(
-        contact_successful=True,
-        has_appointment="No",
-        apt_location=False,
-        noapt_reason=False,
-        noshow_reason=False,
-        pt_showed="No")
+    def test_no_appointment(self):
+        # first form contains a proper submission for the no appointment case
+        form = self.build_form(
+            contact_successful=True,
+            has_appointment="No",
+            apt_location=False,
+            noapt_reason=True,
+            noshow_reason=False,
+            pt_showed="No")
 
-    self.assertEqual(len(form.errors), 0)
+        self.assertEqual(len(form.errors), 0)
+
+        # Create variable that holds those conditions that shouldn't lead to errors
+        # apt_location = False
+        # noapt_reason = True
+        # noshow_reason = False
+        proper_submission = (False, True, False)
+
+        for form_field_provided in product([False, True], repeat=3):
+            form = self.build_form(
+                contact_successful=True,
+                has_appointment="No",
+                apt_location=form_field_provided[0],
+                noapt_reason=form_field_provided[1],
+                noshow_reason=form_field_provided[2],
+                pt_showed="No")
+
+            # Use an XOR to determine the number of differences between a
+            # proper submission and the current combination of form fields
+            expected_number_errors = sum(a ^ b for a, b in
+                                         zip(form_field_provided,
+                                             proper_submission))
+            self.assertEqual(len(form.errors), expected_number_errors)
+
+        # Verify that the behavior of the form is the same if user says that
+        # an appointment is "Not yet" made
+        for form_field_provided in product([False, True], repeat=3):
+            form = self.build_form(
+                contact_successful=True,
+                has_appointment="Not yet",
+                apt_location=form_field_provided[0],
+                noapt_reason=form_field_provided[1],
+                noshow_reason=form_field_provided[2],
+                pt_showed="No")
+
+            # Use an XOR to determine the number of differences between a
+            # proper submission and the current combination of form fields
+            expected_number_errors = sum(a ^ b for a, b in
+                                         zip(form_field_provided,
+                                             proper_submission))
+            self.assertEqual(len(form.errors), expected_number_errors)
+
+    def test_contact_unsuccessful(self):
+        # Create a generic form
+        contact_resolution = self.unsuccessful_res
+        form_data = {
+            'contact_method': self.contact_method,
+            'contact_status': contact_resolution,
+            'patient': self.pt,
+            'referral': self.referral,
+            'followupRequest': self.followupRequest
+        }
+
+        form = forms.PatientContactForm(data=form_data)
+        self.assertEqual(len(form.errors), 0)
+
+        # Progressively add errors to the form
+        # If contact was unsuccessful, all these fields should be blank
+        form_data['has_appointment'] = "Yes"
+        form = forms.PatientContactForm(data=form_data)
+        self.assertEqual(len(form.errors), 1)
+
+        form_data['pt_showed'] = "Yes"
+        form = forms.PatientContactForm(data=form_data)
+        self.assertEqual(len(form.errors), 2)
+
+        form_data['appointment_location'] = [ReferralLocation.objects.first().pk]
+        form = forms.PatientContactForm(data=form_data)
+        self.assertEqual(len(form.errors), 3)
+
+        form_data['no_apt_reason'] = self.noapt_reason
+        form = forms.PatientContactForm(data=form_data)
+        self.assertEqual(len(form.errors), 4)
+
+        form_data['no_show_reason'] = self.noshow_reason
+        form = forms.PatientContactForm(data=form_data)
+        self.assertEqual(len(form.errors), 5)
