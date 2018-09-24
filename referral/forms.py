@@ -102,6 +102,9 @@ class PatientContactForm(ModelForm):
         has_appointment = cleaned_data.get("has_appointment")
         contact_status = cleaned_data.get("contact_status")
 
+        if contact_status is None:
+            return
+
         patient_reached = contact_status.patient_reached
 
         if patient_reached:
@@ -112,7 +115,6 @@ class PatientContactForm(ModelForm):
                     self.add_error(
                         "pt_showed", "Please specify whether the patient has"
                         " gone to their appointment.")
-
 
         if patient_reached:
             if has_appointment == "Yes":

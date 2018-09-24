@@ -2,6 +2,7 @@ from django.test import TestCase
 from itertools import *
 
 from followup.models import ContactMethod, NoAptReason, NoShowReason, ContactResult
+from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from pttrack.models import (
     Gender, Patient, Provider, ProviderType,
@@ -439,3 +440,125 @@ class TestPatientContactForm(TestCase):
         form_data['no_show_reason'] = self.noshow_reason
         form = forms.PatientContactForm(data=form_data)
         self.assertEqual(len(form.errors), 5)
+
+class TestSelectReferralType(TestCase):
+    '''
+    Tests the select referral type page
+    '''
+    fixtures = ['pttrack']
+
+    def setUp(self):
+        from pttrack.test_views import log_in_provider, build_provider
+        log_in_provider(self.client, build_provider())
+
+        self.contact_method = ContactMethod.objects.create(
+            name="Carrier Pidgeon")
+
+        self.pt = Patient.objects.create(
+            first_name="Juggie",
+            last_name="Brodeltein",
+            middle_name="Bayer",
+            phone='+49 178 236 5288',
+            gender=Gender.objects.first(),
+            address='Schulstrasse 9',
+            city='Munich',
+            state='BA',
+            zip_code='63108',
+            pcp_preferred_zip='63018',
+            date_of_birth=datetime.date(1990, 01, 01),
+            patient_comfortable_with_english=False,
+            preferred_contact_method=self.contact_method,
+        )
+
+    def test_select_referral_type_urls(self):
+        '''
+        Verify that all the referral creation URLs are accessible.
+        '''
+        # Create two different referral types
+        reftype1 = ReferralType.objects.create(
+            name="Specialty", is_fqhc=False)
+        reftype2 = ReferralType.objects.create(
+            name="FQHC", is_fqhc=True)
+
+        # Check that select referral view
+        url = reverse("select-referral-type",
+                      args=(self.pt.id,))
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        self.assertContains(response, 'href="%s"' % reverse("new-referral",
+                            args=(self.pt.id, reftype1.slugify(),)))
+        self.assertContains(response, 'href="%s"' % reverse("new-referral",
+                            args=(self.pt.id, reftype2.slugify(),)))
+
+
+class TestCreateReferral(TestCase):
+    '''
+    Tests the create referral page
+    '''
+    fixtures = ['pttrack']
+
+    def setUp(self):
+        from pttrack.test_views import log_in_provider, build_provider
+        log_in_provider(self.client, build_provider())
+
+        self.contact_method = ContactMethod.objects.create(
+            name="Carrier Pidgeon")
+
+        self.pt = Patient.objects.create(
+            first_name="Juggie",
+            last_name="Brodeltein",
+            middle_name="Bayer",
+            phone='+49 178 236 5288',
+            gender=Gender.objects.first(),
+            address='Schulstrasse 9',
+            city='Munich',
+            state='BA',
+            zip_code='63108',
+            pcp_preferred_zip='63018',
+            date_of_birth=datetime.date(1990, 01, 01),
+            patient_comfortable_with_english=False,
+            preferred_contact_method=self.contact_method,
+        )
+
+    def test_location_list(self):
+        '''
+        Verifies that the location list corresponding
+        to a referral type are displayed
+        '''
+        # Create two different referral types
+        specialty = ReferralType.objects.create(
+            name="Specialty", is_fqhc=False)
+        fqhc = ReferralType.objects.create(
+            name="FQHC", is_fqhc=True)
+
+        coh = ReferralLocation.objects.create(
+            name='COH', address='Euclid Ave.')
+        podiatrist = ReferralLocation.objects.create(
+            name='Podiatry', address='Euclid Ave.')
+        fqhc1 = ReferralLocation.objects.create(
+            name='FQHC1', address='Euclid Ave.')
+        fqhc2 = ReferralLocation.objects.create(
+            name='FQHC2', address='Euclid Ave.')
+
+        coh.care_availiable.add(specialty)
+        podiatrist.care_availiable.add(specialty)
+        fqhc1.care_availiable.add(fqhc)
+        fqhc2.care_availiable.add(fqhc)
+
+        # Check if both FQHCs options are included if FQHC type is selected
+        url = reverse('new-referral',
+                      args=(self.pt.id, fqhc.slugify(),))
+        response = self.client.get(url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertContains(response, fqhc1.name)
+        self.assertContains(response, fqhc2.name)
+
+        # Check if both Specialty referral options are on specialty referral page
+        url = reverse('new-referral',
+                      args=(self.pt.id, specialty.slugify(),))
+        response = self.client.get(url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertContains(response, coh.name)
+        self.assertContains(response, podiatrist.name)

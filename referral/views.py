@@ -14,6 +14,7 @@ from .forms import FollowupRequestForm, ReferralForm, PatientContactForm, Referr
 
 def select_referral_type(request, pt_id):
     """Prompt the user to choose a referral type."""
+
     pt = get_object_or_404(Patient, pk=pt_id)
 
     extra_context = {
@@ -221,8 +222,6 @@ class PatientContactCreate(FormView):
         followup_request.save()
 
         patient_contact = form.save(commit=False)
-
-        # @Artur, should probably add something about referral being complete
 
         # Fill in remaining fields of form
         patient_contact.author = self.request.user.provider

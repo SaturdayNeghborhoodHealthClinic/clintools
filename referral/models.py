@@ -92,11 +92,15 @@ class PatientContact(Note):
 
     CONTACT_METHOD_HELP = "What was the method of contact?"
     contact_method = models.ForeignKey(ContactMethod,
-                                       verbose_name=CONTACT_METHOD_HELP)
+                                       verbose_name=CONTACT_METHOD_HELP,
+                                       null=False,
+                                       blank=False)
 
     CONTACT_STATUS_HELP = "Did you make contact with the patient about this referral?"
     contact_status = models.ForeignKey(ContactResult,
-                                       verbose_name=CONTACT_STATUS_HELP)
+                                       verbose_name=CONTACT_STATUS_HELP,
+                                       blank=False,
+                                       null=False)
 
     PTSHOW_OPTS = [("Yes", "Yes"),
                    ("No", "No"),
