@@ -42,8 +42,8 @@ class TestPatientContactForm(TestCase):
             patient_comfortable_with_english=False,
             preferred_contact_method=self.contact_method,
         )
+        
         # Create provider because referral requires a provider
-        #build_provider()
         casemanager = ProviderType.objects.create(
             long_name='Case Manager', short_name='CM',
             signs_charts=False, staff_view=True)
@@ -64,7 +64,6 @@ class TestPatientContactForm(TestCase):
 
         # Note location might not work
         self.referral = models.Referral.objects.create(
-            # location=[ReferralLocation.objects.first()],
             comments="Needs his back checked",
             status='P',
             kind=reftype,
@@ -562,3 +561,154 @@ class TestCreateReferral(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertContains(response, coh.name)
         self.assertContains(response, podiatrist.name)
+
+class TestSelectReferral(TestCase):
+
+    fixtures = ['pttrack']
+
+    def setUp(self):
+        from pttrack.test_views import log_in_provider, build_provider
+        log_in_provider(self.client, build_provider())
+
+        self.contact_method = ContactMethod.objects.create(
+            name="Carrier Pidgeon")
+
+        self.pt = Patient.objects.create(
+            first_name="Juggie",
+            last_name="Brodeltein",
+            middle_name="Bayer",
+            phone='+49 178 236 5288',
+            gender=Gender.objects.first(),
+            address='Schulstrasse 9',
+            city='Munich',
+            state='BA',
+            zip_code='63108',
+            pcp_preferred_zip='63018',
+            date_of_birth=datetime.date(1990, 01, 01),
+            patient_comfortable_with_english=False,
+            preferred_contact_method=self.contact_method,
+        )
+
+        self.reftype = ReferralType.objects.create(
+            name="Specialty", is_fqhc=False)
+        self.refloc = ReferralLocation.objects.create(
+            name='COH', address='Euclid Ave.')
+        self.refloc.care_availiable.add(self.reftype)
+
+
+    def test_referral_list(self):
+        '''
+        Creates referrals and verifies that only appropriate ones are available
+        in the select referral form
+        '''
+        # Create pending referral with follow up request
+        referral1 = models.Referral.objects.create(
+            comments="Needs his back checked",
+            status='P',
+            kind=self.reftype,
+            author=Provider.objects.first(),
+            author_type=ProviderType.objects.first(),
+            patient=self.pt
+        )
+        referral1.location.add(self.refloc)
+
+        followupRequest1 = models.FollowupRequest.objects.create(
+            referral=referral1,
+            contact_instructions="Call him",
+            due_date=datetime.date(2018, 11, 01),
+            author=Provider.objects.first(),
+            author_type=ProviderType.objects.first(),
+            patient=self.pt
+        )
+
+        # Create pending referral without a follow up request
+        reftype2 = ReferralType.objects.create(
+            name="FQHC", is_fqhc=True)
+        refloc2 = ReferralLocation.objects.create(
+            name='Family Health Center', address='Euclid Ave.')
+        refloc2.care_availiable.add(reftype2)
+        referral2 = models.Referral.objects.create(
+            comments="Needs his back checked",
+            status='P',
+            kind=reftype2,
+            author=Provider.objects.first(),
+            author_type=ProviderType.objects.first(),
+            patient=self.pt
+        )
+        referral2.location.add(refloc2)
+
+        # Create a referral for a different patient
+        pt2 = Patient.objects.create(
+            first_name="Arthur",
+            last_name="Miller",
+            middle_name="",
+            phone='+49 178 236 5288',
+            gender=Gender.objects.first(),
+            address='Schulstrasse 9',
+            city='Munich',
+            state='BA',
+            zip_code='63108',
+            pcp_preferred_zip='63018',
+            date_of_birth=datetime.date(1994, 01, 22),
+            patient_comfortable_with_english=False,
+            preferred_contact_method=self.contact_method,
+        )
+
+        reftype3 = ReferralType.objects.create(
+            name="Dentist", is_fqhc=False)
+        refloc3 = ReferralLocation.objects.create(
+            name='Family Dental', address='Euclid Ave.')
+        refloc3.care_availiable.add(reftype3)
+
+        referral3 = models.Referral.objects.create(
+            comments="Needs his back checked",
+            status='P',
+            kind=reftype3,
+            author=Provider.objects.first(),
+            author_type=ProviderType.objects.first(),
+            patient=pt2
+        )
+        referral3.location.add(refloc2)
+
+        followupRequest2 = models.FollowupRequest.objects.create(
+            referral=referral3,
+            contact_instructions="Call him",
+            due_date=datetime.date(2018, 11, 01),
+            author=Provider.objects.first(),
+            author_type=ProviderType.objects.first(),
+            patient=pt2
+        )
+
+        # Verify that there is only one referral available for the first patient
+        url = reverse('select-referral',
+                      args=(self.pt.id,))
+        response = self.client.get(url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertContains(response, referral1)
+        self.assertNotContains(response, referral2)
+        self.assertNotContains(response, referral3)
+
+        # Verify that the appropriate referral is available for the second patient
+        url = reverse('select-referral',
+                      args=(pt2.id,))
+        response = self.client.get(url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertNotContains(response, referral1)
+        self.assertNotContains(response, referral2)
+        self.assertContains(response, referral3)
+
+        # Change the first referral's status to successful
+        # No referrals should be available for patient 1
+        referral1.status = models.Referral.STATUS_SUCCESSFUL
+        referral1.save()
+
+        url = reverse('select-referral',
+                      args=(self.pt.id,))
+        response = self.client.get(url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertNotContains(response, referral1)
+        self.assertNotContains(response, referral2)
+        self.assertNotContains(response, referral3)
