@@ -1,7 +1,7 @@
 {% extends "pttrack/base.html" %}
 
 {% block title %}
-New patient contact
+New referral followup
 {% endblock %}
 
 {% block header %}
@@ -19,6 +19,7 @@ New patient contact
 {% endfor %}
 </p>
 <p class="lead">Followup requested for {{followup.due_date}}</p>
+<p class="lead"><i>A referral is considered successful once a patient has not only made an appointment but also shown up for this appointment. Please continue following up with patients until they have completed an appointment. If you have exhausted followups, you may save as an unsuccessful referral. </i></p>
 
 {% endblock %}
 

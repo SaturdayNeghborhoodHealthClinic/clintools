@@ -52,9 +52,12 @@ class ReferralCreate(FormView):
     def get_context_data(self, **kwargs):
         context = super(ReferralCreate, self).get_context_data(**kwargs)
 
-        # # Add referral type to context data
-        # if 'rtype' in self.kwargs:
-        #     context['rtype'] = self.kwargs['rtype']
+        # Add referral type to context data
+        if 'rtype' in self.kwargs:
+            rtype_slug = self.kwargs['rtype']
+            slugs = {referral_type.slugify(): referral_type for referral_type in ReferralType.objects.all()}
+            rtype = slugs[rtype_slug]
+            context['rtype'] = rtype
 
         # # Add patient to context data
         if 'pt_id' in self.kwargs:
@@ -73,8 +76,6 @@ class ReferralCreate(FormView):
         rtype = slugs[rtype_slug]
         referral.kind = get_object_or_404(ReferralType, name=rtype)
 
-        # referral.completion_date = None
-
         # boilerplate for Note
         referral.author = self.request.user.provider
         referral.author_type = get_object_or_404(
@@ -86,66 +87,6 @@ class ReferralCreate(FormView):
 
         return HttpResponseRedirect(reverse('new-followup-request',
                                             args=(pt.id, referral.id,)))
-
-# class SpecialtyReferralCreate(FormView):
-#     template_name = 'referral/new-specialty-referral.html'
-#     form_class = SpecialtyReferralForm
-
-#     def get_context_data(self, **kwargs):
-#         context = super(SpecialtyReferralCreate, self).get_context_data(**kwargs)
-
-#         # Add patient to context data
-#         if 'pt_id' in self.kwargs:
-#             context['patient'] = Patient.objects.get(pk=self.kwargs['pt_id'])
-#         return context
-
-#     def form_valid(self, form):
-#         """Set the patient, provider, and written timestamp, and status."""
-#         pt = get_object_or_404(Patient, pk=self.kwargs['pt_id'])
-#         referral = form.save(commit=False)
-
-#         referral.completion_date = None
-#         referral.author = self.request.user.provider
-#         referral.author_type = get_object_or_404(
-#             ProviderType, pk=self.request.session['clintype_pk'])
-#         referral.patient = pt
-#         referral.referral_status = ReferralStatus(name='P')
-
-#         referral.save()
-
-#         return HttpResponseRedirect(reverse('new-followup-request',
-#                                             args=(pt.id, referral.id,)))
-
-
-# class FQHCReferralCreate(FormView):
-#     template_name = 'referral/new-FQHC-referral.html'
-#     form_class = FQHCReferralForm
-
-#     def get_context_data(self, **kwargs):
-#         context = super(FQHCReferralCreate, self).get_context_data(**kwargs)
-
-#         # Add patient to context data
-#         if 'pt_id' in self.kwargs:
-#             context['patient'] = Patient.objects.get(pk=self.kwargs['pt_id'])
-#         return context
-
-#     def form_valid(self, form):
-#         """Set the patient, provider, and written timestamp, and status."""
-#         pt = get_object_or_404(Patient, pk=self.kwargs['pt_id'])
-#         referral = form.save(commit=False)
-
-#         referral.completion_date = None
-#         referral.author = self.request.user.provider
-#         referral.author_type = get_object_or_404(
-#             ProviderType, pk=self.request.session['clintype_pk'])
-#         referral.patient = pt
-#         referral.referral_status = ReferralStatus(name='P')
-
-#         referral.save()
-
-#         return HttpResponseRedirect(reverse('new-followup-request',
-#                                             args=(pt.id, referral.id,)))
-
 
 class FollowupRequestCreate(FormView):
     """An explanation of the class."""

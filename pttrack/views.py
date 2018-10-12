@@ -7,7 +7,7 @@ from django.views.generic.edit import FormView, UpdateView
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from referral.models import Referral, FollowupRequest
+from referral.models import Referral, FollowupRequest, PatientContact
 from django.db.models import Prefetch
 
 from . import models as mymodels
@@ -383,6 +383,10 @@ def patient_detail(request, pk):
     else:
         referral_status_output = "No referrals currently"
 
+    # Pass referral follow up set to page
+    referral_followups = PatientContact.objects.filter(patient=pt)
+    total_followups = referral_followups.count() + len(pt.followup_set())
+
     appointments = Appointment.objects.filter(patient=pt).order_by('clindate','clintime')
     # d = collections.OrderedDict()
     # for a in appointments:
@@ -421,6 +425,8 @@ def patient_detail(request, pk):
                   {'zipped_ai_list': zipped_ai_list,
                    'referral_status': referral_status_output,
                    'referrals': referrals,
+                   'referral_followups': referral_followups,
+                   'total_followups': total_followups,
                    'patient': pt,
                    'appointments_by_date': future_apt,
                    'zipped_apt_list': zipped_apt_list})
