@@ -46,54 +46,56 @@ class FollowupRequest(Note, CompletableMixin):
     def class_name(self):
         return self.__class__.__name__
 
+
 class PatientContact(Note):
 
     followupRequest = models.ForeignKey(FollowupRequest)
     referral = models.ForeignKey(Referral)
 
-    CONTACT_METHOD_HELP = "What was the method of contact?"
-    contact_method = models.ForeignKey(ContactMethod,
-                                       verbose_name=CONTACT_METHOD_HELP,
-                                       null=False,
-                                       blank=False)
+    contact_method = models.ForeignKey(
+        ContactMethod,
+        null=False,
+        blank=False,
+        help_text="What was the method of contact?")
 
-    CONTACT_STATUS_HELP = "Did you make contact with the patient about this referral?"
-    contact_status = models.ForeignKey(ContactResult,
-                                       verbose_name=CONTACT_STATUS_HELP,
-                                       blank=False,
-                                       null=False)
+    contact_status = models.ForeignKey(
+        ContactResult,
+        blank=False,
+        null=False,
+        help_text="Did you make contact with the patient about this referral?")
 
     PTSHOW_OPTS = [("Yes", "Yes"),
                    ("No", "No"),
                    ("Not yet", "Not yet")]
 
-    APPOINTMENT_HELP = "Did the patient make an appointment?"
-    has_appointment = models.CharField(APPOINTMENT_HELP, choices=PTSHOW_OPTS,
-                                       blank=True, max_length=7)
+    has_appointment = models.CharField(
+        choices=PTSHOW_OPTS,
+        blank=True, max_length=7,
+        help_text="Did the patient make an appointment?")
 
-    NOAPT_HELP = "If the patient didn't make an appointment, why not?"
-    no_apt_reason = models.ForeignKey(NoAptReason,
-                                      verbose_name=NOAPT_HELP,
-                                      blank=True,
-                                      null=True)
+    no_apt_reason = models.ForeignKey(
+        NoAptReason,
+        blank=True,
+        null=True,
+        "If the patient didn't make an appointment, why not?")
 
-    APPOINTMENT_LOCATION_HELP = "Where did the patient make an appointment?"
-    appointment_location = models.ManyToManyField(ReferralLocation,
-                                                  blank=True,
-                                                  verbose_name=APPOINTMENT_LOCATION_HELP)
+    appointment_location = models.ManyToManyField(
+        ReferralLocation,
+        blank=True,
+        help_text="Where did the patient make an appointment?")
 
-    PTSHOW_HELP = "Did the patient show up to the appointment?"
-    pt_showed = models.CharField(PTSHOW_HELP,
-                                 max_length=7,
-                                 choices=PTSHOW_OPTS,
-                                 blank=True,
-                                 null=True)
+    pt_showed = models.CharField(
+        max_length=7,
+        choices=PTSHOW_OPTS,
+        blank=True,
+        null=True,
+        help_text="Did the patient show up to the appointment?")
 
-    NOSHOW_HELP = "If the patient didn't go to the appointment, why not?"
-    no_show_reason = models.ForeignKey(NoShowReason,
-                                       verbose_name=NOSHOW_HELP,
-                                       blank=True,
-                                       null=True)
+    no_show_reason = models.ForeignKey(
+        NoShowReason,
+        blank=True,
+        null=True,
+        help_text="If the patient didn't go to the appointment, why not?")
 
     def short_text(self):
         '''Return a short text description of this followup and what happened.
