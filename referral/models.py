@@ -49,7 +49,7 @@ class FollowupRequest(Note, CompletableMixin):
 
 class PatientContact(Note):
 
-    followupRequest = models.ForeignKey(FollowupRequest)
+    followup_request = models.ForeignKey(FollowupRequest)
     referral = models.ForeignKey(Referral)
 
     contact_method = models.ForeignKey(
@@ -64,20 +64,23 @@ class PatientContact(Note):
         null=False,
         help_text="Did you make contact with the patient about this referral?")
 
-    PTSHOW_OPTS = [("Yes", "Yes"),
-                   ("No", "No"),
-                   ("Not yet", "Not yet")]
+    PTSHOW_YES = "Y"
+    PTSHOW_NO = "N"
+    PTSHOW_NOTYET = "?"
+    PTSHOW_OPTS = [(PTSHOW_YES, "Yes"),
+                   (PTSHOW_NO, "No"),
+                   (PTSHOW_NOTYET, "Not yet")]
 
     has_appointment = models.CharField(
         choices=PTSHOW_OPTS,
-        blank=True, max_length=7,
+        blank=True, max_length=1,
         help_text="Did the patient make an appointment?")
 
     no_apt_reason = models.ForeignKey(
         NoAptReason,
         blank=True,
         null=True,
-        "If the patient didn't make an appointment, why not?")
+        help_text="If the patient didn't make an appointment, why not?")
 
     appointment_location = models.ManyToManyField(
         ReferralLocation,
@@ -85,7 +88,7 @@ class PatientContact(Note):
         help_text="Where did the patient make an appointment?")
 
     pt_showed = models.CharField(
-        max_length=7,
+        max_length=1,
         choices=PTSHOW_OPTS,
         blank=True,
         null=True,
@@ -98,19 +101,23 @@ class PatientContact(Note):
         help_text="If the patient didn't go to the appointment, why not?")
 
     def short_text(self):
-        '''Return a short text description of this followup and what happened.
-        Used on the patient chart view as the text in the list of followups.'''
+        """Return a short text description of this followup and what happened.
+
+        Used on the patient chart view as the text in the list of followups.
+        """
 
         text = ""
         locations = " ,".join(map(str, self.appointment_location.all()))
-        if self.pt_showed == "Yes":
+        if self.pt_showed == self.PTSHOW_YES:
             text = "Patient went to appointment at " + locations + "."
         else:
-            if self.has_appointment == "Yes":
-                text = "Patient made appointment at " + locations + "but has not yet gone."
+            if self.has_appointment == self.PTSHOW_YES:
+                text = ("Patient made appointment at " + locations +
+                        "but has not yet gone.")
             else:
                 if self.contact_status.patient_reached:
-                    text = "Successfully contacted patient but the patient has not made an appointment yet."
+                    text = ("Successfully contacted patient but the "
+                            "patient has not made an appointment yet.")
                 else:
                     text = "Did not successfully contact patient"
         return text
