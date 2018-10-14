@@ -271,7 +271,7 @@ class TestReferralFollowupForms(TestCase):
 
     def test_hasapt_pt_noshow(self):
         '''
-        Test correct submission variations for a ReferralFollowup theat has an
+        Test correct submission variations for a ReferralFollowup that has an
         appointment.
         '''
 
