@@ -348,6 +348,9 @@ def patient_detail(request, pk):
     inactive_ais = []
     done_ais = []
 
+    # Add action items for apps that are turned on in Osler's base settings
+    # OSLER_TODO_LIST_MANAGERS contains app names like referral which contain
+    # tasks for clinical teams to carry out (e.g., followup with patient)
     for app, model in settings.OSLER_TODO_LIST_MANAGERS:
         ai = apps.get_model(app, model)
 
@@ -370,18 +373,18 @@ def patient_detail(request, pk):
     # but the second one was successful). In these cases, the last referral status
     # becomes the current status
     fqhc_referrals = Referral.objects.filter(patient=pt, kind__is_fqhc=True)
-    # If patient has FQHC referrals
-    referral_status_output = ""
-    if fqhc_referrals:
-        all_successful = all(referral.status == Referral.STATUS_SUCCESSFUL
-                             for referral in fqhc_referrals)
-        if all_successful:
-            referral_status_output = dict(Referral.REFERRAL_STATUSES)[Referral.STATUS_SUCCESSFUL]
-        else:
-            # Determine referral status based on the last FQHC referral
-            referral_status_output = dict(Referral.REFERRAL_STATUSES)[fqhc_referrals.last().status] 
-    else:
-        referral_status_output = "No referrals currently"
+    referral_status_output = Referral.aggregate_referral_status(fqhc_referrals)
+    # referral_status_output = ""
+    # if fqhc_referrals:
+    #     all_successful = all(referral.status == Referral.STATUS_SUCCESSFUL
+    #                          for referral in fqhc_referrals)
+    #     if all_successful:
+    #         referral_status_output = dict(Referral.REFERRAL_STATUSES)[Referral.STATUS_SUCCESSFUL]
+    #     else:
+    #         # Determine referral status based on the last FQHC referral
+    #         referral_status_output = dict(Referral.REFERRAL_STATUSES)[fqhc_referrals.last().status] 
+    # else:
+    #     referral_status_output = "No referrals currently"
 
     # Pass referral follow up set to page
     referral_followups = PatientContact.objects.filter(patient=pt)

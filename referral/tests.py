@@ -137,13 +137,13 @@ class TestPatientContactForm(TestCase):
         # correct: pt didn't show, noshow reason is supplied
         form = self.build_form(
             contact_successful=True,
-            has_appointment="Yes",
+            has_appointment=models.PatientContact.PTSHOW_YES,
             apt_location=True,
             noapt_reason=False,
             noshow_reason=False,
-            pt_showed="Yes")
+            pt_showed=models.PatientContact.PTSHOW_YES)
 
-        # Might want to assert a specific error
+        # No errors expected in this case
         self.assertEqual(len(form.errors), 0)
 
         # Create variable that holds those conditions that shouldn't lead to errors
@@ -155,11 +155,11 @@ class TestPatientContactForm(TestCase):
         for form_field_provided in product([False, True], repeat=3):
             form = self.build_form(
                 contact_successful=True,
-                has_appointment="Yes",
+                has_appointment=models.PatientContact.PTSHOW_YES,
                 apt_location=form_field_provided[0],
                 noapt_reason=form_field_provided[1],
                 noshow_reason=form_field_provided[2],
-                pt_showed="Yes")
+                pt_showed=models.PatientContact.PTSHOW_YES)
 
             # Use an XOR to determine the number of differences between a
             # proper submission and the current combination of form fields
@@ -176,88 +176,88 @@ class TestPatientContactForm(TestCase):
         """
         form = self.build_form(
             contact_successful=True,
-            has_appointment="Yes",
+            has_appointment=models.PatientContact.PTSHOW_YES,
             apt_location=True,
             noapt_reason=False,
             noshow_reason=True,
-            pt_showed="No")
+            pt_showed=models.PatientContact.PTSHOW_NO)
 
         self.assertEqual(len(form.errors), 0)
 
         # incorrect - no show reason is not supplied
         form = self.build_form(
             contact_successful=True,
-            has_appointment="Yes",
+            has_appointment=models.PatientContact.PTSHOW_YES,
             apt_location=True,
             noapt_reason=False,
             noshow_reason=False,
-            pt_showed="No")
+            pt_showed=models.PatientContact.PTSHOW_NO)
 
         self.assertEqual(len(form.errors), 1)
 
         # incorrect - both apt location and no apt reason are supplied
         form = self.build_form(
             contact_successful=True,
-            has_appointment="Yes",
+            has_appointment=models.PatientContact.PTSHOW_YES,
             apt_location=True,
             noapt_reason=True,
             noshow_reason=False,
-            pt_showed="No")
+            pt_showed=models.PatientContact.PTSHOW_NO)
 
         self.assertEqual(len(form.errors), 2)
 
         # incorrect - no appointment reason is supplied
         form = self.build_form(
             contact_successful=True,
-            has_appointment="Yes",
+            has_appointment=models.PatientContact.PTSHOW_YES,
             apt_location=True,
             noapt_reason=True,
             noshow_reason=True,
-            pt_showed="No")
+            pt_showed=models.PatientContact.PTSHOW_NO)
 
         self.assertEqual(len(form.errors), 1)
 
         # incorrect - appointment location is not selected
         form = self.build_form(
             contact_successful=True,
-            has_appointment="Yes",
+            has_appointment=models.PatientContact.PTSHOW_YES,
             apt_location=False,
             noapt_reason=False,
             noshow_reason=True,
-            pt_showed="No")
+            pt_showed=models.PatientContact.PTSHOW_NO)
 
         self.assertEqual(len(form.errors), 1)
 
         # incorrect - no show reason is not supplied, no apt location supplied
         form = self.build_form(
             contact_successful=True,
-            has_appointment="Yes",
+            has_appointment=models.PatientContact.PTSHOW_YES,
             apt_location=False,
             noapt_reason=False,
             noshow_reason=False,
-            pt_showed="No")
+            pt_showed=models.PatientContact.PTSHOW_NO)
 
         self.assertEqual(len(form.errors), 2)
 
         # incorrect - no apt location and no apt reason is supplied
         form = self.build_form(
             contact_successful=True,
-            has_appointment="Yes",
+            has_appointment=models.PatientContact.PTSHOW_YES,
             apt_location=False,
             noapt_reason=True,
             noshow_reason=True,
-            pt_showed="No")
+            pt_showed=models.PatientContact.PTSHOW_NO)
 
         self.assertEqual(len(form.errors), 2)
 
         # incorrect - no show reason is not supplied
         form = self.build_form(
             contact_successful=True,
-            has_appointment="Yes",
+            has_appointment=models.PatientContact.PTSHOW_YES,
             apt_location=False,
             noapt_reason=True,
             noshow_reason=False,
-            pt_showed="No")
+            pt_showed=models.PatientContact.PTSHOW_NO)
 
         self.assertEqual(len(form.errors), 3)
 
@@ -266,11 +266,11 @@ class TestPatientContactForm(TestCase):
         # correct - patient has not yet shown to clinic
         form = self.build_form(
             contact_successful=True,
-            has_appointment="Yes",
+            has_appointment=models.PatientContact.PTSHOW_YES,
             apt_location=True,
             noapt_reason=False,
             noshow_reason=False,
-            pt_showed="Not yet")
+            pt_showed=models.PatientContact.PTSHOW_NOTYET)
 
         self.assertEqual(len(form.errors), 0)
 
@@ -278,77 +278,77 @@ class TestPatientContactForm(TestCase):
         # no show reason is provided
         form = self.build_form(
             contact_successful=True,
-            has_appointment="Yes",
+            has_appointment=models.PatientContact.PTSHOW_YES,
             apt_location=True,
             noapt_reason=False,
             noshow_reason=True,
-            pt_showed="Not yet")
+            pt_showed=models.PatientContact.PTSHOW_NOTYET)
 
         self.assertEqual(len(form.errors), 1)
 
         # incorrect - no appointment reason is supplied with 'Not yet'
         form = self.build_form(
             contact_successful=True,
-            has_appointment="Yes",
+            has_appointment=models.PatientContact.PTSHOW_YES,
             apt_location=True,
             noapt_reason=True,
             noshow_reason=False,
-            pt_showed="Not yet")
+            pt_showed=models.PatientContact.PTSHOW_NOTYET)
 
         self.assertEqual(len(form.errors), 1)
 
         # incorrect - no appointment reason and no show reason is supplied
         form = self.build_form(
             contact_successful=True,
-            has_appointment="Yes",
+            has_appointment=models.PatientContact.PTSHOW_YES,
             apt_location=True,
             noapt_reason=True,
             noshow_reason=True,
-            pt_showed="Not yet")
+            pt_showed=models.PatientContact.PTSHOW_NOTYET)
 
         self.assertEqual(len(form.errors), 2)
 
         # incorrect - no apt location and no apt reason supplied
         form = self.build_form(
             contact_successful=True,
-            has_appointment="Yes",
+            has_appointment=models.PatientContact.PTSHOW_YES,
             apt_location=False,
             noapt_reason=True,
             noshow_reason=False,
-            pt_showed="Not yet")
+            pt_showed=models.PatientContact.PTSHOW_NOTYET)
 
         self.assertEqual(len(form.errors), 2)
 
         # incorrect - apt location not supplied, no apt reason supplied, no show reason supplied
         form = self.build_form(
             contact_successful=True,
-            has_appointment="Yes",
+            has_appointment=models.PatientContact.PTSHOW_YES,
             apt_location=False,
             noapt_reason=True,
             noshow_reason=True,
-            pt_showed="Not yet")
+            pt_showed=models.PatientContact.PTSHOW_NOTYET)
 
         self.assertEqual(len(form.errors), 3)
 
         # incorrect - no apt location supplied
         form = self.build_form(
             contact_successful=True,
-            has_appointment="Yes",
+            has_appointment=models.PatientContact.PTSHOW_YES,
             apt_location=False,
             noapt_reason=False,
             noshow_reason=False,
-            pt_showed="Not yet")
+            pt_showed=models.PatientContact.PTSHOW_NOTYET)
 
         self.assertEqual(len(form.errors), 1)
 
         # incorrect - no apt location supplied and no show reason supplied
         form = self.build_form(
             contact_successful=True,
-            has_appointment="Yes",
+            has_appointment=models.PatientContact.PTSHOW_YES,
             apt_location=False,
             noapt_reason=False,
             noshow_reason=True,
-            pt_showed="Not yet")
+            pt_showed=models.PatientContact.PTSHOW_NOTYET)
 
         self.assertEqual(len(form.errors), 2)
 
@@ -356,11 +356,11 @@ class TestPatientContactForm(TestCase):
         # first form contains a proper submission for the no appointment case
         form = self.build_form(
             contact_successful=True,
-            has_appointment="No",
+            has_appointment=models.PatientContact.PTSHOW_NO,
             apt_location=False,
             noapt_reason=True,
             noshow_reason=False,
-            pt_showed="No")
+            pt_showed=models.PatientContact.PTSHOW_NO)
 
         self.assertEqual(len(form.errors), 0)
 
@@ -373,11 +373,11 @@ class TestPatientContactForm(TestCase):
         for form_field_provided in product([False, True], repeat=3):
             form = self.build_form(
                 contact_successful=True,
-                has_appointment="No",
+                has_appointment=models.PatientContact.PTSHOW_NO,
                 apt_location=form_field_provided[0],
                 noapt_reason=form_field_provided[1],
                 noshow_reason=form_field_provided[2],
-                pt_showed="No")
+                pt_showed=models.PatientContact.PTSHOW_NO)
 
             # Use an XOR to determine the number of differences between a
             # proper submission and the current combination of form fields
@@ -391,11 +391,11 @@ class TestPatientContactForm(TestCase):
         for form_field_provided in product([False, True], repeat=3):
             form = self.build_form(
                 contact_successful=True,
-                has_appointment="Not yet",
+                has_appointment=models.PatientContact.PTSHOW_NOTYET,
                 apt_location=form_field_provided[0],
                 noapt_reason=form_field_provided[1],
                 noshow_reason=form_field_provided[2],
-                pt_showed="No")
+                pt_showed=models.PatientContact.PTSHOW_NO)
 
             # Use an XOR to determine the number of differences between a
             # proper submission and the current combination of form fields
@@ -420,11 +420,11 @@ class TestPatientContactForm(TestCase):
 
         # Progressively add errors to the form
         # If contact was unsuccessful, all these fields should be blank
-        form_data['has_appointment'] = "Yes"
+        form_data['has_appointment'] = models.PatientContact.PTSHOW_YES
         form = forms.PatientContactForm(data=form_data)
         self.assertEqual(len(form.errors), 1)
 
-        form_data['pt_showed'] = "Yes"
+        form_data['pt_showed'] = models.PatientContact.PTSHOW_YES
         form = forms.PatientContactForm(data=form_data)
         self.assertEqual(len(form.errors), 2)
 

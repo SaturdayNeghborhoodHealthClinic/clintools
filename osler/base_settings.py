@@ -100,6 +100,7 @@ INTERNAL_IPS = ('127.0.0.1',) # used for debug toolbar
 OSLER_MAX_SYSTOLIC = 400
 OSLER_MIN_DIASTOLIC = 40
 
+# Specifies which apps are displayed under action items on patient detail page
 OSLER_TODO_LIST_MANAGERS = [
     ('pttrack', 'ActionItem'),
     ('referral', 'FollowupRequest')]

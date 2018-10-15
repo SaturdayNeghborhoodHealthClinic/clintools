@@ -35,6 +35,21 @@ class Referral(Note):
         formatted_date = self.written_datetime.strftime("%D")
         return "%s referral on %s" % (self.kind, formatted_date)
 
+    @staticmethod
+    def aggregate_referral_status(referrals):
+        referral_status_output = ""
+        if referrals:
+            all_successful = all(referral.status == Referral.STATUS_SUCCESSFUL
+                                 for referral in referrals)
+            if all_successful:
+                referral_status_output = dict(Referral.REFERRAL_STATUSES)[Referral.STATUS_SUCCESSFUL]
+            else:
+                # Determine referral status based on the last FQHC referral
+                referral_status_output = dict(Referral.REFERRAL_STATUSES)[referrals.last().status] 
+        else:
+            referral_status_output = "No referrals currently"
+
+        return referral_status_output
 
 class FollowupRequest(Note, CompletableMixin):
 
@@ -74,12 +89,14 @@ class PatientContact(Note):
     has_appointment = models.CharField(
         choices=PTSHOW_OPTS,
         blank=True, max_length=1,
+        verbose_name="Appointment scheduled?",
         help_text="Did the patient make an appointment?")
 
     no_apt_reason = models.ForeignKey(
         NoAptReason,
         blank=True,
         null=True,
+        verbose_name="No appointment reason",
         help_text="If the patient didn't make an appointment, why not?")
 
     appointment_location = models.ManyToManyField(
@@ -92,6 +109,7 @@ class PatientContact(Note):
         choices=PTSHOW_OPTS,
         blank=True,
         null=True,
+        verbose_name="Appointment attended?",
         help_text="Did the patient show up to the appointment?")
 
     no_show_reason = models.ForeignKey(

@@ -10,9 +10,7 @@ from bootstrap3_datetime.widgets import DateTimePicker
 class ReferralForm(ModelForm):
     class Meta:
         model = models.Referral
-        exclude = ['patient', 'author',
-                   'author_type', 'written_datetime',
-                   'last_modified', 'status', 'kind']
+        fields = ['location', 'comments']
 
     def __init__(self, referral_location_qs, *args, **kwargs):
         super(ReferralForm, self).__init__(*args, **kwargs)
@@ -24,10 +22,7 @@ class ReferralForm(ModelForm):
 class FollowupRequestForm(ModelForm):
     class Meta:
         model = models.FollowupRequest
-        exclude = ['patient', 'author',
-                   'author_type', 'written_datetime',
-                   'last_modified', 'completion_date',
-                   'completion_author', 'referral']
+        fields = ['due_date', 'contact_instructions']
         widgets = {'due_date': DateTimePicker(options={"format": "YYYY-MM-DD",
                                                        "pickTime": False})}
 
@@ -37,10 +32,17 @@ class FollowupRequestForm(ModelForm):
         self.helper.add_input(Submit('submit', 'Submit'))
 
 class PatientContactForm(ModelForm):
+
+    SUCCESSFUL_REFERRAL = 'successful-referral'
+    REQUEST_FOLLOWUP = 'request-new-followup'
+    UNSUCCESSFUL_REFERRAL = 'give-up'
+
     class Meta:
         model = models.PatientContact
-        exclude = ['referral', 'followupRequest', 'patient',
-                   'author', 'author_type']
+        fields = ['contact_method', 'contact_status',
+                  'has_appointment', 'no_apt_reason',
+                  'appointment_location', 'pt_showed',
+                  'no_show_reason']
         widgets = {
             'appointment_location': forms.CheckboxSelectMultiple()
         }
@@ -52,16 +54,15 @@ class PatientContactForm(ModelForm):
             self.fields['appointment_location'].queryset = referral_location_qs
 
         self.helper = FormHelper(self)
-        self.helper.form_show_errors = True
         self.helper.form_class = 'form-horizontal'
         self.helper.label_class = 'col-lg-2'
         self.helper.field_class = 'col-lg-8'
 
-        self.helper.add_input(Submit('successful-referral',
+        self.helper.add_input(Submit(self.SUCCESSFUL_REFERRAL,
                                      'Save successful referral'))
-        self.helper.add_input(Submit('request-new-followup',
+        self.helper.add_input(Submit(self.REQUEST_FOLLOWUP,
                                      'Save and request new followup'))
-        self.helper.add_input(Submit('give-up',
+        self.helper.add_input(Submit(self.UNSUCCESSFUL_REFERRAL,
                                      'Save unsuccessful referral'))
 
     def clean(self):
@@ -74,22 +75,16 @@ class PatientContactForm(ModelForm):
         has_appointment = cleaned_data.get("has_appointment")
         contact_status = cleaned_data.get("contact_status")
 
+        # If the user has not provided a contact status, break out to trigger
+        # only the first two incompletion errors (first two fields -- has
+        # appointment and contact status are required)
         if contact_status is None:
             return
 
         patient_reached = contact_status.patient_reached
 
         if patient_reached:
-            if has_appointment == "Yes":
-                # Require user to specify if patient showed up for appointment
-                # if that patient made an appointment
-                if not cleaned_data.get("pt_showed"):
-                    self.add_error(
-                        "pt_showed", "Please specify whether the patient has"
-                        " gone to their appointment.")
-
-        if patient_reached:
-            if has_appointment == "Yes":
+            if has_appointment == models.PatientContact.PTSHOW_YES:
                 # Require user to specify if patient showed up for appointment
                 # if that patient made an appointment
                 if not cleaned_data.get("pt_showed"):
@@ -109,12 +104,12 @@ class PatientContactForm(ModelForm):
                         "appointment reason should not be given")
 
                 pt_went = cleaned_data.get("pt_showed")
-                if pt_went == "No":
+                if pt_went == models.PatientContact.PTSHOW_NO:
                     if not cleaned_data.get("no_show_reason"):
                         self.add_error(
                             "no_show_reason", "Why didn't the patient go "
                             "to the appointment?")
-                elif pt_went == "Yes":
+                elif pt_went == models.PatientContact.PTSHOW_YES:
                     if cleaned_data.get('no_show_reason'):
                         self.add_error(
                             "no_show_reason",
@@ -128,7 +123,8 @@ class PatientContactForm(ModelForm):
                             "If the patient has not yet shown up, a no show "
                             "reason should not be given.")
 
-            elif has_appointment == "No" or has_appointment == "Not yet":
+            elif (has_appointment == models.PatientContact.PTSHOW_NO or
+                  has_appointment == models.PatientContact.PTSHOW_NOTYET):
                 # Require user to specify why the patient did not make
                 # an appointment
                 if not cleaned_data.get("no_apt_reason"):
@@ -141,6 +137,12 @@ class PatientContactForm(ModelForm):
                         "appointment_location", "Cannot speicfy "
                         "a location if patient has not made appointment.")
 
+                pt_went = cleaned_data.get("pt_showed")
+                if pt_went == models.PatientContact.PTSHOW_YES:
+                    self.add_error(
+                        "pt_showed", "Patient could not have "
+                        "attended appointment without scheduling one.")
+
                 if cleaned_data.get("no_show_reason"):
                     self.add_error(
                         "no_show_reason", "Cannot specify no show "
@@ -152,6 +154,7 @@ class PatientContactForm(ModelForm):
                         "has_appointment", "Need to specify if patient " +
                         "has appointment")
 
+        # if patient has not been reached
         else:
             # If user did not make contact with the patient all other
             # parts of the form should be left blank
@@ -172,8 +175,8 @@ class PatientContactForm(ModelForm):
         # Each submission button has specific rules for which fields can be selected
         # For example, for a referral to be successful, the pt_went must be true
         pt_went = cleaned_data.get("pt_showed")
-        if 'successful-referral' in self.data:
-            if pt_went != "Yes":
+        if self.SUCCESSFUL_REFERRAL in self.data:
+            if pt_went != models.PatientContact.PTSHOW_YES:
                 self.add_error(
                     "pt_showed", "Cannot submit a successful " +
                     "referral if the patient did not show up for" +
@@ -181,25 +184,28 @@ class PatientContactForm(ModelForm):
 
         # Verify that give up is only selected if the patient has not
         # completed a referral
-        if 'give-up' in self.data:
-            if pt_went == "Yes":
+        if self.REQUEST_FOLLOWUP in self.data:
+            if pt_went == models.PatientContact.PTSHOW_YES:
                 self.add_error(
                     "pt_showed", "Cannot give up on a " +
                     "successful referral")
 
         # Verify that give up is only selected if the patient has not
         # completed a referral
-        if 'request-new-followup' in self.data:
-            if pt_went == "Yes":
+        if self.UNSUCCESSFUL_REFERRAL in self.data:
+            if pt_went == models.PatientContact.PTSHOW_YES:
                 self.add_error(
                     "pt_showed", "Cannot request a new referral " +
                     "follow up on a successful referral")
 
 
 class ReferralSelectForm(forms.Form):
-    referrals = forms.ModelChoiceField(queryset=models.Referral.objects.all())
+    referrals = forms.ModelChoiceField(queryset=None)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, pt_id, *args, **kwargs):
         super(ReferralSelectForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.fields['referrals'].queryset = models.Referral.objects.filter(patient_id=pt_id,
+                                                                           status=models.Referral.STATUS_PENDING,
+                                                                           followuprequest__in=models.FollowupRequest.objects.all())
         self.helper.add_input(Submit('submit', 'Submit'))

@@ -170,32 +170,29 @@ class PatientContactCreate(FormView):
             ProviderType, pk=self.request.session['clintype_pk'])
         patient_contact.referral = referral
         patient_contact.patient = pt
-        patient_contact.followupRequest = followup_request
+        patient_contact.followup_request = followup_request
         patient_contact.save()
         form.save_m2m()
 
         # Redirect to appropriate page and update referral status
-        if 'successful-referral' in self.request.POST:
-            # Update referral status to be successful
+        if PatientContactForm.SUCCESSFUL_REFERRAL in self.request.POST:
             referral.status = Referral.STATUS_SUCCESSFUL
             referral.save()
             return HttpResponseRedirect(reverse('patient-detail', args=(pt.id,)))
 
-        elif 'request-new-followup' in self.request.POST:
-            # Referral status should be pending already if user behaves as expected
+        elif PatientContactForm.REQUEST_FOLLOWUP in self.request.POST:
             referral.status = Referral.STATUS_PENDING
             referral.save()
             return HttpResponseRedirect(reverse('new-followup-request',
                                                 args=(pt.id, referral.id,)))
-        elif 'give-up' in self.request.POST:
-            # Add logic here (make referral status be successful)
+        elif PatientContactForm.UNSUCCESSFUL_REFERRAL in self.request.POST:
             referral.status = Referral.STATUS_UNSUCCESSFUL
             referral.save()
             return HttpResponseRedirect(reverse('patient-detail', args=(pt.id,)))
 
 def select_referral(request, pt_id):
     if request.method == 'POST':
-        form = ReferralSelectForm(request.POST)
+        form = ReferralSelectForm(pt_id, request.POST)
         if form.is_valid():
             # Get referral ID from form
             referral = form.cleaned_data['referrals']
@@ -207,9 +204,9 @@ def select_referral(request, pt_id):
                                                 args=(pt_id, referral.id,
                                                       followup_request.id)))
     else:
-        form = ReferralSelectForm()
+        form = ReferralSelectForm(pt_id)
         # Select active referrals
-        form.fields['referrals'].queryset = Referral.objects.filter(patient_id=pt_id,
-                                                                    status=Referral.STATUS_PENDING,
-                                                                    followuprequest__in=FollowupRequest.objects.all())
+        # form.fields['referrals'].queryset = Referral.objects.filter(patient_id=pt_id,
+        #                                                             status=Referral.STATUS_PENDING,
+        #                                                             followuprequest__in=FollowupRequest.objects.all())
         return render(request, 'referral/select-referral.html', {'form': form})
