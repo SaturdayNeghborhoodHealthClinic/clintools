@@ -61,7 +61,7 @@ class PatientContactForm(ModelForm):
         self.helper.add_input(Submit(self.SUCCESSFUL_REFERRAL,
                                      'Save successful referral'))
         self.helper.add_input(Submit(self.REQUEST_FOLLOWUP,
-                                     'Save and request new followup'))
+                                     'Save unsuccessful referral and request followup'))
         self.helper.add_input(Submit(self.UNSUCCESSFUL_REFERRAL,
                                      'Save unsuccessful referral'))
 

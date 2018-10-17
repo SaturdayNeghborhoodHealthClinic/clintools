@@ -33,6 +33,7 @@ class Referral(Note):
 
     def __unicode__(self):
         formatted_date = self.written_datetime.strftime("%D")
+        # Create different message for FQHC and non-FQHC referrals
         return "%s referral on %s" % (self.kind, formatted_date)
 
     @staticmethod

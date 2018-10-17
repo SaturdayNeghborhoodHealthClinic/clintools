@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 
 from simple_history.models import HistoricalRecords
 from . import validators
+from itertools import chain
 
 # pylint: disable=I0011,missing-docstring,E1305
 
@@ -280,7 +281,11 @@ class Patient(Person):
         # Here, we only hit the db once by asking the db for all action items
         # for a patient, then sorting them in memory.
 
+        # Combine action items with referral followup requests for status
         patient_action_items = self.actionitem_set.all()
+        referral_followup_requests = self.followuprequest_set.all() 
+        patient_action_items = list(chain(patient_action_items,
+                                          referral_followup_requests))
 
         done = [ai for ai in patient_action_items if ai.completion_author is not None]
         overdue = [ai for ai in patient_action_items if ai.completion_author is None and ai.due_date <= now().date()]

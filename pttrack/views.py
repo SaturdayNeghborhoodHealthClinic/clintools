@@ -358,6 +358,11 @@ def patient_detail(request, pk):
         inactive_ais.extend(ai.objects.get_inactive(patient=pt))
         done_ais.extend(ai.objects.get_completed(patient=pt))
 
+    # Calculate the total number of action items for this patient,
+    # This total includes all apps that that have associated
+    # tasks requiring clinical followup (e.g., referral followup request)
+    total_ais = len(active_ais) + len(inactive_ais) + len(done_ais)
+
     zipped_ai_list = zip(['collapse5', 'collapse6', 'collapse7'],
                          [active_ais, inactive_ais, done_ais],
                          ['Active Action Items', 'Pending Action Items', 'Completed Action Items'],
@@ -374,17 +379,6 @@ def patient_detail(request, pk):
     # becomes the current status
     fqhc_referrals = Referral.objects.filter(patient=pt, kind__is_fqhc=True)
     referral_status_output = Referral.aggregate_referral_status(fqhc_referrals)
-    # referral_status_output = ""
-    # if fqhc_referrals:
-    #     all_successful = all(referral.status == Referral.STATUS_SUCCESSFUL
-    #                          for referral in fqhc_referrals)
-    #     if all_successful:
-    #         referral_status_output = dict(Referral.REFERRAL_STATUSES)[Referral.STATUS_SUCCESSFUL]
-    #     else:
-    #         # Determine referral status based on the last FQHC referral
-    #         referral_status_output = dict(Referral.REFERRAL_STATUSES)[fqhc_referrals.last().status] 
-    # else:
-    #     referral_status_output = "No referrals currently"
 
     # Pass referral follow up set to page
     referral_followups = PatientContact.objects.filter(patient=pt)
@@ -426,6 +420,7 @@ def patient_detail(request, pk):
     return render(request,
                   'pttrack/patient_detail.html',
                   {'zipped_ai_list': zipped_ai_list,
+                   'total_ais': total_ais,
                    'referral_status': referral_status_output,
                    'referrals': referrals,
                    'referral_followups': referral_followups,
