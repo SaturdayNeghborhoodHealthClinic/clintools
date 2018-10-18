@@ -205,7 +205,8 @@ class ReferralSelectForm(forms.Form):
     def __init__(self, pt_id, *args, **kwargs):
         super(ReferralSelectForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.fields['referrals'].queryset = models.Referral.objects.filter(patient_id=pt_id,
-                                                                           status=models.Referral.STATUS_PENDING,
-                                                                           followuprequest__in=models.FollowupRequest.objects.all())
+        self.fields['referrals'].queryset = models.Referral.objects.filter(
+            patient_id=pt_id,
+            status=models.Referral.STATUS_PENDING,
+            followuprequest__in=models.FollowupRequest.objects.all())
         self.helper.add_input(Submit('submit', 'Submit'))

@@ -3,26 +3,28 @@ from itertools import *
 
 from followup.models import ContactMethod, NoAptReason, NoShowReason, ContactResult
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
+from django.utils.timezone import now
 from pttrack.models import (
     Gender, Patient, Provider, ProviderType,
     ReferralType, ReferralLocation, Note, ContactMethod, CompletableMixin,
     CompleteableManager)
-#from pttrack.test_views import build_provider
 import datetime
 from . import forms
 from . import models
 from . import urls
 
-# Create your tests here.
 class TestPatientContactForm(TestCase):
-    '''
+    """
     Tests the beahvior of the PatientContactForm which has a lot of
     complicated logic around valid form submission
-    '''
+    """
+
+    fixtures = ['pttrack']
 
     def setUp(self):
-        ''' Provides the same context in all the tests '''
+        """ Provides the same context in all the tests """
+        from pttrack.test_views import log_in_provider, build_provider
+        log_in_provider(self.client, build_provider())
 
         self.contact_method = ContactMethod.objects.create(
             name="Carrier Pidgeon")
@@ -31,8 +33,7 @@ class TestPatientContactForm(TestCase):
             last_name="Brodeltein",
             middle_name="Bayer",
             phone='+49 178 236 5288',
-            gender=Gender.objects.create(long_name="Male",
-                                         short_name="M"),
+            gender=Gender.objects.first(),
             address='Schulstrasse 9',
             city='Munich',
             state='BA',
@@ -42,19 +43,6 @@ class TestPatientContactForm(TestCase):
             patient_comfortable_with_english=False,
             preferred_contact_method=self.contact_method,
         )
-        
-        # Create provider because referral requires a provider
-        casemanager = ProviderType.objects.create(
-            long_name='Case Manager', short_name='CM',
-            signs_charts=False, staff_view=True)
-
-        user = User.objects.create_user(
-            "username",
-            "a@wustl.edu", "password")
-        g = Gender.objects.first()
-        prov = Provider.objects.create(
-            first_name="Tommy", middle_name="Lee", last_name="Jones",
-            phone="425-243-9115", gender=g, associated_user=user)
 
         reftype = ReferralType.objects.create(
             name="Specialty", is_fqhc=False)
@@ -62,10 +50,9 @@ class TestPatientContactForm(TestCase):
             name='COH', address='Euclid Ave.')
         refloc.care_availiable.add(reftype)
 
-        # Note location might not work
         self.referral = models.Referral.objects.create(
             comments="Needs his back checked",
-            status='P',
+            status=models.Referral.STATUS_PENDING,
             kind=reftype,
             author=Provider.objects.first(),
             author_type=ProviderType.objects.first(),
@@ -73,10 +60,7 @@ class TestPatientContactForm(TestCase):
         )
         self.referral.location.add(refloc)
 
-        # self.location = self.referral.location.create(name="COH", address="Euclid Ave")
-        # self.location.save()
-
-        self.followupRequest = models.FollowupRequest.objects.create(
+        self.followup_request = models.FollowupRequest.objects.create(
             referral=self.referral,
             contact_instructions="Call him",
             due_date=datetime.date(2018, 9, 01),
@@ -109,10 +93,7 @@ class TestPatientContactForm(TestCase):
 
         form_data = {
             'contact_method': self.contact_method,
-            'contact_status': contact_resolution,
-            'patient': self.pt,
-            'referral': self.referral,
-            'followupRequest': self.followupRequest
+            'contact_status': contact_resolution
         }
 
         form_data['has_appointment'] = has_appointment
@@ -131,7 +112,7 @@ class TestPatientContactForm(TestCase):
 
     def test_has_appointment_and_pt_showed(self):
         """Verify that a provider is selected and no show and no appointment
-        reasons are not selected. There are 16 cases tested here. 
+        reasons are not selected. There are 16 cases tested here.
         Patient showed selection can be either 'No' or 'Not yet'
         """
         # correct: pt didn't show, noshow reason is supplied
@@ -409,10 +390,7 @@ class TestPatientContactForm(TestCase):
         contact_resolution = self.unsuccessful_res
         form_data = {
             'contact_method': self.contact_method,
-            'contact_status': contact_resolution,
-            'patient': self.pt,
-            'referral': self.referral,
-            'followupRequest': self.followupRequest
+            'contact_status': contact_resolution
         }
 
         form = forms.PatientContactForm(data=form_data)
@@ -441,9 +419,9 @@ class TestPatientContactForm(TestCase):
         self.assertEqual(len(form.errors), 5)
 
 class TestSelectReferralType(TestCase):
-    '''
-    Tests the select referral type page
-    '''
+    """Tests the select referral type page
+    """
+
     fixtures = ['pttrack']
 
     def setUp(self):
@@ -604,7 +582,7 @@ class TestSelectReferral(TestCase):
         # Create pending referral with follow up request
         referral1 = models.Referral.objects.create(
             comments="Needs his back checked",
-            status='P',
+            status=models.Referral.STATUS_PENDING,
             kind=self.reftype,
             author=Provider.objects.first(),
             author_type=ProviderType.objects.first(),
@@ -612,7 +590,7 @@ class TestSelectReferral(TestCase):
         )
         referral1.location.add(self.refloc)
 
-        followupRequest1 = models.FollowupRequest.objects.create(
+        followup_request1 = models.FollowupRequest.objects.create(
             referral=referral1,
             contact_instructions="Call him",
             due_date=datetime.date(2018, 11, 01),
@@ -629,7 +607,7 @@ class TestSelectReferral(TestCase):
         refloc2.care_availiable.add(reftype2)
         referral2 = models.Referral.objects.create(
             comments="Needs his back checked",
-            status='P',
+            status=models.Referral.STATUS_PENDING,
             kind=reftype2,
             author=Provider.objects.first(),
             author_type=ProviderType.objects.first(),
@@ -662,7 +640,7 @@ class TestSelectReferral(TestCase):
 
         referral3 = models.Referral.objects.create(
             comments="Needs his back checked",
-            status='P',
+            status=models.Referral.STATUS_PENDING,
             kind=reftype3,
             author=Provider.objects.first(),
             author_type=ProviderType.objects.first(),
@@ -670,7 +648,7 @@ class TestSelectReferral(TestCase):
         )
         referral3.location.add(refloc2)
 
-        followupRequest2 = models.FollowupRequest.objects.create(
+        followup_request2 = models.FollowupRequest.objects.create(
             referral=referral3,
             contact_instructions="Call him",
             due_date=datetime.date(2018, 11, 01),
@@ -712,3 +690,113 @@ class TestSelectReferral(TestCase):
         self.assertNotContains(response, referral1)
         self.assertNotContains(response, referral2)
         self.assertNotContains(response, referral3)
+
+class TestPatientContactCreateView(TestCase):
+    """Class for testing form_valid method in PatientContactCreate.
+    """
+
+    fixtures = ['pttrack']
+
+    def setUp(self):
+        from pttrack.test_views import log_in_provider, build_provider
+        log_in_provider(self.client, build_provider())
+
+        self.contact_method = ContactMethod.objects.create(
+            name="Carrier Pidgeon")
+
+        self.contact_result = ContactResult.objects.create(
+            name="Reached on phone", patient_reached=True)
+
+        self.pt = Patient.objects.create(
+            first_name="Juggie",
+            last_name="Brodeltein",
+            middle_name="Bayer",
+            phone='+49 178 236 5288',
+            gender=Gender.objects.first(),
+            address='Schulstrasse 9',
+            city='Munich',
+            state='BA',
+            zip_code='63108',
+            pcp_preferred_zip='63018',
+            date_of_birth=datetime.date(1990, 01, 01),
+            patient_comfortable_with_english=False,
+            preferred_contact_method=self.contact_method,
+        )
+
+        self.reftype = ReferralType.objects.create(
+            name="Specialty", is_fqhc=False)
+        self.refloc = ReferralLocation.objects.create(
+            name='COH', address='Euclid Ave.')
+        self.refloc.care_availiable.add(self.reftype)
+
+        self.no_show_reason = NoShowReason.objects.create(name="Hella busy.")
+
+    # def test_invalid_input(self):
+
+    def test_valid_input(self):
+        """ Validate that the form_valid method properly handles valid form input"""
+
+        referral1 = models.Referral.objects.create(
+            comments="Needs his back checked",
+            status=models.Referral.STATUS_PENDING,
+            kind=self.reftype,
+            author=Provider.objects.first(),
+            author_type=ProviderType.objects.first(),
+            patient=self.pt
+        )
+        referral1.location.add(self.refloc)
+
+        followup_request1 = models.FollowupRequest.objects.create(
+            referral=referral1,
+            contact_instructions="Call him",
+            due_date=datetime.date(2018, 11, 01),
+            author=Provider.objects.first(),
+            author_type=ProviderType.objects.first(),
+            patient=self.pt
+        )
+
+        buttons = [forms.PatientContactForm.SUCCESSFUL_REFERRAL,
+                   forms.PatientContactForm.REQUEST_FOLLOWUP,
+                   forms.PatientContactForm.UNSUCCESSFUL_REFERRAL]
+        return_urls = [reverse('patient-detail', args=(self.pt.id,)),
+                       reverse('new-followup-request', args=(self.pt.id,
+                                                             referral1.id,)),
+                       reverse('patient-detail', args=(self.pt.id,))]
+        pt_showed = [models.PatientContact.PTSHOW_YES,
+                     models.PatientContact.PTSHOW_NO,
+                     models.PatientContact.PTSHOW_NO]
+
+        for (button_clicked, correct_url, pt_show) in zip(buttons, return_urls,
+                                                          pt_showed):
+            form_data = {
+                'contact_method': self.contact_method,
+                'contact_status': self.contact_result,
+                'has_appointment': models.PatientContact.PTSHOW_YES,
+                'appointment_location': [self.refloc.pk],
+                'pt_showed': pt_show,
+                button_clicked: True
+            }
+
+            if pt_show == models.PatientContact.PTSHOW_NO:
+                form_data['no_show_reason'] = self.no_show_reason
+
+            n_patient_contact = models.PatientContact.objects.all().count()
+
+            # Check that form is valid
+            form = forms.PatientContactForm(data=form_data)
+            self.assertEqual(form.is_valid(), True)
+
+            # Verify that redirect goes to the right URL
+            url = reverse('new-patient-contact', args=(self.pt.id,
+                                                       referral1.id,
+                                                       followup_request1.id))
+            response = self.client.post(url, form_data)
+            self.assertEqual(response.status_code, 302)
+            self.assertRedirects(response, correct_url)
+            self.assertEqual(models.PatientContact.objects.all().count(),
+                             n_patient_contact + 1)
+
+            # Check that the followup request has been marked as complete
+            followup_request1 = models.FollowupRequest.objects.first()
+            self.assertEqual(followup_request1.completion_date.date(),
+                             now().date())

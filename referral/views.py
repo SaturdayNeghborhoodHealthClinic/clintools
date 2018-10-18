@@ -158,8 +158,7 @@ class PatientContactCreate(FormView):
                                              pk=self.kwargs['followup_id'])
 
         # Add completion date to followup request
-        followup_request.completion_date = now().date()
-        followup_request.completion_author = self.request.user.provider
+        followup_request.mark_done(self.request.user.provider)
         followup_request.save()
 
         patient_contact = form.save(commit=False)
