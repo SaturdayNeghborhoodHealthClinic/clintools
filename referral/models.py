@@ -32,9 +32,19 @@ class Referral(Note):
                   "referral location.")
 
     def __unicode__(self):
+        """Provides string to display on front end for referral.
+
+           For FQHC referrals, returns referral kind and date.
+           For non-FQHC referrals, returns referral location and date.
+        """
+
         formatted_date = self.written_datetime.strftime("%D")
-        # Create different message for FQHC and non-FQHC referrals
-        return "%s referral on %s" % (self.kind, formatted_date)
+        if self.kind.is_fqhc:
+            return "%s referral on %s" % (self.kind, formatted_date)
+        else:
+            location_names = [loc.name for loc in self.location.all()]
+            locations = " ,".join(location_names)
+            return "Referral to %s on %s" % (locations, formatted_date)
 
     @staticmethod
     def aggregate_referral_status(referrals):
@@ -43,10 +53,12 @@ class Referral(Note):
             all_successful = all(referral.status == Referral.STATUS_SUCCESSFUL
                                  for referral in referrals)
             if all_successful:
-                referral_status_output = dict(Referral.REFERRAL_STATUSES)[Referral.STATUS_SUCCESSFUL]
+                referral_status_output = (dict(Referral.REFERRAL_STATUSES)
+                                          [Referral.STATUS_SUCCESSFUL])
             else:
                 # Determine referral status based on the last FQHC referral
-                referral_status_output = dict(Referral.REFERRAL_STATUSES)[referrals.last().status] 
+                referral_status_output = (dict(Referral.REFERRAL_STATUSES)
+                                          [referrals.last().status])
         else:
             referral_status_output = "No referrals currently"
 
