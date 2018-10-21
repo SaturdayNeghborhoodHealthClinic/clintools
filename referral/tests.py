@@ -1,7 +1,8 @@
 from django.test import TestCase
 from itertools import *
 
-from followup.models import ContactMethod, NoAptReason, NoShowReason, ContactResult
+from followup.models import (
+    ContactMethod, NoAptReason, NoShowReason, ContactResult)
 from django.core.urlresolvers import reverse
 from django.utils.timezone import now
 from pttrack.models import (
@@ -112,7 +113,7 @@ class TestPatientContactForm(TestCase):
 
     def test_has_appointment_and_pt_showed(self):
         """Verify that a provider is selected and no show and no appointment
-        reasons are not selected. There are 16 cases tested here.
+        reasons are not selected. There are 8 cases tested here.
         """
         # correct: pt didn't show, noshow reason is supplied
         form = self.build_form(
@@ -151,7 +152,7 @@ class TestPatientContactForm(TestCase):
 
     def test_has_appointment_and_pt_no_show(self):
         """Verify that a provider is selected and a reason is provided for
-        the no show. There are 16 cases tested here.
+        the no show. There are 8 cases tested here.
         """
         form = self.build_form(
             contact_successful=True,
@@ -240,97 +241,6 @@ class TestPatientContactForm(TestCase):
 
         self.assertEqual(len(form.errors), 3)
 
-        # begin block of tests for "Not yet" for pt showed
-
-        # correct - patient has not yet shown to clinic
-        form = self.build_form(
-            contact_successful=True,
-            has_appointment=models.PatientContact.PTSHOW_YES,
-            apt_location=True,
-            noapt_reason=False,
-            noshow_reason=False,
-            pt_showed=models.PatientContact.PTSHOW_NOTYET)
-
-        self.assertEqual(len(form.errors), 0)
-
-        # incorrect - patient has not yet shown up to clinic,
-        # no show reason is provided
-        form = self.build_form(
-            contact_successful=True,
-            has_appointment=models.PatientContact.PTSHOW_YES,
-            apt_location=True,
-            noapt_reason=False,
-            noshow_reason=True,
-            pt_showed=models.PatientContact.PTSHOW_NOTYET)
-
-        self.assertEqual(len(form.errors), 1)
-
-        # incorrect - no appointment reason is supplied with 'Not yet'
-        form = self.build_form(
-            contact_successful=True,
-            has_appointment=models.PatientContact.PTSHOW_YES,
-            apt_location=True,
-            noapt_reason=True,
-            noshow_reason=False,
-            pt_showed=models.PatientContact.PTSHOW_NOTYET)
-
-        self.assertEqual(len(form.errors), 1)
-
-        # incorrect - no appointment reason and no show reason is supplied
-        form = self.build_form(
-            contact_successful=True,
-            has_appointment=models.PatientContact.PTSHOW_YES,
-            apt_location=True,
-            noapt_reason=True,
-            noshow_reason=True,
-            pt_showed=models.PatientContact.PTSHOW_NOTYET)
-
-        self.assertEqual(len(form.errors), 2)
-
-        # incorrect - no apt location and no apt reason supplied
-        form = self.build_form(
-            contact_successful=True,
-            has_appointment=models.PatientContact.PTSHOW_YES,
-            apt_location=False,
-            noapt_reason=True,
-            noshow_reason=False,
-            pt_showed=models.PatientContact.PTSHOW_NOTYET)
-
-        self.assertEqual(len(form.errors), 2)
-
-        # incorrect - apt location not supplied, no apt reason supplied, no show reason supplied
-        form = self.build_form(
-            contact_successful=True,
-            has_appointment=models.PatientContact.PTSHOW_YES,
-            apt_location=False,
-            noapt_reason=True,
-            noshow_reason=True,
-            pt_showed=models.PatientContact.PTSHOW_NOTYET)
-
-        self.assertEqual(len(form.errors), 3)
-
-        # incorrect - no apt location supplied
-        form = self.build_form(
-            contact_successful=True,
-            has_appointment=models.PatientContact.PTSHOW_YES,
-            apt_location=False,
-            noapt_reason=False,
-            noshow_reason=False,
-            pt_showed=models.PatientContact.PTSHOW_NOTYET)
-
-        self.assertEqual(len(form.errors), 1)
-
-        # incorrect - no apt location supplied and no show reason supplied
-        form = self.build_form(
-            contact_successful=True,
-            has_appointment=models.PatientContact.PTSHOW_YES,
-            apt_location=False,
-            noapt_reason=False,
-            noshow_reason=True,
-            pt_showed=models.PatientContact.PTSHOW_NOTYET)
-
-        self.assertEqual(len(form.errors), 2)
-
     def test_no_appointment(self):
         # first form contains a proper submission for the no appointment case
         form = self.build_form(
@@ -353,24 +263,6 @@ class TestPatientContactForm(TestCase):
             form = self.build_form(
                 contact_successful=True,
                 has_appointment=models.PatientContact.PTSHOW_NO,
-                apt_location=form_field_provided[0],
-                noapt_reason=form_field_provided[1],
-                noshow_reason=form_field_provided[2],
-                pt_showed=models.PatientContact.PTSHOW_NO)
-
-            # Use an XOR to determine the number of differences between a
-            # proper submission and the current combination of form fields
-            expected_number_errors = sum(a ^ b for a, b in
-                                         zip(form_field_provided,
-                                             proper_submission))
-            self.assertEqual(len(form.errors), expected_number_errors)
-
-        # Verify that the behavior of the form is the same if user says that
-        # an appointment is "Not yet" made
-        for form_field_provided in product([False, True], repeat=3):
-            form = self.build_form(
-                contact_successful=True,
-                has_appointment=models.PatientContact.PTSHOW_NOTYET,
                 apt_location=form_field_provided[0],
                 noapt_reason=form_field_provided[1],
                 noshow_reason=form_field_provided[2],
@@ -446,9 +338,9 @@ class TestSelectReferralType(TestCase):
         )
 
     def test_select_referral_type_urls(self):
-        '''
+        """
         Verify that all the referral creation URLs are accessible.
-        '''
+        """
         # Create two different referral types
         reftype1 = ReferralType.objects.create(
             name="Specialty", is_fqhc=False)
@@ -467,9 +359,9 @@ class TestSelectReferralType(TestCase):
 
 
 class TestCreateReferral(TestCase):
-    '''
+    """
     Tests the create referral page
-    '''
+    """
     fixtures = ['pttrack']
 
     def setUp(self):
@@ -496,10 +388,10 @@ class TestCreateReferral(TestCase):
         )
 
     def test_location_list(self):
-        '''
+        """
         Verifies that the location list corresponding
         to a referral type are displayed
-        '''
+        """
         # Create two different referral types
         specialty = ReferralType.objects.create(
             name="Specialty", is_fqhc=False)
@@ -573,10 +465,10 @@ class TestSelectReferral(TestCase):
 
 
     def test_referral_list(self):
-        '''
+        """
         Creates referrals and verifies that only appropriate ones are available
         in the select referral form
-        '''
+        """
         # Create pending referral with follow up request
         referral1 = models.Referral.objects.create(
             comments="Needs his back checked",
@@ -728,8 +620,6 @@ class TestPatientContactCreateView(TestCase):
         self.refloc.care_availiable.add(self.reftype)
 
         self.no_show_reason = NoShowReason.objects.create(name="Hella busy.")
-
-    # def test_invalid_input(self):
 
     def test_valid_input(self):
         """ Validate that the form_valid method properly handles valid form input"""

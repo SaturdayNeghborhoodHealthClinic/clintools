@@ -365,18 +365,21 @@ def patient_detail(request, pk):
 
     zipped_ai_list = zip(['collapse5', 'collapse6', 'collapse7'],
                          [active_ais, inactive_ais, done_ais],
-                         ['Active Action Items', 'Pending Action Items', 'Completed Action Items'],
+                         ['Active Action Items', 'Pending Action Items',
+                         'Completed Action Items'],
                          [True, True, False])
 
     # Provide referral list for patient page (includes specialty referrals)
-    referrals = Referral.objects.filter(patient=pt,
-                                        followuprequest__in=FollowupRequest.objects.all())
+    referrals = Referral.objects.filter(
+        patient=pt,
+        followuprequest__in=FollowupRequest.objects.all()
+    )
 
     # Add FQHC referral status
     # Note it is possible for a patient to have been referred multiple times
     # This creates some strage cases (e.g., first referral was lost to followup
-    # but the second one was successful). In these cases, the last referral status
-    # becomes the current status
+    # but the second one was successful). In these cases, the last referral 
+    # status becomes the current status
     fqhc_referrals = Referral.objects.filter(patient=pt, kind__is_fqhc=True)
     referral_status_output = Referral.aggregate_referral_status(fqhc_referrals)
 

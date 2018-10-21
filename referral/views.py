@@ -1,6 +1,5 @@
 from __future__ import print_function
 from django.shortcuts import get_object_or_404, render
-from django.utils.timezone import now
 from django.core.urlresolvers import reverse
 from django.views.generic.edit import FormView
 from django.http import HttpResponseRedirect
@@ -79,7 +78,7 @@ class ReferralCreate(FormView):
         rtype = slugs[rtype_slug]
         referral.kind = get_object_or_404(ReferralType, name=rtype)
 
-        # boilerplate for Note
+        # Assign author and author type
         referral.author = self.request.user.provider
         referral.author_type = get_object_or_404(
             ProviderType, pk=self.request.session['clintype_pk'])
@@ -177,7 +176,8 @@ class PatientContactCreate(FormView):
         if PatientContactForm.SUCCESSFUL_REFERRAL in self.request.POST:
             referral.status = Referral.STATUS_SUCCESSFUL
             referral.save()
-            return HttpResponseRedirect(reverse('patient-detail', args=(pt.id,)))
+            return HttpResponseRedirect(reverse('patient-detail',
+                                                args=(pt.id,)))
 
         elif PatientContactForm.REQUEST_FOLLOWUP in self.request.POST:
             referral.status = Referral.STATUS_PENDING
@@ -187,9 +187,11 @@ class PatientContactCreate(FormView):
         elif PatientContactForm.UNSUCCESSFUL_REFERRAL in self.request.POST:
             referral.status = Referral.STATUS_UNSUCCESSFUL
             referral.save()
-            return HttpResponseRedirect(reverse('patient-detail', args=(pt.id,)))
+            return HttpResponseRedirect(reverse('patient-detail',
+                                                args=(pt.id,)))
 
 def select_referral(request, pt_id):
+    """ Prompt user to select pending referral given patient ID."""
     if request.method == 'POST':
         form = ReferralSelectForm(pt_id, request.POST)
         if form.is_valid():
@@ -197,8 +199,10 @@ def select_referral(request, pt_id):
             referral = form.cleaned_data['referrals']
             # Go to last followup request
             # Note there should only ever be one open followup request)
-            followup_requests = FollowupRequest.objects.filter(patient_id=pt_id,
-                                                               referral=referral.id)
+            followup_requests = FollowupRequest.objects.filter(
+                patient_id=pt_id,
+                referral=referral.id
+            )
             followup_request = followup_requests.latest('id')
             return HttpResponseRedirect(reverse('new-patient-contact',
                                                 args=(pt_id, referral.id,

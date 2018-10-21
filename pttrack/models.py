@@ -406,8 +406,10 @@ class Document(Note):
 
 
 class CompleteableManager(models.Manager):
+    """ Class that handles queryset filers for Completable classes."""
 
     def get_active(self, patient):
+        """ Returns all active elements of Completable class."""
         return self.get_queryset()\
                 .filter(patient=patient)\
                 .filter(completion_author=None)\
@@ -415,7 +417,7 @@ class CompleteableManager(models.Manager):
                 .order_by('completion_date')
 
     def get_inactive(self, patient):
-
+        """ Returns all inactive elements of Completable class."""
         return self.get_queryset()\
                 .filter(patient=patient)\
                 .filter(completion_author=None)\
@@ -423,16 +425,11 @@ class CompleteableManager(models.Manager):
                 .order_by('completion_date')
 
     def get_completed(self, patient):
-
+        """ Returns all completed elements of Completable class."""
         return self.get_queryset()\
                 .filter(patient=patient)\
                 .exclude(completion_author=None)\
                 .order_by('completion_date')
-
-    # implement get inactive and get done;
-    # note also this class should drop-in and work
-    # for other completeables as well.
-
 
 class CompletableMixin(models.Model):
     """CompleteableMixin is for anything that goes in that list of
