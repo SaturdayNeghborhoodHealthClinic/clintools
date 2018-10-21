@@ -113,7 +113,6 @@ class TestPatientContactForm(TestCase):
     def test_has_appointment_and_pt_showed(self):
         """Verify that a provider is selected and no show and no appointment
         reasons are not selected. There are 16 cases tested here.
-        Patient showed selection can be either 'No' or 'Not yet'
         """
         # correct: pt didn't show, noshow reason is supplied
         form = self.build_form(
@@ -152,8 +151,7 @@ class TestPatientContactForm(TestCase):
 
     def test_has_appointment_and_pt_no_show(self):
         """Verify that a provider is selected and a reason is provided for
-        the no show. There are 16 cases tested here. Patient showed selection
-        can be either 'No' or 'Not yet'
+        the no show. There are 16 cases tested here.
         """
         form = self.build_form(
             contact_successful=True,

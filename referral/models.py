@@ -94,10 +94,8 @@ class PatientContact(Note):
 
     PTSHOW_YES = "Y"
     PTSHOW_NO = "N"
-    PTSHOW_NOTYET = "?"
     PTSHOW_OPTS = [(PTSHOW_YES, "Yes"),
-                   (PTSHOW_NO, "No"),
-                   (PTSHOW_NOTYET, "Not yet")]
+                   (PTSHOW_NO, "No")]
 
     has_appointment = models.CharField(
         choices=PTSHOW_OPTS,

@@ -109,22 +109,15 @@ class PatientContactForm(ModelForm):
                         self.add_error(
                             "no_show_reason", "Why didn't the patient go "
                             "to the appointment?")
-                elif pt_went == models.PatientContact.PTSHOW_YES:
+                # if pt_went == models.PatientContact.PTSHOW_YES
+                else:
                     if cleaned_data.get('no_show_reason'):
                         self.add_error(
                             "no_show_reason",
                             "If the patient showed, a no show reason should "
                             "not be given.")
-                else:
-                    # handles case of "Not yet"
-                    if cleaned_data.get('no_show_reason'):
-                        self.add_error(
-                            "no_show_reason",
-                            "If the patient has not yet shown up, a no show "
-                            "reason should not be given.")
 
-            elif (has_appointment == models.PatientContact.PTSHOW_NO or
-                  has_appointment == models.PatientContact.PTSHOW_NOTYET):
+            elif has_appointment == models.PatientContact.PTSHOW_NO:
                 # Require user to specify why the patient did not make
                 # an appointment
                 if not cleaned_data.get("no_apt_reason"):
