@@ -405,7 +405,7 @@ class Document(Note):
         return self.title
 
 
-class CompleteableManager(models.Manager):
+class CompletableManager(models.Manager):
     """ Class that handles queryset filers for Completable classes."""
 
     def get_active(self, patient):
@@ -468,7 +468,7 @@ class ActionItem(Note, CompletableMixin):
     comments = models.TextField()
 
     history = HistoricalRecords()
-    objects = CompleteableManager()
+    objects = CompletableManager()
 
     def class_name(self):
         return self.__class__.__name__

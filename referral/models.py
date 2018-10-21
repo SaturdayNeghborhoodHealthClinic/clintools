@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 
 from pttrack.models import (
     ReferralType, ReferralLocation, Note, ContactMethod, CompletableMixin,
-    CompleteableManager)
+    CompletableManager)
 from followup.models import ContactResult, NoAptReason, NoShowReason
 
 # pylint: disable=I0011,E1305
@@ -73,7 +73,7 @@ class FollowupRequest(Note, CompletableMixin):
     referral = models.ForeignKey(Referral)
     contact_instructions = models.TextField()
 
-    objects = CompleteableManager()
+    objects = CompletableManager()
 
     def class_name(self):
         return self.__class__.__name__

@@ -8,7 +8,7 @@ from django.utils.timezone import now
 from pttrack.models import (
     Gender, Patient, Provider, ProviderType,
     ReferralType, ReferralLocation, Note, ContactMethod, CompletableMixin,
-    CompleteableManager)
+    CompletableManager)
 import datetime
 from . import forms
 from . import models
