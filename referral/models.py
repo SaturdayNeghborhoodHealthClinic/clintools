@@ -16,10 +16,14 @@ class Referral(Note):
     STATUS_PENDING = 'P'
     STATUS_UNSUCCESSFUL = 'U'
 
+    # Status if there are no referrals of a specific type
+    # Used in aggregate_referral_status
+    NO_REFERRALS_CURRENTLY = "No referrals currently"
+
     REFERRAL_STATUSES = (
-        (STATUS_SUCCESSFUL, 'Completed'),
-        (STATUS_PENDING, 'Not completed'),
-        (STATUS_UNSUCCESSFUL, 'Unsuccessful referral'),
+        (STATUS_SUCCESSFUL, 'Successful'),
+        (STATUS_PENDING, 'Pending'),
+        (STATUS_UNSUCCESSFUL, 'Unsuccessful'),
     )
 
     location = models.ManyToManyField(ReferralLocation)
@@ -60,7 +64,7 @@ class Referral(Note):
                 referral_status_output = (dict(Referral.REFERRAL_STATUSES)
                                           [referrals.last().status])
         else:
-            referral_status_output = "No referrals currently"
+            referral_status_output = Referral.NO_REFERRALS_CURRENTLY
 
         return referral_status_output
 

@@ -283,7 +283,7 @@ class Patient(Person):
 
         # Combine action items with referral followup requests for status
         patient_action_items = self.actionitem_set.all()
-        referral_followup_requests = self.followuprequest_set.all() 
+        referral_followup_requests = self.followuprequest_set.all()
         patient_action_items = list(chain(patient_action_items,
                                           referral_followup_requests))
 
