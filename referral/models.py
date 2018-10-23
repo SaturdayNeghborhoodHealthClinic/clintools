@@ -73,10 +73,14 @@ class FollowupRequest(Note, CompletableMixin):
     referral = models.ForeignKey(Referral)
     contact_instructions = models.TextField()
 
-    objects = CompletableManager()
-
     def class_name(self):
         return self.__class__.__name__
+
+    def __unicode__(self):
+        formatted_date = self.written_datetime.strftime("%D")
+        return 'Followup with %s on %s about %s' % (self.patient,
+                                                    formatted_date,
+                                                    self.referral)
 
 
 class PatientContact(Note):

@@ -440,6 +440,8 @@ class CompletableMixin(models.Model):
     class Meta:
         abstract = True
 
+    objects = CompletableManager()
+
     completion_date = models.DateTimeField(blank=True, null=True)
     completion_author = models.ForeignKey(
         Provider,
@@ -468,7 +470,6 @@ class ActionItem(Note, CompletableMixin):
     comments = models.TextField()
 
     history = HistoricalRecords()
-    objects = CompletableManager()
 
     def class_name(self):
         return self.__class__.__name__
