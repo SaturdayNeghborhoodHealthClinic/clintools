@@ -484,4 +484,4 @@ class ActionItem(Note, CompletableMixin):
 
     def __unicode__(self):
         return " ".join(["AI for", str(self.patient)+":",
-                         str(self.instruction), "on", str(self.due_date)])
+                         str(self.instruction), "due on", str(self.due_date)])

@@ -68,6 +68,7 @@ class Referral(Note):
 
         return referral_status_output
 
+
 class FollowupRequest(Note, CompletableMixin):
 
     referral = models.ForeignKey(Referral)
@@ -77,7 +78,7 @@ class FollowupRequest(Note, CompletableMixin):
         return self.__class__.__name__
 
     def __unicode__(self):
-        formatted_date = self.written_datetime.strftime("%D")
+        formatted_date = self.due_date.strftime("%D")
         return 'Followup with %s on %s about %s' % (self.patient,
                                                     formatted_date,
                                                     self.referral)

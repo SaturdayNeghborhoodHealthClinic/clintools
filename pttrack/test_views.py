@@ -143,7 +143,7 @@ class SendEmailTest(TestCase):
 
         #action item due today
         ai_today = models.ActionItem.objects.create(
-            due_date=datetime.datetime.today(),
+            due_date=now().today(),
             author=models.Provider.objects.first(),
             **ai_prototype
             )
@@ -910,7 +910,7 @@ class ActionItemTest(TestCase):
             instruction="Follow up on labs")
         ai = models.ActionItem.objects.create(
             instruction=ai_inst,
-            due_date=datetime.datetime.today(),
+            due_date=now().today(),
             comments="",
             author=models.Provider.objects.first(),
             author_type=models.ProviderType.objects.first(),
@@ -1087,7 +1087,7 @@ class TestReferralPatientDetailIntegration(TestCase):
 
         # Action item due today
         ai_today = models.ActionItem.objects.create(
-            due_date=datetime.datetime.today(),
+            due_date=now().date(),
             author=models.Provider.objects.first(),
             **ai_prototype
         )
@@ -1123,7 +1123,7 @@ class TestReferralPatientDetailIntegration(TestCase):
 
     def test_patient_detail(self):
         """ Creates several action items and referral followups to check if view
-            is properly supplying Status, FQHC Referral Status, Referrals, 
+            is properly supplying Status, FQHC Referral Status, Referrals,
             Action Item totals, and Followup totals."""
 
         # Create follow up request due yesterday
@@ -1166,7 +1166,7 @@ class TestReferralPatientDetailIntegration(TestCase):
         followup_request2 = FollowupRequest.objects.create(
             referral=referral2,
             contact_instructions="Call him",
-            due_date=datetime.datetime.today(),
+            due_date=now().date(),
             author=models.Provider.objects.first(),
             author_type=models.ProviderType.objects.first(),
             patient=self.pt
