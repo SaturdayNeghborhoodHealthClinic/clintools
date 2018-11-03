@@ -44,6 +44,12 @@ class Appointment(Note):
 
     history = HistoricalRecords()
 
+    def __unicode__(self):
+        return "Appointment ({type}) for {name} on {date}".format(
+            type=self.verbose_appointment_type(),
+            name=self.patient.name(),
+            date=str(self.clindate))
+
     def verbose_appointment_type(self):
         appointment_type_index = list(zip(*self.APPOINTMENT_TYPES))[0].index(
             self.appointment_type)
