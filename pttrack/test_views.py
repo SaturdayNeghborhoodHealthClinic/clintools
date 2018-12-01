@@ -10,14 +10,18 @@ from django.core import mail
 from django.core.management import call_command
 
 # For live tests.
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from . import models
+from .test import SeleniumLiveTestCase
 from workup import models as workupModels
+from followup.models import ContactResult
+from referral.models import Referral, FollowupRequest, PatientContact
+from referral.forms import PatientContactForm
 
 # pylint: disable=invalid-name
 # Whatever, whatever. I name them what I want.
@@ -98,14 +102,6 @@ def log_in_provider(client, provider):
     return user.provider
 
 
-def live_submit_login(selenium, username, password):
-    username_input = selenium.find_element_by_name("username")
-    username_input.send_keys(username)
-    password_input = selenium.find_element_by_name("password")
-    password_input.send_keys(password)
-    selenium.find_element_by_xpath('//button[@type="submit"]').click()
-
-
 def get_url_pt_list_identifiers(self, url):
     response = self.client.get(url)
     self.assertEqual(response.status_code, 200)
@@ -126,7 +122,7 @@ class SendEmailTest(TestCase):
         #make 2 providers
         log_in_provider(self.client, build_provider(roles=["Coordinator"], email='user1@gmail.com'))
         log_in_provider(self.client, build_provider(roles=["Coordinator"], email='user2@gmail.com'))
-        log_in_provider(self.client, build_provider(roles=["Coordinator"], email='user3@gmail.com')) 
+        log_in_provider(self.client, build_provider(roles=["Coordinator"], email='user3@gmail.com'))
 
         pt = models.Patient.objects.first()
         pt.case_managers.add(models.Provider.objects.first())
@@ -147,7 +143,7 @@ class SendEmailTest(TestCase):
 
         #action item due today
         ai_today = models.ActionItem.objects.create(
-            due_date=datetime.datetime.today(),
+            due_date=now().today(),
             author=models.Provider.objects.first(),
             **ai_prototype
             )
@@ -193,19 +189,8 @@ class SendEmailTest(TestCase):
         self.assertEqual(mail.outbox[0].to, ['user1@gmail.com', 'user3@gmail.com'])
 
 
-class LiveTesting(StaticLiveServerTestCase):
+class LiveTesting(SeleniumLiveTestCase):
     fixtures = [BASIC_FIXTURE]
-
-    @classmethod
-    def setUpClass(cls):
-        super(LiveTesting, cls).setUpClass()
-        cls.selenium = WebDriver()
-        cls.selenium.implicitly_wait(10)
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.selenium.quit()
-        super(LiveTesting, cls).tearDownClass()
 
     def test_login(self):
         '''
@@ -217,7 +202,7 @@ class LiveTesting(StaticLiveServerTestCase):
 
         # any valid URL should redirect to login at this point.
         self.selenium.get('%s%s' % (self.live_server_url, '/'))
-        live_submit_login(self.selenium, 'jrporter', 'password')
+        self.submit_login('jrporter', 'password')
 
         # now we should have to choose a clinical role
         self.assertEquals(self.selenium.current_url,
@@ -246,7 +231,7 @@ class LiveTesting(StaticLiveServerTestCase):
                        roles=["Attending"])
 
         self.selenium.get('%s%s' % (self.live_server_url, '/'))
-        live_submit_login(self.selenium, 'timmy', 'password')
+        self.submit_login('timmy', 'password')
 
         # now we should be redirected directly to home.
         self.assertEquals(self.selenium.current_url,
@@ -265,7 +250,7 @@ class LiveTesting(StaticLiveServerTestCase):
         build_provider(username='timmy', password='password',
                        roles=["Attending"])
         self.selenium.get('%s%s' % (self.live_server_url, '/'))
-        live_submit_login(self.selenium, 'timmy', 'password')
+        self.submit_login('timmy', 'password')
 
         for url in urls.urlpatterns:
             # except 'choose-clintype' and action item modifiers from test
@@ -298,18 +283,8 @@ class LiveTesting(StaticLiveServerTestCase):
                               " to have a jumbotron element."]))
 
 
-class LiveTestPatientLists(StaticLiveServerTestCase):
+class LiveTestPatientLists(SeleniumLiveTestCase):
     fixtures = [BASIC_FIXTURE]
-
-    @classmethod
-    def setUpClass(cls):
-        super(LiveTestPatientLists, cls).setUpClass()
-        cls.selenium = WebDriver()
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.selenium.quit()
-        super(LiveTestPatientLists, cls).tearDownClass()
 
     def setUp(self):
         # build a provider and log in
@@ -462,8 +437,8 @@ class LiveTestPatientLists(StaticLiveServerTestCase):
     def test_attestation_column(self):
 
         self.selenium.get('%s%s' % (self.live_server_url, '/'))
-        live_submit_login(
-            self.selenium, self.providers['coordinator'].username, self.provider_password)
+        self.submit_login(self.providers['coordinator'].username,
+                          self.provider_password)
 
         self.selenium.get(
             '%s%s' % (self.live_server_url, reverse("all-patients")))
@@ -484,8 +459,8 @@ class LiveTestPatientLists(StaticLiveServerTestCase):
     def test_all_patients_correct_order(self):
 
         self.selenium.get('%s%s' % (self.live_server_url, '/'))
-        live_submit_login(
-            self.selenium, self.providers['coordinator'].username, self.provider_password)
+        self.submit_login(self.providers['coordinator'].username,
+                          self.provider_password)
 
         self.selenium.get('%s%s' % (self.live_server_url,
                                     reverse("all-patients")))
@@ -519,10 +494,10 @@ class LiveTestPatientLists(StaticLiveServerTestCase):
         # self.assertEqual(first_patient_name, "Brodeltein, Juggie B.")
 
     def test_provider_types_correct_home_order(self):
-        '''Verify that for each provider type, on the home page the
+        """Verify that for each provider type, on the home page the
         expected tabs appear and the expected patients for in each tab
         appear in the correct order.
-        '''
+        """
         provider_tabs = {
             'attending': ['unsignedwu', 'activept'],
             'coordinator': ['activept', 'activeai', 'pendingai', 'unsignedwu',
@@ -541,13 +516,12 @@ class LiveTestPatientLists(StaticLiveServerTestCase):
 
         for provider_type in provider_tabs:
             self.selenium.get('%s%s' % (self.live_server_url, '/'))
-            live_submit_login(
-                self.selenium, self.providers[provider_type].username,
-                self.provider_password)
+            self.submit_login(self.providers[provider_type].username,
+                              self.provider_password)
             self.selenium.get('%s%s' % (self.live_server_url, reverse("home")))
 
             for tab_name in provider_tabs[provider_type]:
-                WebDriverWait(self.selenium, 20).until(
+                WebDriverWait(self.selenium, 30).until(
                     EC.presence_of_element_located((By.ID, tab_name)))
 
                 # examine each tab and get pk of expected and present patients.
@@ -565,6 +539,78 @@ class LiveTestPatientLists(StaticLiveServerTestCase):
 
             self.selenium.get(
                 '%s%s' % (self.live_server_url, reverse('logout')))
+
+
+    def test_all_patients_filter(self):
+        """Test the All Patients view's filter box.
+
+        We test the following:
+            - Searching for a a patient's entire name
+            = Clearing the search box
+            - Searching for an upper case fragment of a patient's name
+            - Searching for a coordinator's name
+        """
+
+        self.selenium.get('%s%s' % (self.live_server_url, '/'))
+        self.submit_login(self.providers['coordinator'].username,
+                          self.provider_password)
+        self.selenium.get(
+            '%s%s' % (self.live_server_url, reverse("all-patients")))
+
+        # filter on the first patient's entire name
+        filter_box = self.selenium.find_element_by_id('all-patients-filter-input')
+        filter_box.send_keys(self.pt1.first_name)
+
+        def get_present_pt_names():
+            """Grab all the present & displayed names from the table
+            """
+            tbody = self.selenium.find_element_by_id('all-patients-table')
+            return [
+                t.get_attribute('text') for t in
+                tbody.find_elements_by_xpath(".//tr[*]/td[1]/a")
+                if t.is_displayed()
+            ]
+
+        # only patient 1 should be present
+        present_pt_names = get_present_pt_names()
+        self.assertIn(str(self.pt1), present_pt_names)
+        self.assertNotIn(str(self.pt2), present_pt_names)
+        self.assertNotIn(str(self.pt3), present_pt_names)
+
+        def clear_and_check(input_element):
+            # clear the box
+            for i in range(100):
+                input_element.send_keys(Keys.BACK_SPACE)
+            # input_element.send_keys(Keys.DELETE)
+
+            # import time
+            # time.sleep(600)
+
+            # now all patients should be present
+            present_pt_names = get_present_pt_names()
+            for pt in [self.pt1, self.pt2, self.pt3, self.pt4, self.pt5]:
+                self.assertIn(str(pt), present_pt_names)
+
+        clear_and_check(filter_box)
+
+        # fill the box with an upper case fragment
+        filter_box.send_keys(self.pt2.first_name.upper()[0:3])
+
+        # only pt2 should be there now
+        present_pt_names = get_present_pt_names()
+        self.assertNotIn(str(self.pt1), present_pt_names)
+        self.assertIn(str(self.pt2), present_pt_names)
+        self.assertNotIn(str(self.pt3), present_pt_names)
+
+        clear_and_check(filter_box)
+        filter_box.send_keys(self.providers['coordinator'].first_name)
+
+        # check for pt with coordinator
+        present_pt_names = get_present_pt_names()
+        self.assertNotIn(str(self.pt1), present_pt_names)
+        self.assertNotIn(str(self.pt2), present_pt_names)
+        self.assertNotIn(str(self.pt3), present_pt_names)
+        self.assertIn(str(self.pt5), present_pt_names)
 
 
 class ViewsExistTest(TestCase):
@@ -617,8 +663,6 @@ class ViewsExistTest(TestCase):
             try:
                 self.assertEqual(response.status_code, 200)
             except AssertionError as e:
-                print pt_url
-                print response
                 raise e
 
         for pt_url in pt_urls_redirect:
@@ -626,8 +670,6 @@ class ViewsExistTest(TestCase):
             try:
                 self.assertEqual(response.status_code, 302)
             except AssertionError as e:
-                print pt_url
-                print response
                 raise e
 
     def test_provider_urls(self):
@@ -715,8 +757,8 @@ class ProviderCreateTest(TestCase):
         log_in_provider(self.client, build_provider())
 
     def test_provider_creation(self):
-        '''Verify that, in the absence of a provider, a provider is created,
-        and that it is created correctly.'''
+        """Verify that, in the absence of a provider, a provider is created,
+        and that it is created correctly."""
 
         final_url = reverse('all-patients')
 
@@ -828,6 +870,48 @@ class IntakeTest(TestCase):
                 models.ContactMethod.objects.first().pk
         }
 
+    def preintake_patient_with_collision(self):
+
+        self.valid_pt_dict['gender'] = models.Gender.objects.first()
+        del self.valid_pt_dict['preferred_contact_method']
+        del self.valid_pt_dict['languages']
+        del self.valid_pt_dict['ethnicities']
+
+        pt = models.Patient.objects.create(**self.valid_pt_dict)
+
+        url = reverse('preintake')
+        response = self.client.post(
+            url,
+            {k: self.valid_pt_dict[k] for k
+             in ['first_name', 'last_name']},
+            follow=True)
+
+        self.assertTemplateUsed(response, 'pttrack/preintake-select.html')
+
+        print(dir(response))
+        print(response.context_data)
+
+        self.assertIn(pt, response.context_data['object_list'])
+
+    def preintake_patient_no_collision(self):
+
+        url = reverse('preintake')
+        response = self.client.post(
+            url,
+            {k: self.valid_pt_dict[k] for k
+             in ['first_name', 'last_name']},
+            follow=True)
+
+        self.assertTemplateUsed(response, 'pttrack/intake.html')
+
+        self.assertEquals(
+            response.context_data['form']['first_name'].value(),
+            self.valid_pt_dict['first_name'])
+
+        self.assertEquals(
+            response.context_data['form']['last_name'].value(),
+            self.valid_pt_dict['last_name'])
+
     def test_can_intake_pt(self):
 
         n_pt = len(models.Patient.objects.all())
@@ -868,7 +952,7 @@ class ActionItemTest(TestCase):
             instruction="Follow up on labs")
         ai = models.ActionItem.objects.create(
             instruction=ai_inst,
-            due_date=datetime.datetime.today(),
+            due_date=now().today(),
             comments="",
             author=models.Provider.objects.first(),
             author_type=models.ProviderType.objects.first(),
@@ -1001,3 +1085,205 @@ class ProviderUpdateTest(TestCase):
         # Verify that accessing final url no longer redirects
         response = self.client.get(final_url)
         self.assertEqual(response.status_code, 200)
+
+class TestReferralPatientDetailIntegration(TestCase):
+    """ Tests integration of Action Items and Referral Followups in patient-detail."""
+    fixtures = [BASIC_FIXTURE]
+
+    def setUp(self):
+        log_in_provider(self.client, build_provider())
+
+        self.contact_method = models.ContactMethod.objects.create(
+            name="Carrier Pidgeon")
+
+        self.pt = models.Patient.objects.create(
+            first_name="Juggie",
+            last_name="Brodeltein",
+            middle_name="Bayer",
+            phone='+49 178 236 5288',
+            gender=models.Gender.objects.first(),
+            address='Schulstrasse 9',
+            city='Munich',
+            state='BA',
+            zip_code='63108',
+            pcp_preferred_zip='63018',
+            date_of_birth=datetime.date(1990, 01, 01),
+            patient_comfortable_with_english=False,
+            preferred_contact_method=self.contact_method,
+        )
+
+        self.pt.case_managers.add(models.Provider.objects.first())
+
+        ai_inst = models.ActionInstruction.objects.create(
+            instruction="Follow up on labs")
+
+        self.tomorrow = now().date() + datetime.timedelta(days=1)
+        self.yesterday = now().date() - datetime.timedelta(days=1)
+
+        ai_prototype = {
+            'instruction': ai_inst,
+            'comments': "",
+            'author_type': models.ProviderType.objects.first(),
+            'patient': self.pt
+        }
+
+        # Action item due today
+        ai_today = models.ActionItem.objects.create(
+            due_date=now().date(),
+            author=models.Provider.objects.first(),
+            **ai_prototype
+        )
+
+        # Action item due yesterday
+        ai_yesterday = models.ActionItem.objects.create(
+            due_date=self.yesterday,
+            author=models.Provider.objects.first(),
+            **ai_prototype
+        )
+
+        # Action item due tomorrow
+        ai_tomorrow = models.ActionItem.objects.create(
+            due_date=self.tomorrow,
+            author=models.Provider.objects.first(),
+            **ai_prototype
+        )
+
+        # Complete action item from yesterday
+        ai_complete = models.ActionItem.objects.create(
+            due_date=self.yesterday,
+            author=models.Provider.objects.first(),
+            completion_date=now(),
+            completion_author=models.Provider.objects.first(),
+            **ai_prototype
+        )
+
+        self.reftype = models.ReferralType.objects.create(
+            name="Specialty", is_fqhc=False)
+        self.refloc = models.ReferralLocation.objects.create(
+            name='COH', address='Euclid Ave.')
+        self.refloc.care_availiable.add(self.reftype)
+
+    def test_patient_detail(self):
+        """ Creates several action items and referral followups to check if view
+            is properly supplying Status, FQHC Referral Status, Referrals,
+            Action Item totals, and Followup totals."""
+
+        # Create follow up request due yesterday
+        referral1 = Referral.objects.create(
+            comments="Needs his back checked",
+            status=Referral.STATUS_PENDING,
+            kind=self.reftype,
+            author=models.Provider.objects.first(),
+            author_type=models.ProviderType.objects.first(),
+            patient=self.pt
+        )
+        referral1.location.add(self.refloc)
+
+        followup_request1 = FollowupRequest.objects.create(
+            referral=referral1,
+            contact_instructions="Call him",
+            due_date=self.yesterday,
+            author=models.Provider.objects.first(),
+            author_type=models.ProviderType.objects.first(),
+            patient=self.pt
+        )
+
+        # Create a second referral followup request due today
+        fqhc_reftype = models.ReferralType.objects.create(
+            name="FQHC", is_fqhc=True)
+        fhc = models.ReferralLocation.objects.create(
+            name="Family Health Center", address="Manchester Ave.")
+        fhc.care_availiable.add(fqhc_reftype)
+
+        referral2 = Referral.objects.create(
+            comments="Connecting patient to FQHC",
+            status=Referral.STATUS_PENDING,
+            kind=fqhc_reftype,
+            author=models.Provider.objects.first(),
+            author_type=models.ProviderType.objects.first(),
+            patient=self.pt
+        )
+        referral2.location.add(fhc)
+
+        followup_request2 = FollowupRequest.objects.create(
+            referral=referral2,
+            contact_instructions="Call him",
+            due_date=now().date(),
+            author=models.Provider.objects.first(),
+            author_type=models.ProviderType.objects.first(),
+            patient=self.pt
+        )
+
+        # Check that patient detail properly renders
+        url = reverse('patient-detail', args=(self.pt.id,))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        # Check patient status -- there is one action item and followup
+        # request 1 day past due and one action item and followup
+        # request due today
+        expected_status = "Action items 0, 1, 1, 0 days past due"
+        self.assertContains(response, expected_status)
+
+        expected_fqhc_status = Referral.STATUS_PENDING
+        self.assertContains(response, expected_fqhc_status)
+
+        # Check that referral list contains description of both referrals
+        self.assertContains(response, referral1)
+        self.assertContains(response, referral2)
+
+        # Verify that the correct amount of action items are present
+        total_action_items = "Action Items (6 Total)"
+        self.assertContains(response, total_action_items)
+        # Sanity check
+        incorrect_total_action_items = "Action Items (5 Total)"
+        self.assertNotContains(response, incorrect_total_action_items)
+
+        # Now complete followup request and see if page is properly updated
+        successful_res = ContactResult.objects.create(
+            name="Communicated health data with patient", patient_reached=True)
+
+        # Complete followup request for first referral
+        form_data = {
+            'contact_method': self.contact_method,
+            'contact_status': successful_res,
+            'has_appointment': PatientContact.PTSHOW_YES,
+            'appointment_location': [self.refloc.pk],
+            'pt_showed': PatientContact.PTSHOW_YES,
+            PatientContactForm.SUCCESSFUL_REFERRAL: True
+        }
+
+        # Check that form is valid
+        form = PatientContactForm(data=form_data)
+        self.assertEqual(form.is_valid(), True)
+
+        # Verify that PatientContactForm has been submitted
+        url = reverse('new-patient-contact', args=(self.pt.id,
+                                                   referral1.id,
+                                                   followup_request1.id))
+        response = self.client.post(url, form_data)
+        self.assertEqual(response.status_code, 302)
+
+        # Finally check if the new patient detail page is updated
+        url = reverse('patient-detail', args=(self.pt.id,))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        expected_status = "Action items 0, 1, 0 days past due"
+        self.assertContains(response, expected_status)
+
+        # Verify that the correct amount of action items are present
+        total_action_items = "Action Items (6 Total)"
+        self.assertContains(response, total_action_items)
+
+        # Verify that the followup total has been updated
+        expected_followups = "Followups (1)"
+        self.assertContains(response, expected_followups)
+
+        # There should now be 2 completed action items
+        finished_action_items = "Completed Action Items (2)"
+        self.assertContains(response, finished_action_items)
+
+        # Verify that the template contains expected PatientContact description
+        self.assertContains(response,
+                            PatientContact.objects.first().short_text())

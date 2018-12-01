@@ -1,7 +1,5 @@
 {% extends "pttrack/base.html" %}
 
-{% load bootstrap3 %}
-
 {% block title %}
 Osler: {{ title | default:"All Patients"}}
 {% endblock %}
@@ -196,7 +194,6 @@ Osler: {{ title | default:"All Patients"}}
                     console.log(errorThrown);
             });
         }
-        
     }
     document.addEventListener("DOMContentLoaded", doUponLoading, false);
 </script>

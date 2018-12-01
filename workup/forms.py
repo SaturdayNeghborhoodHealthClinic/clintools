@@ -1,16 +1,14 @@
-import decimal
+from decimal import Decimal, ROUND_HALF_UP
 
 from django.forms import (
-    fields, ModelForm, CheckboxSelectMultiple, ModelChoiceField,
-    ModelMultipleChoiceField, RadioSelect
-    )
+    fields, ModelForm, ModelChoiceField, ModelMultipleChoiceField, RadioSelect
+)
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout, Div, Field, Row, HTML
+from crispy_forms.layout import Submit, Layout, Div, Row, HTML
 from crispy_forms.layout import Field as CrispyField
 from crispy_forms.bootstrap import (
-    InlineCheckboxes, AppendedText, PrependedText, InlineRadios
-    )
+    InlineCheckboxes, AppendedText, PrependedText)
 from crispy_forms.utils import TEMPLATE_PACK, render_field
 
 from pttrack.models import Provider, ProviderType
@@ -56,9 +54,10 @@ def fahrenheit2centigrade(f):
     centigrade. If None, returns None.
     """
     if f is not None:
-        return (f - 32) / decimal.Decimal(9.0/5.0)
+        return (f - 32) / Decimal(9.0 / 5.0)
     else:
         return None
+
 
 def pounds2kilos(lbs):
     """Converts a weight in pounds to a weight in kilos. If None,
@@ -66,16 +65,17 @@ def pounds2kilos(lbs):
     """
 
     if lbs is not None:
-        return lbs * decimal.Decimal(0.453592)
+        return lbs * Decimal(0.453592)
     else:
         return None
+
 
 def inches2cm(inches):
     """Converts a length in inches to a length in centimeters. If None,
     returns None.
     """
     if inches is not None:
-        return inches * decimal.Decimal(2.54)
+        return inches * Decimal(2.54)
     else:
         return None
 
@@ -145,10 +145,8 @@ class WorkupForm(ModelForm):
 
     class Meta:
         model = models.Workup
-        exclude = ['patient', 'clinic_day', 'author', 'signer', 'author_type',
-                   'signed_date']
-        widgets = {'referral_location': CheckboxSelectMultiple,
-                   'referral_type': CheckboxSelectMultiple}
+        exclude = ['patient', 'author', 'signer', 'author_type',
+                   'signed_date', 'referral_location', 'referral_type']
 
     # limit the options for the attending, other_volunteer field to
     # Providers with ProviderType with signs_charts=True, False
@@ -158,14 +156,14 @@ class WorkupForm(ModelForm):
         queryset=Provider.objects.filter(
             clinical_roles__in=ProviderType.objects.filter(
                 signs_charts=True)).order_by("last_name")
-        )
+    )
 
     other_volunteer = ModelMultipleChoiceField(
         required=False,
         queryset=Provider.objects.filter(
             clinical_roles__in=ProviderType.objects.filter(
                 signs_charts=False)).distinct().order_by("last_name"),
-        )
+    )
 
     def __init__(self, *args, **kwargs):
         super(WorkupForm, self).__init__(*args, **kwargs)
@@ -176,7 +174,9 @@ class WorkupForm(ModelForm):
         self.helper.layout = Layout(
             Row(HTML('<h3>Clinical Team</h3>'),
                 Div('attending', css_class='col-sm-6'),
-                Div('other_volunteer',  css_class='col-sm-6')),
+                Div('other_volunteer', css_class='col-sm-6'),
+                Div('clinic_day', css_class='col-sm-12')
+                ),
 
             Row(HTML('<h3>History</h3>'),
                 Div('chief_complaint', css_class='col-sm-6'),
@@ -228,14 +228,6 @@ class WorkupForm(ModelForm):
                     css_class='col-xs-6')
                 ),
 
-            Row(HTML('<h3>Referral & Discharge</h3>'),
-                Div('will_return', css_class='col-xs-12'),
-                Div(Field('referral_location',
-                          style="background: #FAFAFA; padding: 10px;"),
-                    css_class='col-sm-6'),
-                Div(Field('referral_type',
-                          style="background: #FAFAFA; padding: 10px;"),
-                    css_class='col-sm-6')),
             Submit('submit', 'Save', css_class='btn btn-success')
         )
 
@@ -259,17 +251,24 @@ class WorkupForm(ModelForm):
                          ['imaging_voucher_amount',
                           'patient_pays_imaging'])
 
-        if cleaned_data.get('temperature_units') == 'F':
-            c = fahrenheit2centigrade(cleaned_data.get('t'))
-            cleaned_data['t'] = c
+        if 't' in cleaned_data and cleaned_data.get('t') is not None:
+            if cleaned_data.get('temperature_units') == 'F':
+                c = Decimal(fahrenheit2centigrade(
+                    cleaned_data.get('t'))).quantize(
+                        Decimal('.1'), rounding=ROUND_HALF_UP)
+                cleaned_data['t'] = c
 
-        if cleaned_data.get('weight_units') == 'lbs':
-            kgs = pounds2kilos(cleaned_data.get('weight'))
-            cleaned_data['weight'] = kgs
+        if 'weight' in cleaned_data and cleaned_data.get('weight') is not None:
+            if cleaned_data.get('weight_units') == 'lbs':
+                kgs = Decimal(pounds2kilos(
+                    cleaned_data.get('weight'))).quantize(
+                        Decimal('.1'), rounding=ROUND_HALF_UP)
+                cleaned_data['weight'] = kgs
 
-        if cleaned_data.get('height_units') == 'in':
-            cm = inches2cm(cleaned_data.get('height'))
-            cleaned_data['height'] = cm
+        if 'height' in cleaned_data and cleaned_data.get('height') is not None:
+            if cleaned_data.get('height_units') == 'in':
+                cm = int(inches2cm(cleaned_data.get('height')))
+                cleaned_data['height'] = cm
 
         form_require_together(self, ['bp_sys', 'bp_dia'])
         if cleaned_data.get('bp_sys') and cleaned_data.get('bp_dia'):
@@ -297,3 +296,14 @@ class ClinicDateForm(ModelForm):
     class Meta:
         model = models.ClinicDate
         exclude = ['clinic_date', 'gcal_id']
+
+    def __init__(self, *args, **kwargs):
+        super(ClinicDateForm, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-2'
+        self.helper.field_class = 'col-lg-8'
+
+        self.helper.add_input(Submit('submit', 'Submit'))
