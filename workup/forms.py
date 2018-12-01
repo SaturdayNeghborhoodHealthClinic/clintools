@@ -112,7 +112,8 @@ class AppendedRadios(CrispyField):
 
     def render(self, form, form_style, context, template_pack=TEMPLATE_PACK,
                extra_context=None, **kwargs):
-        extra_context = extra_context.copy() if extra_context is not None else {}
+        extra_context = (extra_context.copy() if extra_context is not None
+                         else {})
         extra_context.update({
             'radio_field': form[self.radio_field],
             'input_size': self.input_size,
@@ -203,11 +204,9 @@ class WorkupForm(ModelForm):
                     css_class='col-md-4 col-sm-3 col-xs-6'),
                 Div(AppendedText('bp_dia', 'mmHg'),
                     css_class='col-md-4 col-sm-3 col-xs-6'),
-                Div(AppendedText(
-                    'height', unit_selector_html('height', ['in', 'cm'])),
+                Div(AppendedRadios('height', 'height_units'),
                     css_class='col-md-4 col-sm-6 col-xs-12'),
-                Div(AppendedText(
-                    'weight', unit_selector_html('weight', ['kg', 'lbs'])),
+                Div(AppendedRadios('weight', 'weight_units'),
                     css_class='col-md-4 col-sm-6 col-xs-12'),
                 Div('pe', css_class='col-xs-12')),
 

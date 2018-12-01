@@ -237,15 +237,6 @@ class ViewsExistTest(TestCase):
             reverse('new-workup', args=(pt_id,)),
             data=wu_data)
 
-        print(r.context['form']['chief_complaint'])
-        print(r.context['form']['chief_complaint'].value())
-
-        print(r.context['form']['weight_units'])
-        print(dir(r.context['form']['weight_units']))
-        print(r.context['form']['weight_units'].html_initial_id)
-        print('value:', r.context['form']['weight_units'].value())
-        print([s for s in dir(self) if 'assert' in s])
-
         # verify we're bounced back to workup-create
         self.assertEqual(r.status_code, 200)
         self.assertTemplateUsed(r, 'workup/workup-create.html')
@@ -256,11 +247,8 @@ class ViewsExistTest(TestCase):
             f.write(str(r))
 
         for unit in ['height_units', 'weight_units', 'temperature_units']:
-            self.assertRegexpMatches(
-                str(r), '<input name="%s"' % (unit))
+            self.assertContains(r, '<input name="%s"' % (unit))
 
             self.assertEqual(
                 r.context['form'][unit].value(),
                 wu_data[unit])
-
-        assert False
