@@ -52,3 +52,12 @@ class TestAudit(TestCase):
         self.assertEquals(record.user_ip, USER_IP)
         self.assertEquals(record.role.short_name, 'Attending')
         self.assertEquals(record.method, 'GET')
+
+    def test_audit_admin(self):
+        p = log_in_provider(self.client, build_provider(["Coordinator"]))
+        p.associated_user.is_staff = True
+        p.associated_user.is_superuser = True
+        p.associated_user.save()
+
+        r = self.client.get(reverse('admin:audit_pageviewrecord_changelist'))
+        self.assertEquals(r.status_code, 200)
