@@ -84,6 +84,11 @@
 
 		},
 		{
+			"path": "audit",
+			"file_exclude_patterns":
+				["__init__.py"],
+		},
+		{
 			"file_exclude_patterns":
 			["__init__.py"],
 			"path": "appointment"
