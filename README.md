@@ -43,10 +43,19 @@ pip install -r requirements.txt
 
 One of our dependencies is Pillow, which requires [some other libraries.](https://pillow.readthedocs.org/en/3.0.x/installation.html)
 
-Once you've done that, from the `osler/` build the test database with
+Once you've done that, from the `osler/` build the test database with:
 
 ```bash
 sh scripts/reset_db.sh
+```
+Windows users will need to use the batch file instead:
+```bash
+scripts/reset_db.bat
+```
+
+Windows users will need to use the batch file instead:
+```bash
+scripts/reset_db.bat
 ```
 
 This script is also used to rebuild the test database after making database
@@ -69,6 +78,6 @@ Remote servers without GUI access may need to [configure headless selenium](http
 
 ## Deployment
 
-There a lot of good resources that teach you how to deploy a django app, and there
+There are a lot of good resources that teach you how to deploy a django app, and there
 are many ways to do it correctly. There's nothing too special about Osler in this regard!
 However, we strongly recommmend [nginx, gunicorn, and postgres](http://michal.karzynski.pl/blog/2013/06/09/django-nginx-gunicorn-virtualenv-supervisor/).

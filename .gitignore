@@ -64,3 +64,8 @@ target/
 
 # Database
 db.sqlite3
+
+# ptstats CSV data and map
+ptstats.csv
+map.html
+heatmap.html
