@@ -24,4 +24,5 @@ unwrapped_urlconf = [  # pylint: disable=invalid-name
 ]
 
 wrap_config = {}
+
 urlpatterns = [wrap_url(u, **wrap_config) for u in unwrapped_urlconf]

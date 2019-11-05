@@ -23,7 +23,7 @@ class DiagnosisType(models.Model):
 
     name = models.CharField(max_length=100, primary_key=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -34,7 +34,7 @@ class ClinicType(models.Model):
 
     name = models.CharField(max_length=50)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -47,7 +47,7 @@ class ClinicDate(models.Model):
 
     clinic_date = models.DateField()
 
-    def __unicode__(self):
+    def __str__(self):
         return (str(self.clinic_type) + " on " +
                 datetime.datetime.strftime(self.clinic_date, '%A, %B %d, %Y'))
 
@@ -108,6 +108,7 @@ class AttestableNote(Note):
             raise ValueError(
                 "Provider {p} doesn't have role {r}!".format(
                     p=user.provider, r=active_role))
+
 
         if active_role.signs_charts:
             assert active_role in user.provider.clinical_roles.all()
@@ -269,5 +270,5 @@ class Workup(AttestableNote):
     def url(self):
         return reverse('workup', args=(self.pk,))
 
-    def __unicode__(self):
+    def __str__(self):
         return self.patient.name() + " on " + str(self.clinic_day.clinic_date)

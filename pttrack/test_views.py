@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import datetime
 import json
 
@@ -407,7 +405,7 @@ class LiveTestPatientLists(SeleniumLiveTestCase):
             'state': 'BA',
             'zip_code': '63108',
             'pcp_preferred_zip': '63018',
-            'date_of_birth': datetime.date(1990, 01, 01),
+            'date_of_birth': datetime.date(1990, 1, 1),
             'patient_comfortable_with_english': False,
             'preferred_contact_method': models.ContactMethod.objects.first(),
         }
@@ -755,7 +753,7 @@ class ViewsExistTest(TestCase):
             title="who done it?",
             comments="Pictured: silliness",
             document_type=dtype,
-            image=File(open(self.test_img)),
+            image=File(file=open(self.test_img, 'rb')),
             patient=models.Patient.objects.get(id=1),
             author=models.Provider.objects.get(id=1),
             author_type=models.ProviderType.objects.first())
@@ -767,8 +765,8 @@ class ViewsExistTest(TestCase):
         self.assertEqual(doc.image.path, p)
         self.assertTrue(os.path.isfile(p))
 
-        # Checking to make sure the path is 48 characters (the length of the random password
-
+        # Checking to make sure the path is 48 characters (the length of
+        # the random password
         self.assertEqual(len(random_name), 48)
 
         url = reverse('document-detail', args=(1,))
@@ -778,10 +776,10 @@ class ViewsExistTest(TestCase):
         # test the creation of many documents, just in case.
         for i in range(101):
             doc = models.Document.objects.create(
-                title="who done it? "+str(i),
+                title="who done it? %s" % i,
                 comments="Pictured: silliness",
                 document_type=dtype,
-                image=File(open(self.test_img)),
+                image=File(open(self.test_img, 'rb')),
                 patient=models.Patient.objects.get(id=1),
                 author=models.Provider.objects.get(id=1),
                 author_type=models.ProviderType.objects.first())
@@ -793,7 +791,8 @@ class ViewsExistTest(TestCase):
             self.assertEqual(doc.image.path, p)
             self.assertTrue(os.path.isfile(p))
 
-            # Checking to make sure the path is 48 characters (the length of the random password
+            # Checking to make sure the path is 48 characters (the length
+            # of the random password
 
             self.assertEqual(len(random_name), 48)
 
@@ -941,7 +940,7 @@ class IntakeTest(TestCase):
             'country': 'Germany',
             'zip_code': '63108',
             'pcp_preferred_zip': '63018',
-            'date_of_birth': datetime.date(1990, 01, 01),
+            'date_of_birth': datetime.date(1990, 1, 1),
             'patient_comfortable_with_english': False,
             'ethnicities': [models.Ethnicity.objects.first()],
             'preferred_contact_method':
@@ -1217,7 +1216,7 @@ class TestReferralPatientDetailIntegration(TestCase):
             state='BA',
             zip_code='63108',
             pcp_preferred_zip='63018',
-            date_of_birth=datetime.date(1990, 01, 01),
+            date_of_birth=datetime.date(1990, 1, 1),
             patient_comfortable_with_english=False,
             preferred_contact_method=self.contact_method,
         )
@@ -1378,9 +1377,6 @@ class TestReferralPatientDetailIntegration(TestCase):
         url = reverse('patient-detail', args=(self.pt.id,))
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-
-        with open('tmp.html', 'w') as f:
-            f.write(response.content)
 
         expected_status = "Action items 1, 0, 0 days past due"
         self.assertContains(response, expected_status)
