@@ -1,3 +1,4 @@
+django-sendfile2==0.4.2
 Django==1.11.23
 django-bootstrap3==11.0.0
 git+https://github.com/inducer/django-bootstrap3-datetimepicker.git
@@ -7,7 +8,7 @@ djangorestframework==3.4.0
 ecdsa==0.13
 html5lib==1.0.1
 httplib2==0.11.3
-Pillow==5.1.0
+Pillow==6.2.1
 PyPDF2==1.26.0
 reportlab==3.4.0
 six==1.11.0

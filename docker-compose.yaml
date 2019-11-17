@@ -1,0 +1,81 @@
+version: "3.2"
+
+services:
+  web:
+    container_name: osler_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: osler
+    stop_signal: SIGINT
+    volumes:
+      - static:/home/gunicorn_user/osler/osler/static
+      - media:/home/gunicorn_user/osler/osler/media
+      - ./logs:/home/gunicorn_user/logs
+    networks:
+      - nginx_network
+      - database_network
+    depends_on:
+      - db
+    environment:
+      DJANGO_DEBUG: 0
+      DJANGO_SETTINGS_MODULE: osler.docker_settings
+      DJANGO_SENDFILE_BACKEND: sendfile.backends.nginx
+      DJANGO_SENDFILE_ROOT: /opt/services/osler/media
+      DJANGO_SENDFILE_URL: /media
+      DJANGO_SECRET_KEY_FILE: /run/secrets/django_secret_key
+      DJANGO_DEBUG_LOG_FILE: /home/gunicorn_user/logs/osler.log
+      DATABASE_PASSWORD_FILE: /run/secrets/database_password
+      DATABASE_BACKEND: django.db.backends.postgresql_psycopg2
+      DATABASE_NAME: osler
+      DATABASE_USER: django
+      DATABASE_PORT: 5432
+      DATABASE_HOST: db
+    secrets:
+      - database_password
+      - django_secret_key
+  db:
+    container_name: osler_db
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: osler
+      POSTGRES_PASSWORD_FILE: /run/secrets/database_password
+      POSTGRES_USER: django
+    networks:
+      - database_network
+    secrets:
+      - database_password
+  nginx:
+    image: nginx:latest
+    container_name: nginx_server
+    restart: always
+    ports:
+      # - "0.0.0.0:80:80"
+      - 8000:80
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./config/nginx.conf:/etc/nginx/nginx.conf
+      - static:/opt/services/osler/static/
+      - media:/opt/services/osler/media/
+    depends_on:
+      - web
+    networks:
+      - nginx_network
+
+volumes:
+  static:
+  media:
+  db_data:
+
+secrets:
+   database_password:
+     file: config/secrets/database_password.txt
+   django_secret_key:
+     file: config/secrets/django_secret_key.txt
+
+networks:
+  nginx_network:
+    driver: bridge
+  database_network:  # <-- add the bridge
+    driver: bridge
