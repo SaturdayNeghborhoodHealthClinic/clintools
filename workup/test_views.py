@@ -224,6 +224,86 @@ class ViewsExistTest(TestCase):
                 wu_data[unit])
 
 
+class TestPsychNoteViews(TestCase):
+    '''
+    Verify that views involving the wokrup are functioning.
+    '''
+    fixtures = ['workup', 'pttrack']
+
+    def setUp(self):
+
+        self.formdata = {
+            'title': 'Depression',
+            'text': 'so sad does testing work???',
+            'patient': Patient.objects.first(),
+            'author': models.Provider.objects.first(),
+            'author_type': ProviderType.objects.first()
+        }
+
+        models.ClinicDate.objects.create(
+            clinic_type=models.ClinicType.objects.first(),
+            clinic_date=now().date())
+
+        provider = build_provider()
+        log_in_provider(self.client, provider)
+
+    def test_psychnote_urls(self):
+        url = reverse('new-psych-note', args=(1,))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(url, self.formdata)
+        self.assertRedirects(response, reverse('patient-detail',
+                                               args=(1,)))
+
+        response = self.client.get(reverse('psych-note-update', args=(1,)))
+        self.assertEqual(response.status_code, 200)
+
+        self.formdata['text'] = 'actually not so bad'
+
+        response = self.client.post(url, self.formdata)
+        self.assertRedirects(
+            response, reverse('patient-detail', args=(1,)))
+
+    def test_psychnote_signing(self):
+        """Verify that singing is possible for attendings and not for others.
+        """
+
+        sign_url = "psych-note-sign"
+
+        pn = models.PsychNote.objects.create(
+            title='Depression',
+            text='so sad does testing work???',
+            patient=Patient.objects.first(),
+            author=models.Provider.objects.first(),
+            author_type=ProviderType.objects.first()
+        )
+
+        # Fresh notes should be unsigned
+        self.assertFalse(pn.signed())
+
+        # Providers with can_attend == False should not be able to sign
+        for nonattesting_role in ["Preclinical", "Clinical", "Coordinator"]:
+            log_in_provider(self.client, build_provider([nonattesting_role]))
+
+            response = self.client.get(
+                reverse(sign_url, args=(pn.id,)))
+            self.assertRedirects(response,
+                                 reverse('psych-note-detail',
+                                         args=(pn.id,)))
+            self.assertFalse(models.PsychNote.objects
+                             .get(pk=pn.id)
+                             .signed())
+
+        # Providers able to attend should be able to sign.
+        log_in_provider(self.client, build_provider(["Attending"]))
+
+        response = self.client.get(reverse(sign_url, args=(pn.id,)))
+        self.assertRedirects(response, reverse('psych-note-detail',
+                                               args=(pn.id,)),)
+        # the pn has been updated, so we have to hit the db again.
+        self.assertTrue(models.PsychNote.objects.get(pk=pn.id).signed())
+
 class TestProgressNoteViews(TestCase):
     '''
     Verify that views involving the wokrup are functioning.
@@ -264,42 +344,3 @@ class TestProgressNoteViews(TestCase):
         response = self.client.post(url, self.formdata)
         self.assertRedirects(
             response, reverse('patient-detail', args=(1,)))
-
-    def test_progressnote_signing(self):
-        """Verify that singing is possible for attendings and not for others.
-        """
-
-        sign_url = "progress-note-sign"
-
-        pn = models.ProgressNote.objects.create(
-            title='Depression',
-            text='so sad does testing work???',
-            patient=Patient.objects.first(),
-            author=models.Provider.objects.first(),
-            author_type=ProviderType.objects.first()
-        )
-
-        # Fresh notes should be unsigned
-        self.assertFalse(pn.signed())
-
-        # Providers with can_attend == False should not be able to sign
-        for nonattesting_role in ["Preclinical", "Clinical", "Coordinator"]:
-            log_in_provider(self.client, build_provider([nonattesting_role]))
-
-            response = self.client.get(
-                reverse(sign_url, args=(pn.id,)))
-            self.assertRedirects(response,
-                                 reverse('progress-note-detail',
-                                         args=(pn.id,)))
-            self.assertFalse(models.ProgressNote.objects
-                             .get(pk=pn.id)
-                             .signed())
-
-        # Providers able to attend should be able to sign.
-        log_in_provider(self.client, build_provider(["Attending"]))
-
-        response = self.client.get(reverse(sign_url, args=(pn.id,)))
-        self.assertRedirects(response, reverse('progress-note-detail',
-                                               args=(pn.id,)),)
-        # the pn has been updated, so we have to hit the db again.
-        self.assertTrue(models.ProgressNote.objects.get(pk=pn.id).signed())
