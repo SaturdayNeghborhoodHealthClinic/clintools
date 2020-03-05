@@ -1,0 +1,201 @@
+{% extends 'admin/change_list.html' %}
+{% load static %}
+{% block content_title %}
+    <h1> Impact Summary </h1>
+{% endblock %}
+{% block result_list %}
+<link rel="stylesheet" href={% static "pttrack/css/barchart.css" %}>
+
+<style>
+.module h2 {
+  font-weight: bold;
+  font-size: 15px;
+}
+</style>
+<div class=”results”>
+  <h2>Total Patients Seen in Year</h2>
+  <table>  
+    <thead>
+      <tr>
+        <th>
+          <div class=”text”>
+            <a href=”#”>Year</a>
+          </div>
+        </th>
+        <th>
+          <div class=”text”>
+            <a href=”#”>Total Patients</a>
+          </div>
+        </th>
+        <th>
+          <div class=”text”>
+            <a href=”#”>Patients Seen Per Clinic Day (Average)</a>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in workups_by_year %}
+      <tr>
+      	<td> {{ row.year }} </td>
+        <td> {{ row.count }} </td>
+        <td> {{ row.workups_per_clinic_day }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <br></br>
+  <h2>Most Common Diagnosis Categories</h2>
+  <table>  
+    <thead>
+      <tr>
+        <th>
+          <div class=”text”>
+            <a href=”#”>Diagnosis Categories</a>
+          </div>
+        </th>
+        <th>
+          <div class=”text”>
+            <a href=”#”>Total</a>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in diagnosis_categories %}
+      <tr>
+      	<td> {{ row }} </td>
+        <td> {{ row.count }} </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <br></br>
+  <h2>Most Commonly Prescribed Medications</h2>
+  <table>  
+    <thead>
+      <tr>
+        <th>
+          <div class=”text”>
+            <a href=”#”>Medication</a>
+          </div>
+        </th>
+        <th>
+          <div class=”text”>
+            <a href=”#”>Total</a>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in med_list %}
+      <tr>
+        <td> {{ row.name }} </td>
+        <td> {{ row.count }} </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <br></br>
+  <h2>Attending Leaderboard</h2>
+  <table>  
+    <thead>
+      <tr>
+        <th>
+          <div class=”text”>
+            <a href=”#”>Attending</a>
+          </div>
+        </th>
+        <th>
+          <div class=”text”>
+            <a href=”#”>Patients Seen</a>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in attendings %}
+      <tr>
+        <td> {{ row.name }} </td>
+        <td> {{ row.count }} </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <br></br>
+  <h2>Volunteer Leaderboard</h2>
+  <table>  
+    <thead>
+      <tr>
+        <th>
+          <div class=”text”>
+            <a href=”#”>Student</a>
+          </div>
+        </th>
+        <th>
+          <div class=”text”>
+            <a href=”#”>Workups Written</a>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in authors %}
+      <tr>
+        <td> {{ row.name }} </td>
+        <td> {{ row.count }} </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <br></br>
+  <h2> Workups over time </h2>
+
+    </style>
+    <div class="results">
+        <div class="bar-chart">
+        {% for x in workups_over_time %}
+            <div class="bar" style="height:{{x.pct}}%">
+                <div class="bar-tooltip">
+                    {{x.total | default:0 }}<br>
+                    {{x.period | date:"m/d/Y"}}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    <br></br>
+    <h2> Workups per patient </h2>
+    <br></br>
+    <div class="results">
+        <div class="bar-chart">
+        {% for x in workups_per_patient %}
+          <div class="bar" style="height:{{x.pct}}%">
+                <div class="bar-tooltip">
+                    Count: {{x.count | default:0 }}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    <style>
+    .container {
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+      padding-bottom: 20px;
+      font-size: 20px;
+    }
+    </style>
+    <div class="container">
+    {% for x in workups_per_patient %}
+        <div>{{x.workups_per_pt}}</div>
+    {% endfor %}
+    </div>
+
+</div>
+
+
+{% endblock %}
+{% block pagination %}
+{% endblock %}

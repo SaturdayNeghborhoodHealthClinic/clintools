@@ -1,0 +1,118 @@
+{% extends 'admin/change_list.html' %}
+{% load dashboard_extras %}
+{% load static %}
+
+{% block content_title %}
+<h1> Patient Demographics Summary </h1>
+{% endblock %}
+{% block result_list %}
+<style>
+.module h2 {
+  font-weight: bold;
+  font-size: 15px;
+}
+</style>
+<h2>Insurance Status of Patient Population</h2>
+<!-- Load d3 and chart styles -->
+<script src={% static "pttrack/js/d3.v4.js" %}></script>
+<script src={% static "pttrack/js/d3-scale-chromatic.v1.min.js" %}></script>
+<script src={% static "pttrack/js/drawpie.js" %}></script>
+<link rel="stylesheet" href={% static "pttrack/css/barchart.css" %}>
+
+<!-- Create a div where the graph will take place -->
+<div id="insurance_pie"></div>
+
+<!-- Draw the pie chart -->
+<script>
+var data = {{ has_insurance|safe }}
+drawpie(data, "#insurance_pie")
+</script>
+
+<br></br>
+<h2>Employment Status of Patient Population</h2>
+<!-- Create a div where the graph will take place -->
+<div id="employed_pie"></div>
+
+<!-- Draw the pie chart -->
+<script>
+var data = {{ currently_employed|safe }}
+drawpie(data, "#employed_pie")
+</script>
+
+  <br></br>
+  <h2> Income Range Distribution </h2>
+
+    <div class="results">
+        <div class="bar-chart">
+        {% for x in income_range_count %}
+        	<div class="bar" style="height:{{x.pct}}%">
+                <div class="bar-tooltip">
+                    {{x.count | default:0 }}<br>
+                    {{x.range}}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    <style>
+    .container {
+    	display: flex;
+    	justify-content: space-around;
+    	text-align: center;
+      white-space: pre;
+    	padding-bottom: 20px;
+    }
+
+	</style>
+    <div class="container">
+    {% for x in income_range_count %}
+        <div>{{x.range}}</div>
+    {% endfor %}
+	</div>
+	<h2> Education Level Distribution </h2>
+	 </style>
+    <div class="results">
+        <div class="bar-chart">
+        {% for x in education_levels %}
+        	<div class="bar" style="height:{{x.pct}}%">
+                <div class="bar-tooltip">
+                    {{x.count | default:0 }}<br>
+                    {{x.level}}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    <div class="container">
+    {% for x in education_levels %}
+        <div>{{x.level}}</div>
+    {% endfor %}
+	</div>
+	<h2>Most Common Chronic Conditions</h2>
+  	<table>  
+    <thead>
+      <tr>
+        <th>
+          <div class=”text”>
+            <a href=”#”>Chronic Conditions</a>
+          </div>
+        </th>
+        <th>
+          <div class=”text”>
+            <a href=”#”>Count</a>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in chronic_conditions %}
+      <tr>
+        <td> {{ row.name }} </td>
+        <td> {{ row.count }} </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+{% block pagination %}
+{% endblock %}
