@@ -1,24 +1,38 @@
 {% extends "pttrack/base.html" %}
+{% load i18n %}
+{% load static %}
+
+<!-- load css -->
+  {% block extra_head %}
+	<link rel="stylesheet" href={% static "workup.css" %}>
+  {% endblock %}
+<!-- end load css -->
+
+{% load i18n %}
+
+<!-- trans finished -->
 
 {% block title %}
-Create a New Note
+{% trans 'Create a New Note' %}
 {% endblock %}
 
 {% block header %}
-<h2>Create a New Note</h2>
+<h2>{% trans 'Create a New Note' %}</h2>
 {% endblock %}
 
 {% block content %}
 
 <div class="container">
 
-	<div  class="col-md-4 col-md-offset-4">
-		<table class="table table-striped" style="text-align: center">
-			<tr><th style="text-align: center"><h4>Note Type</h4></th></tr>
+	<div  class="col-md-6 col-md-offset-3 custom-table-outer">
+		<table class="table custom-table" style="text-align: center">
+			<tr><th class="custom-table-inner" style="text-align: center"><h4 class="h4-custom">{% trans 'Note Type' %}</h4>
+			<p class="p-custom">Wähle hier die Untersuchungsform aus, die für diesen Patienten angelegt werden soll.</p>
+			</th></tr>
 
 			{% for note_name, note_url in note_types.iteritems %}
-			<tr><td>
-				<a href="{{note_url}}" role="button">{{ note_name }}</a>
+			<tr><td class="td-custom">
+				<a class="a-custom" href="{{note_url}}" role="button">{{ note_name }}</a>
 			</td></tr>
 			{% endfor %}
 		</table>

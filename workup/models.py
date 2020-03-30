@@ -1,11 +1,15 @@
 import datetime
 
+from django.utils.translation import ugettext_lazy as _
+
 from django.db import models
 from django.db.models import Q
 from django.utils.timezone import now
 
 from simple_history.models import HistoricalRecords
-from django.core.urlresolvers import reverse
+# from django.core.urlresolvers import reverse
+from django.urls import reverse
+
 from django.core.validators import MinValueValidator
 
 from pttrack.models import Note, Provider, ReferralLocation, ReferralType
@@ -127,8 +131,8 @@ class AttestableNote(Note):
 
 
 class ProgressNote(AttestableNote):
-    title = models.CharField(max_length=200)
-    text = models.TextField()
+    title = models.CharField(max_length=200,verbose_name=_("Title"))
+    text = models.TextField(verbose_name=_("Text"))
 
     history = HistoricalRecords()
 
@@ -155,83 +159,83 @@ class Workup(AttestableNote):
     continuity care.'''
 
     attending = models.ForeignKey(
-        Provider, null=True, blank=True, related_name="attending_physician",
+        Provider, null=True, blank=True, related_name="attending_physician", verbose_name=_("attending_physician"),
         validators=[validate_attending],
-        help_text="Which attending saw the patient?")
+        help_text=_("Which attending saw the patient?"))
     other_volunteer = models.ManyToManyField(
-        Provider, blank=True, related_name="other_volunteer",
-        help_text="Which other volunteer(s) did you work with (if any)?")
+        Provider, blank=True, related_name="other_volunteer", verbose_name=_("other_volunteer"),
+        help_text=_("Which other volunteer(s) did you work with (if any)?"))
 
     clinic_day = models.ForeignKey(
-        ClinicDate, help_text="When was the patient seen?")
+        ClinicDate, help_text=_("When was the patient seen?"), verbose_name=_("clinic day"))
 
-    chief_complaint = models.CharField(max_length=1000, verbose_name="CC")
-    diagnosis = models.CharField(max_length=1000, verbose_name="Dx")
-    diagnosis_categories = models.ManyToManyField(DiagnosisType)
+    chief_complaint = models.CharField(max_length=1000, verbose_name=_("CC"))
+    diagnosis = models.CharField(max_length=1000, verbose_name=_("Dx"))
+    diagnosis_categories = models.ManyToManyField(DiagnosisType, verbose_name=_("Diagnosis categories"))
 
-    HPI = models.TextField(verbose_name="HPI")
-    PMH_PSH = models.TextField(verbose_name="PMH/PSH")
-    meds = models.TextField(verbose_name="Medications")
-    allergies = models.TextField()
-    fam_hx = models.TextField(verbose_name="Family History")
-    soc_hx = models.TextField(verbose_name="Social History")
-    ros = models.TextField(verbose_name="ROS")
+    HPI = models.TextField(verbose_name=_("HPI"))
+    PMH_PSH = models.TextField(verbose_name=_("PMH/PSH"))
+    meds = models.TextField(verbose_name=_("Medications"))
+    allergies = models.TextField(verbose_name=_("Allergies"))
+    fam_hx = models.TextField(verbose_name=_("Family History"))
+    soc_hx = models.TextField(verbose_name=_("Social History"))
+    ros = models.TextField(verbose_name=_("ROS"))
 
     # represented internally in per min
     hr = models.PositiveSmallIntegerField(
-        blank=True, null=True, verbose_name="Heart Rate")
+        blank=True, null=True, verbose_name=_("Heart Rate"))
 
     # represented internally as mmHg
     bp_sys = models.PositiveSmallIntegerField(
-        blank=True, null=True, verbose_name="Systolic",
+        blank=True, null=True, verbose_name=_("Systolic"),
         validators=[workup_validators.validate_bp_systolic])
     bp_dia = models.PositiveSmallIntegerField(
-        blank=True, null=True, verbose_name="Diastolic",
+        blank=True, null=True, verbose_name=_("Diastolic"),
         validators=[workup_validators.validate_bp_diastolic])
 
     # represented internally in per min
     rr = models.PositiveSmallIntegerField(
-        blank=True, null=True, verbose_name="Respiratory Rate")
+        blank=True, null=True, verbose_name=_("Respiratory Rate"))
 
     # represented internally in Fahrenheit
     t = models.DecimalField(
         max_digits=4, decimal_places=1,
         blank=True, null=True,
-        verbose_name="Temperature")
+        verbose_name=_("Temperature"))
 
     # represented internally as inches
     height = models.PositiveSmallIntegerField(
-        blank=True, null=True)
+        blank=True, null=True, verbose_name=_("Height"))
     # represented internally as kg
     weight = models.DecimalField(
         max_digits=5, decimal_places=1,
-        blank=True, null=True)
+        blank=True, null=True, verbose_name=_("Weight"))
 
-    pe = models.TextField(verbose_name="Physical Examination")
+    pe = models.TextField(verbose_name=_("Physical Examination"))
 
     labs_ordered_quest = models.TextField(
-        blank=True, null=True, verbose_name="Labs Ordered from Quest")
+        blank=True, null=True, verbose_name=_("Labs Ordered from Quest"))
     labs_ordered_internal = models.TextField(
-        blank=True, null=True, verbose_name="Labs Ordered Internally")
+        blank=True, null=True, verbose_name=_("Labs Ordered Internally"))
 
     rx = models.TextField(blank=True, null=True,
-                          verbose_name="Prescription Orders")
+                          verbose_name=_("Prescription Orders"))
 
-    got_voucher = models.BooleanField(default=False)
+    got_voucher = models.BooleanField(default=False, verbose_name=_("Got voucher"))
     voucher_amount = models.DecimalField(
         max_digits=6, decimal_places=2, blank=True, null=True,
-        validators=[MinValueValidator(0)])
+        validators=[MinValueValidator(0)], verbose_name=_("Voucher amount"))
     patient_pays = models.DecimalField(
         max_digits=6, decimal_places=2, blank=True, null=True,
-        validators=[MinValueValidator(0)])
+        validators=[MinValueValidator(0)], verbose_name=_("Patient pays"))
 
-    got_imaging_voucher = models.BooleanField(default=False)
+    got_imaging_voucher = models.BooleanField(default=False, verbose_name=_("Got imaging voucher"))
     imaging_voucher_amount = models.DecimalField(
         max_digits=6, decimal_places=2, blank=True, null=True,
-        validators=[MinValueValidator(0)])
+        validators=[MinValueValidator(0)], verbose_name=_("Imaging voucher amount"))
     patient_pays_imaging = models.DecimalField(
         max_digits=6, decimal_places=2, blank=True, null=True,
-        validators=[MinValueValidator(0)])
+        validators=[MinValueValidator(0)], verbose_name=_("Patient pays imaging"))
 
     # Please note that these are no longer shown on the form and will not
     # be filled out because the referral app handles this functionality
@@ -239,13 +243,14 @@ class Workup(AttestableNote):
     referral_location = models.ManyToManyField(ReferralLocation, blank=True)
 
     will_return = models.BooleanField(default=False,
-                                      help_text="Will the pt. return to SNHC?")
+                                      help_text=_("Will the pt. return to SNHC?"))
 
-    A_and_P = models.TextField()
+    A_and_P = models.TextField(verbose_name=_("A and P"))
 
     signer = models.ForeignKey(Provider,
                                blank=True, null=True,
                                related_name="signed_workups",
+                               verbose_name=_("signed_workups"),
                                validators=[validate_attending])
     signed_date = models.DateTimeField(blank=True, null=True)
 

@@ -1,5 +1,7 @@
 {% extends "pttrack/base-form.html" %}
 
+{% load i18n %}
+<!-- trans finished -->
 {% load bootstrap3 %}
 
 {% block title %}
@@ -7,7 +9,7 @@
 {% endblock %}
 
 {% block header %}
-<h1>New {{ note_type }} </h1>
+<h1>{% trans "New" context "neuer" %} {{ note_type }} </h1>
 {% endblock %}
 
 {% block content %}

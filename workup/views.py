@@ -4,6 +4,8 @@ from django.http import (HttpResponseRedirect, HttpResponseServerError,
 
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.utils.translation import gettext as _
+
 
 from django.template.loader import get_template
 from django.utils.timezone import now
@@ -31,8 +33,8 @@ def get_clindates():
 def new_note_dispatch(request, pt_id):
 
     note_types = {
-        'Standard Note': reverse("new-workup", args=(pt_id,)),
-        'Clinical Psychology Note': reverse("new-progress-note", args=(pt_id,)),
+        _('Standard Note'): reverse("new-workup", args=(pt_id,)),
+        _('Clinical Psychology Note'): reverse("new-progress-note", args=(pt_id,)),
     }
 
     return render(request, 'workup/new-note-dispatch.html',
@@ -44,7 +46,7 @@ class WorkupCreate(NoteFormView):
     clinic date first, and prompts its creation if none exist.'''
     template_name = 'workup/workup-create.html'
     form_class = forms.WorkupForm
-    note_type = 'Workup'
+    note_type = _('Workup')
 
     def get(self, *args, **kwargs):
         """Check that we have an instantiated ClinicDate today,
@@ -137,7 +139,7 @@ class ProgressNoteUpdate(NoteUpdate):
     template_name = "pttrack/form-update.html"
     model = models.ProgressNote
     form_class = forms.ProgressNoteForm
-    note_type = 'Clinical Psychology Note'
+    note_type = _('Clinical Psychology Note')
 
     def get_success_url(self):
         pnote = self.object
@@ -147,7 +149,7 @@ class ProgressNoteUpdate(NoteUpdate):
 class ProgressNoteCreate(NoteFormView):
     template_name = 'pttrack/form_submission.html'
     form_class = forms.ProgressNoteForm
-    note_type = 'Clinical Psychology Note'
+    note_type = _('Clinical Psychology Note')
 
     def form_valid(self, form):
         pnote = form.save(commit=False)

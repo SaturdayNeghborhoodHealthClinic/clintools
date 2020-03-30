@@ -1,14 +1,17 @@
 {% extends "pttrack/base.html" %}
 
+{% load i18n %}
+<!-- trans NOT finished -->
+
 {% load bootstrap3 %}
 
 {% block title %}
-Appointment List
+{% blocktrans %}Appointment List{% endblocktrans %}
 {% endblock %}
 
 {% block header %}
 <div class="container">
-	<h1>Appointment List</h1>
+	<h1>{% blocktrans %}Appointment List{% endblocktrans %}</h1>
 </div>
 
 {% endblock %}
@@ -26,7 +29,7 @@ Appointment List
           </div>
           <table class="table" name="appointment-table-{{forloop.counter0}}">
             <tr>
-              <th>Time</th><th>Patient</th><th>Type</th>
+              <th>{% blocktrans %}Time{% endblocktrans %}</th><th>{% blocktrans %}Patient{% endblocktrans %}</th><th>{% blocktrans %}Type{% endblocktrans %}</th>
             </tr>
             {% with forloop.first as first_apt %}
             	{% for app in app_list %}
@@ -43,16 +46,16 @@ Appointment List
                     <p  style="margin-left: 5%; margin-right: 5%"><i>{{ app.comment }}</i></p>
                     <p style="margin-left: 5%; margin-right: 5%; text-align: right;">
                       <a class="btn btn-xs btn-default"  href="{% url 'appointment-update' pk=app.id %}">
-                        <span class="glyphicon glyphicon-pencil"></span>&nbsp;edit
+                        <span class="glyphicon glyphicon-pencil"></span>&nbsp;{% blocktrans %}edit{% endblocktrans %}
                       </a>
                       {% if app.pt_showed == None and first_apt %}
                         <a class="btn btn-xs btn-danger" href="{% url 'appointment-mark-no-show' pk=app.id %}"
                            onclick="return confirm('Mark this patient as a not coming?')">
-                          <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;no show
+                          <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;{% blocktrans %}no show{% endblocktrans %}
                         </a>
                         <a class="btn btn-xs btn-success" href="{% url 'appointment-mark-arrived' pk=app.id %}"
                            onclick="return confirm('Mark this patient as a here?')">
-                          <span class="glyphicon glyphicon glyphicon-ok"></span>&nbsp;arrived
+                          <span class="glyphicon glyphicon glyphicon-ok"></span>&nbsp;{% blocktrans %}arrived{% endblocktrans %}
                         </a>
                       {% endif %}
                     </p>

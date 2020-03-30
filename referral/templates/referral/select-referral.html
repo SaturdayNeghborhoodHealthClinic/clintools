@@ -1,12 +1,15 @@
 {% extends "pttrack/base.html" %}
 
+{% load i18n %}
+<!-- trans finished -->
+
 {% block title %}
-Select referral
+{% blocktrans %}Select referral{% endblocktrans %}
 {% endblock %}
 
 {% block header %}
-<h1>Select Referral</h1>
-<p class="lead">Specify which referral you would like to update</p>
+<h1>{% blocktrans %}Select Referral{% endblocktrans %}</h1>
+<p class="lead">{% blocktrans %}Specify which referral you would like to update{% endblocktrans %}</p>
 {% endblock %}
 
 {% block content %}
@@ -18,8 +21,8 @@ Select referral
 	</div>
 {% else %}
 	<div class="container"/>
-		<h3>Oops! There aren't any active referrals for this patient...</h3>
-		<p>Do you want to <a href="{% url 'select-referral-type' pt_id=pt_id %}">create one?</a></p>
+		<h3>{% blocktrans %}Oops! There aren't any active referrals for this patient{% endblocktrans %}...</h3>
+		<p>{% blocktrans %}Do you want to{% endblocktrans %} <a href="{% url 'select-referral-type' pt_id=pt_id %}">{% blocktrans %}create one{% endblocktrans %}?</a></p>
 	</div>
 {% endif %}
 

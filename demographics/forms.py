@@ -3,6 +3,7 @@ from django.forms import ModelForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Fieldset
 from bootstrap3_datetime.widgets import DateTimePicker
+from django.utils.translation import gettext as _
 
 from . import models
 
@@ -38,4 +39,4 @@ class DemographicsForm(ModelForm):
                          'annual_income')
         )
 
-        self.helper.add_input(Submit('submit', 'Submit'))
+        self.helper.add_input(Submit('submit', _('Submit')))

@@ -1,13 +1,16 @@
 {% extends "pttrack/base.html" %}
 
+{% load i18n %}
+<!-- trans finished -->
+
 {% block title %}
-Create new specialty referral
+{% blocktrans %}Create new specialty referral{% endblocktrans %}
 {% endblock %}
 
 {% block header %}
-<h1>New Specialty Referral</h1>
+<h1>{% blocktrans %}New Specialty Referral{% endblocktrans %}</h1>
 {% if patient %}
-<p class="lead">Referral for <em><a href="{% url 'patient-detail' pk=patient.id %}">{{ patient.name }}</a></em></p>
+<p class="lead">{% blocktrans %}Referral for{% endblocktrans %} <em><a href="{% url 'patient-detail' pk=patient.id %}">{{ patient.name }}</a></em></p>
 {% endif %}
 {% endblock %}
 

@@ -10,6 +10,7 @@ from pttrack.models import Patient
 from .models import Appointment
 from .forms import AppointmentForm
 
+from django.utils.translation import gettext as _
 
 def list_view(request):
 
@@ -53,13 +54,13 @@ class AppointmentUpdate(NoteUpdate):
     template_name = "pttrack/form-update.html"
     model = Appointment
     form_class = AppointmentForm
-    note_type = "Appointment"
+    note_type = _("Appointment")
     success_url = "/appointment/list"
 
 
 class AppointmentCreate(NoteFormView):
     template_name = 'appointment/form_submission.html'
-    note_type = "Appointment"
+    note_type = _("Appointment")
     form_class = AppointmentForm
     success_url = "list"
 

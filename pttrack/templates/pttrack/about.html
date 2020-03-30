@@ -1,20 +1,24 @@
 {% extends "pttrack/base.html" %}
 
+{% load i18n %}
+
 {% block title %}
-Osler: About
+
+{% trans 'Osler: About' %}
+
 {% endblock %}
 
 {% block header %}
 <h1><a href="https://en.wikipedia.org/wiki/William_Osler">Osler</a></h1>
-<p class="lead">Simple patient tracking from Washington University School of Medicine in St. Louis</p>
+<p class="lead">{% trans 'Simple patient tracking from Washington University School of Medicine in St. Louis' %}</p>
 {% endblock %}
 
 {% block content %}
 
 <div class="container">
   <div class="col-md-4">
-    <h4>Are you a programmer?</h4>
-    <p>We're on <a href="https://github.com/SaturdayNeighborhoodHealthClinic">Github</a> and we're always looking for smart folks with new ideas!</p>
+    <h4>{% trans 'Are you a programmer?' %}</h4>
+    <p>{% trans 'We're on' %} <a href="https://github.com/SaturdayNeighborhoodHealthClinic">Github</a> {% trans 'and we're always looking for smart folks with new ideas!' %}</p>
   </div>
   <div class="col-md-4">
     <h4>Hosted by CloudWUSM, <br> Powered by <a href="https://www.djangoproject.com/">Django</a></h4>

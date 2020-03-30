@@ -2,6 +2,8 @@
 
 {% load static %}
 
+{% load i18n %}
+
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
@@ -38,6 +40,7 @@
     body {
       padding-top: 50px;
       padding-bottom: 5%;
+      background-color: rgb(238, 242, 245)
     }
   </style>
 </head>
@@ -46,29 +49,29 @@
     <div class="container-fluid">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-          <span class="sr-only">Toggle navigation</span>
+          <span class="sr-only">{% trans 'Toggle Navigation' %}</span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="{% url 'root' %}">Osler Home</a>
+        <a class="navbar-brand" href="/pttrack/all">{% trans 'Osler Home' %}</a>
       </div>
       <div class="collapse navbar-collapse" id="myNavbar">
         <ul class="nav navbar-nav">
-          <li><a href="{% url 'preintake' %}">New Patient</a></li>
-          <li><a href="{% url 'all-patients' %}">All Patients</a></li>
-          <li><a href="{% url 'appointment-list' %}">Appointments</a></li>
-          <li><a href="//snhc.wustl.edu/wiki" target="_blank">Wiki</a></li>
-          <li><a href="{% url 'about' %}">About</a></li>
+          <li><a href="{% url 'preintake' %}">{% trans 'New Patient' %}</a></li>
+          <li><a href="{% url 'all-patients' %}">{% trans 'All Patients' %}</a></li>
+          <li><a href="{% url 'appointment-list' %}">{% trans 'Appointments' %}</a></li>
+          <li><a href="" target="_blank">{% trans 'Wiki' %}</a></li> <!-- Hier eigene Wiki -->
+          <li><a href="{% url 'about' %}">{% trans 'About' %}</a></li>
           {% if user.is_superuser or user.is_staff %}
           {% endif %}
         </ul>
 				{% if user.is_authenticated %}
 				<ul class="nav navbar-nav pull-right">
             {% if user.is_superuser or user.is_staff %}
-            <li><a href="{% url 'admin:index' %}">Admin</a></li>
+            <li><a href="{% url 'admin:index' %}">{% trans 'Admin' %}</a></li>
             {% endif %}
-            <li><a href="{% url 'logout' %}">Logout 
+            <li><a href="{% url 'logout' %}">{% trans 'Logout' %}
               {{ request.user.provider.first_name }} ({{ request.session.clintype_pk | default:"[no role]" }})
             </a></li>
         </ul>
@@ -78,7 +81,7 @@
   </nav>
 
   <!--[if lt IE 7]>
-	<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+	<p class="browsehappy">{% trans 'You are using an outdated browser. Please' %}<a href="http://browsehappy.com/">{% trans 'upgrade your browser' %}</a>{% trans 'to improve your experience' %}.</p>
 	<![endif]-->
 
   <div class="jumbotron">
@@ -102,7 +105,10 @@
   {% endblock %}
 
   <footer class="container" style="padding-top: 5%">
-    <p class="text-muted">Osler is free and open source software built by and for WashU students. To learn more or contribute, find us on <a src="https://github.com/SaturdayNeighborhoodHealthClinic/osler">GitHub</a>.</p>
+    <p class="text-muted">
+      {% trans 'Osler is free and open source software built by and for WashU students. To learn more or contribute, find us on' %}
+      <a src="https://github.com/SaturdayNeighborhoodHealthClinic/osler">GitHub</a>.
+</p>
   </footer>
 
   </body>

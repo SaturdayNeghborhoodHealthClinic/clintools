@@ -14,6 +14,7 @@ from crispy_forms.layout import Field
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column
+from django.utils.translation import gettext as _
 
 
 class CustomCheckbox(Field):
@@ -23,8 +24,8 @@ class CustomCheckbox(Field):
 
 
 class DuplicatePatientForm(Form):
-    first_name = CharField(label='First Name')
-    last_name = CharField(label='Last Name')
+    first_name = CharField(label=_('First Name'))
+    last_name = CharField(label=_('Last Name'))
 
     def __init__(self, *args, **kwargs):
         super(DuplicatePatientForm, self).__init__(*args, **kwargs)

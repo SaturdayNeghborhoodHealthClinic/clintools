@@ -1,0 +1,1670 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-03-30 19:13+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: api/fixtures/api.json:277 api/fixtures/api.json:396
+#: pttrack/fixtures/pttrack.json:359 pttrack/fixtures/pttrack.json:509
+msgid "white"
+msgstr "weiß"
+
+#: api/fixtures/api.json:327 pttrack/fixtures/pttrack.json:420
+msgid "Female"
+msgstr "weiblich"
+
+#: api/fixtures/api.json:333 pttrack/fixtures/pttrack.json:427
+msgid "Male"
+msgstr "männlich"
+
+#: api/fixtures/api.json:339 pttrack/fixtures/pttrack.json:434
+msgid "Other"
+msgstr "Andere"
+
+#: appointment/forms.py:25 demographics/forms.py:42
+#: pttrack/templates/pttrack/role-choice.html:30 referral/forms.py:38
+#: referral/forms.py:216 workup/forms.py:302 workup/forms.py:320
+msgid "Submit"
+msgstr "Speichern"
+
+#: appointment/models.py:35
+msgid "Appointment Date"
+msgstr "Termin"
+
+#: appointment/models.py:37
+msgid "Time of Appointment"
+msgstr "Uhrzeit"
+
+#: appointment/models.py:41
+msgid "Appointment Type"
+msgstr "Ursache für Terminvergabe"
+
+#: appointment/models.py:42
+msgid "Comment"
+msgstr "Kommentar"
+
+#: appointment/models.py:43
+msgid "What should happen at this appointment?"
+msgstr "Was sollte an diesem Termin geschehen?"
+
+#: appointment/models.py:46
+msgid "Patient Showed"
+msgstr "Patient ist gekommen"
+
+#: appointment/models.py:47
+msgid "Did the patient come to this appointment?"
+msgstr "Kam der Patient zu dem Termin?"
+
+#: appointment/templates/appointment/appointment_list.html:9
+#: appointment/templates/appointment/appointment_list.html:14
+msgid "Appointment List"
+msgstr "Termin-Kalender"
+
+#: appointment/templates/appointment/appointment_list.html:32
+msgid "Time"
+msgstr "Zeit"
+
+#: appointment/templates/appointment/appointment_list.html:32
+#: workup/templates/workup/clindate-list.html:25
+msgid "Patient"
+msgstr "Patient"
+
+#: appointment/templates/appointment/appointment_list.html:32
+msgid "Type"
+msgstr "Untersuchungsform"
+
+#: appointment/templates/appointment/appointment_list.html:49
+msgid "edit"
+msgstr "bearbeiten"
+
+#: appointment/templates/appointment/appointment_list.html:54
+msgid "no show"
+msgstr "nicht gekommen"
+
+#: appointment/templates/appointment/appointment_list.html:58
+msgid "arrived"
+msgstr "gekommen"
+
+#: appointment/templates/appointment/form_submission.html:12
+msgctxt "neuer"
+msgid "New"
+msgstr "Neuer"
+
+#: appointment/views.py:57 appointment/views.py:63
+msgid "Appointment"
+msgstr "Termin"
+
+#: demographics/templates/demographics/demographics-create.html:12
+msgid "New Survey"
+msgstr "Demographische Erhebung"
+
+#: demographics/templates/demographics/demographics-create.html:14
+#: demographics/templates/demographics/demographics-create.html:16
+msgid "Demographics for"
+msgstr "Demographische Erhebung für"
+
+#: demographics/templates/demographics/demographics-resolve.html:4
+msgid "Warning: Patient already has Demographics information"
+msgstr "Warnung: Über diesen Patienten gibt es bereits eine Erhebung"
+
+#: demographics/templates/demographics/demographics-resolve.html:5
+msgid "Please review differences and submit a single form for"
+msgstr "Bitte Unterschiede bewerten und eine einzige Erhebung übermitteln für"
+
+#: demographics/templates/demographics/demographics_detail.html:4
+msgid "Demographic Data"
+msgstr "Demographische Erhebung für"
+
+#: demographics/templates/demographics/demographics_detail.html:10
+#, fuzzy
+#| msgid "Demographics for"
+msgid "Demographic Survey Data"
+msgstr "Demographische Erhebung für"
+
+#: demographics/templates/demographics/demographics_detail.html:11
+#: pttrack/templates/pttrack/document_detail.html:14
+msgid "For"
+msgstr "Für"
+
+#: demographics/templates/demographics/demographics_detail.html:24
+msgid "Medical"
+msgstr ""
+
+#: demographics/templates/demographics/demographics_detail.html:26
+msgid "Has Insurance"
+msgstr "Ist versichert"
+
+#: demographics/templates/demographics/demographics_detail.html:28
+#: demographics/templates/demographics/demographics_detail.html:38
+#: demographics/templates/demographics/demographics_detail.html:60
+#: demographics/templates/demographics/demographics_detail.html:88
+#: referral/models.py:128
+msgid "Yes"
+msgstr "Ja"
+
+#: demographics/templates/demographics/demographics_detail.html:30
+#: demographics/templates/demographics/demographics_detail.html:40
+#: demographics/templates/demographics/demographics_detail.html:62
+#: demographics/templates/demographics/demographics_detail.html:90
+#: referral/models.py:129
+msgid "No"
+msgstr "Nein"
+
+#: demographics/templates/demographics/demographics_detail.html:32
+#: demographics/templates/demographics/demographics_detail.html:42
+#: demographics/templates/demographics/demographics_detail.html:64
+#: demographics/templates/demographics/demographics_detail.html:92
+msgid "Not Answered"
+msgstr "Nicht beantwortet"
+
+#: demographics/templates/demographics/demographics_detail.html:36
+msgid "ER Visit in the last year"
+msgstr ""
+
+#: demographics/templates/demographics/demographics_detail.html:46
+msgid "Last Date visited Physician"
+msgstr "Letzter Arztbesuch"
+
+#: demographics/templates/demographics/demographics_detail.html:49
+msgid "Chronic Conditions"
+msgstr "Chronische Erkrankungen"
+
+#: demographics/templates/demographics/demographics_detail.html:56
+msgid "Social"
+msgstr "Soziale Daten"
+
+#: demographics/templates/demographics/demographics_detail.html:58
+msgid "Lives Alone"
+msgstr "Alleinlebend"
+
+#: demographics/templates/demographics/demographics_detail.html:68
+msgid "Number of Dependents"
+msgstr "Anzahl von Angehörigen"
+
+#: demographics/templates/demographics/demographics_detail.html:71
+msgid "Transportation"
+msgstr "Transportmittel"
+
+#: demographics/templates/demographics/demographics_detail.html:74
+msgid "Resource Access"
+msgstr "Zugang zu Ressourcen"
+
+#: demographics/templates/demographics/demographics_detail.html:81
+msgid "Employment"
+msgstr "Beschäftigung"
+
+#: demographics/templates/demographics/demographics_detail.html:83
+msgid "Education Level"
+msgstr "Bildungsabschluss"
+
+#: demographics/templates/demographics/demographics_detail.html:86
+msgid "Currently Employed"
+msgstr "Derzeitig beschäftigt"
+
+#: demographics/templates/demographics/demographics_detail.html:96
+msgid "Work Status"
+msgstr "Arbeitsstatus"
+
+#: demographics/templates/demographics/demographics_detail.html:99
+msgid "Annual Income"
+msgstr "Jährliches Einkommen"
+
+#: osler/base_settings.py:83
+msgid "English"
+msgstr "Englisch"
+
+#: osler/base_settings.py:84 pttrack/fixtures/pttrack.json:204
+msgid "German"
+msgstr "Deutsch"
+
+#: pttrack/admin.py:10
+msgid "Completion"
+msgstr "In Erfüllung"
+
+#: pttrack/admin.py:15
+msgid "Completed"
+msgstr "Erledigt"
+
+#: pttrack/admin.py:16
+msgid "Unresolved"
+msgstr ""
+
+#: pttrack/forms.py:27
+msgid "First Name"
+msgstr "Vorname"
+
+#: pttrack/forms.py:28
+msgid "Last Name"
+msgstr "Nachname"
+
+#: pttrack/models.py:148
+msgid "first name"
+msgstr "Vorname"
+
+#: pttrack/models.py:150
+msgid "last name"
+msgstr "Nachname"
+
+#: pttrack/models.py:152
+msgid "middle name"
+msgstr "Zweitname"
+
+#: pttrack/models.py:154
+msgid "phone"
+msgstr "Telefonnummer"
+
+#: pttrack/models.py:155
+msgid "languages"
+msgstr "Sprachen"
+
+#: pttrack/models.py:155
+msgid ""
+"Specify here languages that are spoken at a level sufficient to be used for "
+"medical communication."
+msgstr "Sprache festlegen, in der mit dem Patienten gesprochen werden kann."
+
+#: pttrack/models.py:157
+msgid "gender"
+msgstr "Geschlecht"
+
+#: pttrack/models.py:204
+msgid "address"
+msgstr "Addresse"
+
+#: pttrack/models.py:207
+msgid "city"
+msgstr "Stadt"
+
+#: pttrack/models.py:209
+msgid "state"
+msgstr "Bundesland"
+
+#: pttrack/models.py:211
+msgid "Zip Code"
+msgstr "Postleitzahl"
+
+#: pttrack/models.py:213
+msgid "USA"
+msgstr "Deutschland"
+
+#: pttrack/models.py:213
+msgid "country"
+msgstr "Land"
+
+#: pttrack/models.py:219
+msgid "pcp preferred zip"
+msgstr "Hausarzt PLZ (wird entfernt)"
+
+#: pttrack/models.py:221 referral/forms.py:30
+msgid "MM/DD/YYYY"
+msgstr "DD.MM.YYYY"
+
+#: pttrack/models.py:222
+msgid "Date of Birth"
+msgstr "Geburtstag"
+
+#: pttrack/models.py:224
+msgid "Patient comfortable with English"
+msgstr "Patient spricht deutsch"
+
+#: pttrack/models.py:226
+msgid "ethnicities"
+msgstr "Ethnizität"
+
+#: pttrack/models.py:246
+msgid "Preferred contact method"
+msgstr "Bevorzugte Kontaktmethode"
+
+#: pttrack/models.py:248 pttrack/templates/pttrack/patient_detail.html:93
+msgid "Email"
+msgstr "E-Mail"
+
+#: pttrack/models.py:253
+msgid "Needs workup"
+msgstr ""
+
+#: pttrack/models.py:255
+msgid "History"
+msgstr "Patienten-Geschichte"
+
+#: pttrack/models.py:318
+msgid "all actions complete"
+msgstr "Alle Aufgaben ausgeführt"
+
+#: pttrack/models.py:320
+msgid "no pending actions"
+msgstr "Keine anstehenden Aufgaben"
+
+#: pttrack/templates/pttrack/about.html:7
+#, fuzzy
+#| msgid "Osler Home"
+msgid "Osler: About"
+msgstr "StuPoli Hamburg"
+
+#: pttrack/templates/pttrack/about.html:13
+msgid ""
+"Simple patient tracking from Washington University School of Medicine in St. "
+"Louis"
+msgstr ""
+
+#: pttrack/templates/pttrack/about.html:20
+msgid "Are you a programmer?"
+msgstr "Bist du ein Programmierer?"
+
+#: pttrack/templates/pttrack/about.html:21
+#: pttrack/templates/pttrack/provider-update.html:8
+msgid "We"
+msgstr ""
+
+#: pttrack/templates/pttrack/about.html:21
+msgid "and we"
+msgstr ""
+
+#: pttrack/templates/pttrack/all_patients.html:6
+#: pttrack/templates/pttrack/all_patients.html:10
+#: pttrack/templates/pttrack/base.html:62
+#: pttrack/templates/pttrack/patient_list.html:4
+#: pttrack/templates/pttrack/patient_list.html:8
+msgid "All Patients"
+msgstr "Alle Patienten"
+
+#: pttrack/templates/pttrack/all_patients.html:16
+msgid "Filter"
+msgstr "Filter"
+
+#: pttrack/templates/pttrack/all_patients.html:19
+msgid "Search"
+msgstr ""
+
+#: pttrack/templates/pttrack/all_patients.html:24
+msgid "Patient Name"
+msgstr "Name"
+
+#: pttrack/templates/pttrack/all_patients.html:24
+#: pttrack/templates/pttrack/patient_list.html:55
+msgid "Age/Gender"
+msgstr "Alter / Geschlecht"
+
+#: pttrack/templates/pttrack/all_patients.html:24
+#: pttrack/templates/pttrack/patient_detail.html:19
+#: pttrack/templates/pttrack/patient_list.html:56
+msgid "Case Manager"
+msgstr "Fallmanager"
+
+#: pttrack/templates/pttrack/all_patients.html:24
+msgid "Latest Acticity"
+msgstr "Letzte Aktivität"
+
+#: pttrack/templates/pttrack/all_patients.html:24
+#: pttrack/templates/pttrack/patient_list.html:58
+msgid "Next AI Due"
+msgstr ""
+
+#: pttrack/templates/pttrack/all_patients.html:24
+#: pttrack/templates/pttrack/patient_list.html:59
+#: workup/templates/workup/clindate-list.html:29
+msgid "Attestation"
+msgstr "Unterzeichnet"
+
+#: pttrack/templates/pttrack/all_patients.html:35
+msgid "Seen"
+msgstr "Gesehen"
+
+#: pttrack/templates/pttrack/all_patients.html:37
+msgid "Intake"
+msgstr "Aufnahme"
+
+#: pttrack/templates/pttrack/all_patients.html:43
+msgid "No Note"
+msgstr "Keine Untersuchung"
+
+#: pttrack/templates/pttrack/all_patients.html:45
+msgid "Unattested"
+msgstr "Nicht unterschrieben"
+
+#: pttrack/templates/pttrack/base.html:52
+msgid "Toggle Navigation"
+msgstr "Navigation"
+
+#: pttrack/templates/pttrack/base.html:57
+msgid "Osler Home"
+msgstr "StuPoli Hamburg"
+
+#: pttrack/templates/pttrack/base.html:61
+#: pttrack/templates/pttrack/preintake-select.html:44
+msgid "New Patient"
+msgstr "Neuer Patient"
+
+#: pttrack/templates/pttrack/base.html:63
+#: pttrack/templates/pttrack/patient_detail.html:253
+msgid "Appointments"
+msgstr "Termine"
+
+#: pttrack/templates/pttrack/base.html:64
+msgid "Wiki"
+msgstr "Wiki"
+
+#: pttrack/templates/pttrack/base.html:65
+msgid "About"
+msgstr "Über"
+
+#: pttrack/templates/pttrack/base.html:72
+msgid "Admin"
+msgstr "Administrator"
+
+#: pttrack/templates/pttrack/base.html:74
+msgid "Logout"
+msgstr "Abmelden"
+
+#: pttrack/templates/pttrack/base.html:84
+msgid "You are using an outdated browser. Please"
+msgstr "Sie benutzen einen veralteten Browser. Bitte"
+
+#: pttrack/templates/pttrack/base.html:84
+msgid "upgrade your browser"
+msgstr "updaten Sie Ihren Browser"
+
+#: pttrack/templates/pttrack/base.html:84
+msgid "to improve your experience"
+msgstr "um Ihre Erfahrung zu verbessern "
+
+#: pttrack/templates/pttrack/base.html:109
+msgid ""
+"Osler is free and open source software built by and for WashU students. To "
+"learn more or contribute, find us on"
+msgstr ""
+"Osler ist eine kostenlose und freie Software, die von Studenten der "
+"Washington-University entwickelt wurde. Um mehr zu erfahren, besuche uns auf "
+
+#: pttrack/templates/pttrack/clindate.html:10
+msgid "Good Morning!"
+msgstr "Guten Morgen!"
+
+#: pttrack/templates/pttrack/clindate.html:11
+#, fuzzy
+#| msgid "It looks to us like you wear a couple of different hats around here"
+msgid "It looks like you're the first one here"
+msgstr "Sieht so aus, als ob heute einiges los ist"
+
+#: pttrack/templates/pttrack/clindate.html:19
+msgid ""
+"We've identified today as a SNHC clinic day, but we need you to tell us what "
+"type of clinic is happening today"
+msgstr ""
+
+#: pttrack/templates/pttrack/document_detail.html:4
+msgid "Document:"
+msgstr "Dokument:"
+
+#: pttrack/templates/pttrack/document_detail.html:26
+msgid "uploaded by"
+msgstr "hochgeladen von"
+
+#: pttrack/templates/pttrack/document_detail.html:26
+#: workup/templates/workup/progressnote_detail.html:29
+#: workup/templates/workup/progressnote_detail.html:38
+#: workup/templates/workup/workup_detail.html:14
+msgid "on"
+msgstr "am"
+
+#: pttrack/templates/pttrack/document_detail.html:28
+#: workup/templates/workup/progressnote_detail.html:40
+msgid "last modified"
+msgstr "zuletzt bearbeitet"
+
+#: pttrack/templates/pttrack/document_detail.html:35
+msgid "Comments"
+msgstr "Kommentare"
+
+#: pttrack/templates/pttrack/followup-choice.html:4
+#: pttrack/templates/pttrack/workup-choice.html:4
+#: pttrack/templates/pttrack/workup-choice.html:8
+msgid "Choose a follow up type"
+msgstr "Folgeuntersuchung auswählen"
+
+#: pttrack/templates/pttrack/followup-choice.html:8
+msgid "Choose a Follow-up Type"
+msgstr "Folgeuntersuchung auswählen"
+
+#: pttrack/templates/pttrack/followup-choice.html:17
+#: pttrack/templates/pttrack/workup-choice.html:18
+msgid "Labs"
+msgstr "Labor"
+
+#: pttrack/templates/pttrack/followup-choice.html:18
+#: pttrack/templates/pttrack/workup-choice.html:19
+msgid "Vaccine"
+msgstr "Impfung"
+
+#: pttrack/templates/pttrack/followup-choice.html:19
+#: pttrack/templates/pttrack/workup-choice.html:20
+msgid "General"
+msgstr "Allgemein"
+
+#: pttrack/templates/pttrack/form-update.html:9
+#: pttrack/templates/pttrack/form-update.html:11
+#: pttrack/templates/pttrack/patient-update.html:11
+#: pttrack/templates/pttrack/patient_detail.html:147
+#: pttrack/templates/pttrack/patient_detail.html:185
+#: pttrack/templates/pttrack/patient_detail.html:187
+#: pttrack/templates/pttrack/patient_detail.html:189
+#: pttrack/templates/pttrack/patient_detail.html:191
+#: pttrack/templates/pttrack/patient_detail.html:201
+#: pttrack/templates/pttrack/patient_detail.html:217
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: pttrack/templates/pttrack/form_submission.html:8
+#: workup/templates/workup/workup-create.html:10
+msgid "New"
+msgstr "Neue"
+
+#: pttrack/templates/pttrack/form_submission.html:9
+#: workup/templates/workup/workup-create.html:11
+msgid "Add a new"
+msgstr "Neue"
+
+#: pttrack/templates/pttrack/form_submission.html:9
+#: workup/templates/workup/workup-create.html:11
+msgid "for"
+msgstr "für"
+
+#: pttrack/templates/pttrack/intake.html:4
+#: pttrack/templates/pttrack/intake.html:8
+#: pttrack/templates/pttrack/preintake-select.html:4
+#: pttrack/templates/pttrack/preintake-select.html:8
+#: pttrack/templates/pttrack/preintake.html:4
+#: pttrack/templates/pttrack/preintake.html:8
+msgid "Patient Intake"
+msgstr "Patienten-Aufnahme"
+
+#: pttrack/templates/pttrack/intake.html:9
+msgid "Create a new patient in the database"
+msgstr "Neuen Patienten in der Datenbank anlegen"
+
+#: pttrack/templates/pttrack/new-provider.html:4
+msgid "New Provider"
+msgstr "Neuer Anbieter"
+
+#: pttrack/templates/pttrack/new-provider.html:8
+msgid "Hi! I don't think we've met"
+msgstr "Hey! Ich glaube Du warst noch nie hier"
+
+#: pttrack/templates/pttrack/new-provider.html:9
+msgid ""
+"We're glad you're here. Before you get started, let us know a little bit "
+"about yourself"
+msgstr ""
+"Wir freuen uns sehr darüber, dass du da bist. Bevor es losgeht, gib uns "
+"bitte noch ein paar Infos über dich"
+
+#: pttrack/templates/pttrack/patient-update.html:4
+#: pttrack/templates/pttrack/patient-update.html:9
+msgid "Edit Patient"
+msgstr "Patient bearbeiten"
+
+#: pttrack/templates/pttrack/patient_detail.html:4
+msgid "Patient Details"
+msgstr "Patienten-Details"
+
+#: pttrack/templates/pttrack/patient_detail.html:15
+#: pttrack/templates/pttrack/preintake-select.html:36
+msgid "y/o"
+msgstr "Jahre alt,"
+
+#: pttrack/templates/pttrack/patient_detail.html:16
+#: pttrack/templates/pttrack/patient_list.html:60
+#: pttrack/templates/pttrack/preintake-select.html:17
+msgid "Status"
+msgstr "Status"
+
+#: pttrack/templates/pttrack/patient_detail.html:17
+msgid "FQHC ReferralStatus"
+msgstr "FGHC Überweisungs-Status"
+
+#: pttrack/templates/pttrack/patient_detail.html:18
+msgid "Referrals"
+msgstr "Überweisungen"
+
+#: pttrack/templates/pttrack/patient_detail.html:22
+#: pttrack/templates/pttrack/patient_detail.html:28
+msgid "Patient is Active"
+msgstr "Patient aktiv"
+
+#: pttrack/templates/pttrack/patient_detail.html:24
+#: pttrack/templates/pttrack/patient_detail.html:30
+msgid "Patient is Inactive"
+msgstr "Patient inaktiv"
+
+#: pttrack/templates/pttrack/patient_detail.html:36
+#: workup/templates/workup/workup_detail.html:24
+msgid "Actions"
+msgstr "Aktionen"
+
+#: pttrack/templates/pttrack/patient_detail.html:40
+msgid "Clinic Day"
+msgstr "Kliniktag"
+
+#: pttrack/templates/pttrack/patient_detail.html:45
+msgid "Write Note"
+msgstr "Untersuchung anlegen"
+
+#: pttrack/templates/pttrack/patient_detail.html:49
+msgid "Make Referral"
+msgstr "Überweisung anlegen"
+
+#: pttrack/templates/pttrack/patient_detail.html:53
+msgid "Make Appointment"
+msgstr "Termin vereinbaren"
+
+#: pttrack/templates/pttrack/patient_detail.html:57
+msgid "Upload Document"
+msgstr "Dokument hochladen"
+
+#: pttrack/templates/pttrack/patient_detail.html:64
+#: pttrack/templates/pttrack/patient_detail.html:181
+msgid "Followup"
+msgstr "Folgeuntersuchung"
+
+#: pttrack/templates/pttrack/patient_detail.html:69
+#: pttrack/templates/pttrack/patient_detail.html:73
+msgid "Log follow up"
+msgstr "Folgeuntersuchung protokollieren"
+
+#: pttrack/templates/pttrack/patient_detail.html:77
+msgid "New Action Item"
+msgstr "Neue Aktion"
+
+#: pttrack/templates/pttrack/patient_detail.html:89
+msgid "Demographic Information"
+msgstr "Demographische Informationen"
+
+#: pttrack/templates/pttrack/patient_detail.html:91
+msgid "Language"
+msgstr "Sprache"
+
+#: pttrack/templates/pttrack/patient_detail.html:92
+#: workup/templates/workup/workup_body.html:10
+msgid "DOB"
+msgstr "Geburtstag"
+
+#: pttrack/templates/pttrack/patient_detail.html:97
+#: pttrack/templates/pttrack/preintake-select.html:21
+msgid "Address"
+msgstr "Addresse"
+
+#: pttrack/templates/pttrack/patient_detail.html:104
+msgid "Contact"
+msgstr "Kontakt"
+
+#: pttrack/templates/pttrack/patient_detail.html:104
+msgid "Phone Number"
+msgstr "Telefonnummer"
+
+#: pttrack/templates/pttrack/patient_detail.html:118
+msgid "See Patient Survey Data"
+msgstr "Patienten-Umfragedaten ansehen"
+
+#: pttrack/templates/pttrack/patient_detail.html:123
+msgid "No survey data exists for this patient. Please"
+msgstr "Für diesen Patienten liegen keine Umfragedaten vor. Bitte"
+
+#: pttrack/templates/pttrack/patient_detail.html:123
+msgid "click here"
+msgstr "Hier klicken"
+
+#: pttrack/templates/pttrack/patient_detail.html:123
+msgid "add it"
+msgstr "hinzufügen"
+
+#: pttrack/templates/pttrack/patient_detail.html:132
+msgid "Submitted Notes"
+msgstr "Übermittelte Notizen"
+
+#: pttrack/templates/pttrack/patient_detail.html:136
+msgid "Workups"
+msgstr "Untersuchungen"
+
+#: pttrack/templates/pttrack/patient_detail.html:141
+#: workup/templates/workup/workup_detail.html:7 workup/views.py:49
+msgid "Workup"
+msgstr "Untersuchung"
+
+#: pttrack/templates/pttrack/patient_detail.html:142
+#: pttrack/templates/pttrack/patient_detail.html:163
+#: pttrack/templates/pttrack/patient_detail.html:182
+#: pttrack/templates/pttrack/patient_detail.html:199
+#: pttrack/templates/pttrack/patient_detail.html:215
+msgid "by"
+msgstr "von"
+
+#: pttrack/templates/pttrack/patient_detail.html:142
+#: pttrack/templates/pttrack/patient_detail.html:163
+#: pttrack/templates/pttrack/patient_detail.html:182
+#: pttrack/templates/pttrack/patient_detail.html:199
+#: pttrack/templates/pttrack/patient_detail.html:215
+msgid "at"
+msgstr "für"
+
+#: pttrack/templates/pttrack/patient_detail.html:157
+msgid "Uploaded Prescriptions and Documents"
+msgstr "Hochgeladene Rezepte und Dokumente"
+
+#: pttrack/templates/pttrack/patient_detail.html:175
+msgid "Followups"
+msgstr ""
+
+#: pttrack/templates/pttrack/patient_detail.html:209
+#: workup/templates/workup/progressnote_detail.html:6
+#, fuzzy
+#| msgid "Progress Note"
+msgid "Psych Progress Note"
+msgstr "Verlaufsnotiz"
+
+#: pttrack/templates/pttrack/patient_detail.html:214
+msgid "Progress Note"
+msgstr "Verlaufsnotiz"
+
+#: pttrack/templates/pttrack/patient_detail.html:227
+msgid "Action Items"
+msgstr ""
+
+#: pttrack/templates/pttrack/patient_detail.html:274
+msgid "Edit Appointment"
+msgstr "Termin bearbeiten"
+
+#: pttrack/templates/pttrack/patient_list.html:54
+#: pttrack/templates/pttrack/preintake-select.html:18
+msgid "Name"
+msgstr "Name"
+
+#: pttrack/templates/pttrack/patient_list.html:57
+msgid "Latest Activity"
+msgstr "Letzte Aktivität"
+
+#: pttrack/templates/pttrack/preintake-select.html:9
+msgid "There was one or more simmilar patients already in the database"
+msgstr ""
+"Es waren ein oder mehrere gleiche Patienten bereits im System vorhanden"
+
+#: pttrack/templates/pttrack/preintake-select.html:9
+msgid "Select one or create a new patient"
+msgstr "Einen Patienten suchen oder neuen Patienten einpflegen"
+
+#: pttrack/templates/pttrack/preintake-select.html:14
+msgid "For lookup"
+msgstr "Zur Suche"
+
+#: pttrack/templates/pttrack/preintake-select.html:19
+msgid "Description"
+msgstr "Beschreibung"
+
+#: pttrack/templates/pttrack/preintake-select.html:20
+msgid "Birthdate"
+msgstr "Geburtstag"
+
+#: pttrack/templates/pttrack/preintake-select.html:22
+msgid "Last Visit"
+msgstr "Letzter Besuch"
+
+#: pttrack/templates/pttrack/preintake-select.html:23
+msgid "Number of Visitis"
+msgstr "Anzahl von Besuchen"
+
+#: pttrack/templates/pttrack/preintake-select.html:32
+#, fuzzy
+#| msgid "New Patient"
+msgid "Activate Patient"
+msgstr "Neuer Patient"
+
+#: pttrack/templates/pttrack/preintake-select.html:45
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: pttrack/templates/pttrack/preintake.html:9
+msgid " Let's check to make sure this patient has not already been added."
+msgstr ""
+"Lass uns zunächst sicherstellen, dass der Patient nicht bereits angelegt ist."
+
+#: pttrack/templates/pttrack/provider-update.html:4
+msgid "Update Provider"
+msgstr "Anbieter aktualisieren"
+
+#: pttrack/templates/pttrack/provider-update.html:9
+msgid ""
+"Are you one of them? Take this opportunity to let us know if anything has "
+"changed, especially if you"
+msgstr ""
+
+#: pttrack/templates/pttrack/role-choice.html:4
+msgid "Choose Clinical Role"
+msgstr "Rolle aussuchen"
+
+#: pttrack/templates/pttrack/role-choice.html:8
+msgid "How are you volunteering"
+msgstr ""
+
+#: pttrack/templates/pttrack/role-choice.html:9
+msgid "It looks to us like you wear a couple of different hats around here"
+msgstr "Sieht so aus, als ob heute einiges los ist"
+
+#: pttrack/templates/pttrack/role-choice.html:9
+msgid "What are you doing today"
+msgstr "Was machst Du heute"
+
+#: pttrack/templates/pttrack/workup-choice.html:17 referral/models.py:85
+msgid "Referral"
+msgstr "Überweisung"
+
+#: pttrack/templates/pttrack/workup_error.html:4
+msgid "Error in Submitting Workup"
+msgstr "Fehler beim Übermitteln der Untersuchung"
+
+#: pttrack/templates/pttrack/workup_error.html:5
+#: workup/templates/workup/workup_body.html:8
+#: workup/templates/workup/workup_detail.html:11
+msgid "Workup on"
+msgstr "Untersuchung von"
+
+#: pttrack/templates/pttrack/workup_error.html:5
+msgid "is already signed and cannot be edited"
+msgstr "ist bereit unterschrieben und kann nicht bearbeitet werden"
+
+#: pttrack/templates/pttrack/workup_error.html:7
+msgid "Signed by"
+msgstr "Unterschrieben von "
+
+#: pttrack/templates/pttrack/workup_error.html:9
+msgid "Workup unsigned"
+msgstr "Untersuchung nicht unterschrieben"
+
+#: pttrack/templates/pttrack/workup_error.html:19
+msgid "Return to Workup"
+msgstr "Zur Untersuchung zurückkehren"
+
+#: referral/forms.py:22
+msgid "Create referral"
+msgstr "Neue Überweisung anlegen"
+
+#: referral/forms.py:32 referral/models.py:103
+msgid "Due date"
+msgstr "Fälligkeitsdatum"
+
+#: referral/forms.py:70
+msgid "Save & mark successful referral"
+msgstr "Als erfolgreiche Überweisung speichern"
+
+#: referral/forms.py:74
+msgid "Save & request future followup"
+msgstr "Speichern und zukünftige Folgeuntersuchung beantragen"
+
+#: referral/forms.py:78
+msgid "Save & do not follow up again"
+msgstr "Speichern und keine Folgeuntersuchung beantragen"
+
+#: referral/forms.py:105
+#, fuzzy
+#| msgid "Did the patient come to this appointment?"
+msgid "Please specify whether the patient has gone to their appointment."
+msgstr "Kam der Patient zu dem Termin?"
+
+#: referral/forms.py:109
+msgid "Please specify which provider the patient contacted."
+msgstr "Welchen Provider hat der Patient kontaktiert (Kontext?)"
+
+#: referral/forms.py:114
+msgid ""
+"If the patient has an appointment, a no appointment reason should not be "
+"given"
+msgstr "Wenn der Patient einen Termin hat, ... (Kontext?)"
+
+#: referral/forms.py:126
+msgid "If the patient showed, a no show reason should not be given."
+msgstr ""
+"Wenn der Patient gekommen ist, sollte kein Grund für das Nicht-Erscheinen "
+"angegeben werden."
+
+#: referral/forms.py:133
+msgid "Why didn't the patient make an appointment?"
+msgstr "Warum hat der Patient keinen Termin ausgemacht?"
+
+#: referral/forms.py:138
+msgid "Cannot speicfy a location if patient has not made appointment."
+msgstr ""
+"Es kann kein Ort spezifiziert werden, wenn der Patient keinen Termin "
+"ausgemacht hat."
+
+#: referral/forms.py:143
+msgid "Patient could not have attended appointment without scheduling one."
+msgstr ""
+"Der Patient hätte nicht an einem Termin teilnehmen können, ohne einen Termin "
+"zu vereinbaren."
+
+#: referral/forms.py:147
+msgid "Cannot specify no show reason if patient has not made appointment."
+msgstr ""
+"Es kann kein Grund für das Nichterscheinen angegeben werden, wenn der "
+"Patient keinen Termin vereinbart hat."
+
+#: referral/forms.py:152
+msgid "Need to specify if patient "
+msgstr ""
+
+#: referral/forms.py:153 referral/forms.py:164
+msgid "has appointment"
+msgstr "Termin wurde vereinbart"
+
+#: referral/forms.py:160
+msgid "no show reason"
+msgstr "Grund für Nichterscheinen"
+
+#: referral/forms.py:161
+msgid "no appointment reason"
+msgstr "Ursache für Erscheinen ohne Termin"
+
+#: referral/forms.py:162
+msgid "appointment location"
+msgstr "Ort des Termins"
+
+#: referral/forms.py:163
+msgid "patient showed"
+msgstr "Patient ist gekommen"
+
+#: referral/forms.py:170
+msgid "You can't give a "
+msgstr "Sie können keinen"
+
+#: referral/forms.py:171
+msgid " value if contact was unsuccessful"
+msgstr " Wert eintragen, wenn der Kontakt nicht erfolgreich war"
+
+#: referral/forms.py:180
+msgid "Cannot submit a successful "
+msgstr "Sie können keine erfolgreiche"
+
+#: referral/forms.py:181
+msgid "referral if the patient did not show up for"
+msgstr "Überweisung erstellen, wenn der Patient nicht "
+
+#: referral/forms.py:182
+#, fuzzy
+#| msgid "and appointment"
+msgid " an appointment"
+msgstr "zum Termin erschienen ist"
+
+#: referral/forms.py:189
+msgid "Cannot give up on a "
+msgstr "Kann eine erfolgreiche Überweisung nicht "
+
+#: referral/forms.py:190
+msgid "successful referral"
+msgstr "aufgeben"
+
+#: referral/forms.py:197
+msgid "Cannot request a new referral "
+msgstr "Kann keine neue Überweisung anlegen"
+
+#: referral/forms.py:198
+#, fuzzy
+#| msgid "unsuccessful referral"
+msgid "follow up on a successful referral"
+msgstr "wenn bereits eine erfolgreiche Überweisung vorliegt"
+
+#: referral/models.py:21
+msgid "No referrals currently"
+msgstr "Derzeit keine Überweisungen"
+
+#: referral/models.py:24
+msgid "Successful"
+msgstr "erfolgreich"
+
+#: referral/models.py:25
+msgid "Pending"
+msgstr "Ausstehend"
+
+#: referral/models.py:26
+msgid "Unsuccessful"
+msgstr "Ohne Erfolg"
+
+#: referral/models.py:29
+msgid "location"
+msgstr "Ort"
+
+#: referral/models.py:30
+msgid "comments"
+msgstr "Kommentar"
+
+#: referral/models.py:36
+msgid "The kind of care the patient should recieve at the referral location."
+msgstr ""
+"Die Art der Behandlung, die der Patient am Ort der Behandlung erhalten "
+"sollte."
+
+#: referral/models.py:76
+msgid "Contact instructions"
+msgstr "Beschreibung für Kontaktierung"
+
+#: referral/models.py:118
+msgid "What was the method of contact?"
+msgstr "Wie wurde der Patient kontaktiert?"
+
+#: referral/models.py:124
+msgid "Did you make contact with the patient about this referral?"
+msgstr "Wurde der Patient über die Überweisung informiert?"
+
+#: referral/models.py:134
+msgid "Appointment scheduled?"
+msgstr "Termine vereinbart?"
+
+#: referral/models.py:135
+msgid "Did the patient make an appointment?"
+msgstr "Hat der Patient einen Termin vereinbart?"
+
+#: referral/models.py:141
+msgid "No appointment reason"
+msgstr "Keine Begründung für den Termin"
+
+#: referral/models.py:142
+msgid "If the patient didn't make an appointment, why not?"
+msgstr "Warum hat der Patient keinen Termin vereinbart?"
+
+#: referral/models.py:147
+msgid "Where did the patient make an appointment?"
+msgstr "Wo hat der Patient einen Termin vereinbart?"
+
+#: referral/models.py:154
+msgid "Appointment attended?"
+msgstr "Termin wahrgenommen?"
+
+#: referral/models.py:155
+msgid "Did the patient show up to the appointment?"
+msgstr "Kam der Patient zu dem Termin?"
+
+#: referral/models.py:161
+msgid "If the patient didn't go to the appointment, why not?"
+msgstr "Warum hat der Patient den Termin nicht wahrgenommen?"
+
+#: referral/models.py:172
+msgid "Patient went to appointment at "
+msgstr "Der patient hat der Termin wahrgenommen bei "
+
+#: referral/models.py:175
+msgid "Patient made appointment at "
+msgstr "Patient hat Termin vereinbart bei "
+
+#: referral/models.py:176
+msgid "but has not yet gone."
+msgstr "aber ist bisher noch nicht hingegangen."
+
+#: referral/models.py:179
+msgid ""
+"Successfully contacted patient but the patient has not made an appointment "
+"yet."
+msgstr ""
+"Der Patient wurde kotaktiert, er hat jedoch bisher keinen Termin vereinbart."
+
+#: referral/models.py:181
+msgid "Did not successfully contact patient"
+msgstr "Patient konnte nicht erreicht werden"
+
+#: referral/templates/referral/new-FQHC-referral.html:7
+msgid "Create new FQHC referral"
+msgstr "Neue Krankenhaus-Überweisung erstellen"
+
+#: referral/templates/referral/new-FQHC-referral.html:11
+msgid "New FQHC Referral"
+msgstr "Neue Krankenhaus-Überweisung"
+
+#: referral/templates/referral/new-FQHC-referral.html:13
+#: referral/templates/referral/new-patient-contact.html:13
+#: referral/templates/referral/new-referral.html:13
+#: referral/templates/referral/new-specialty-referral.html:13
+msgid "Referral for"
+msgstr "Überweisung für"
+
+#: referral/templates/referral/new-followup-request.html:7
+msgid "New followup request"
+msgstr "Neue Folge-Untersuchung"
+
+#: referral/templates/referral/new-followup-request.html:11
+msgid "Request referral followup"
+msgstr "Überweisung für Folgeuntersuchung beantragen"
+
+#: referral/templates/referral/new-followup-request.html:12
+#: referral/templates/referral/new-patient-contact.html:15
+msgid "Referral to"
+msgstr "Überweisung zu"
+
+#: referral/templates/referral/new-followup-request.html:17
+#: referral/templates/referral/new-patient-contact.html:20
+msgid "or"
+msgstr "oder"
+
+#: referral/templates/referral/new-patient-contact.html:7
+#: referral/templates/referral/new-patient-contact.html:11
+msgid "New referral followup"
+msgstr "Neue Überweisung für Folgeuntersuchung"
+
+#: referral/templates/referral/new-patient-contact.html:24
+msgid "Followup requested for"
+msgstr "Folgeuntersuchung angefordert für"
+
+#: referral/templates/referral/new-patient-contact.html:34
+msgid "A referral is considered"
+msgstr "Eine Überweisung wird evaluiert"
+
+#: referral/templates/referral/new-patient-contact.html:34
+msgid "successful"
+msgstr "erfolgreich"
+
+#: referral/templates/referral/new-patient-contact.html:34
+msgid "only once a patient has both made"
+msgstr ""
+
+#: referral/templates/referral/new-patient-contact.html:34
+msgid "and gone to"
+msgstr ""
+
+#: referral/templates/referral/new-patient-contact.html:34
+msgid "and appointment"
+msgstr "Termin vereinbaren"
+
+#: referral/templates/referral/new-patient-contact.html:34
+msgid "Please"
+msgstr "Bitte"
+
+#: referral/templates/referral/new-patient-contact.html:34
+msgid "continue following up"
+msgstr "setzen Sie die Nachsorge fort "
+
+#: referral/templates/referral/new-patient-contact.html:34
+msgid "with patients until they have completed an appointment"
+msgstr "bis die Patienten einen Termin abgeschlossen haben"
+
+#: referral/templates/referral/new-patient-contact.html:34
+msgid "Only once you have exhausted followup should you save as an"
+msgstr "Erst wenn Sie .. (Übersetzung folgt)"
+
+#: referral/templates/referral/new-patient-contact.html:34
+msgid "unsuccessful referral"
+msgstr "erfolglose Überweisung"
+
+#: referral/templates/referral/new-referral.html:7
+msgid "Create new referral"
+msgstr "Neue Überweisung anlegen"
+
+#: referral/templates/referral/new-referral.html:11
+msgid "New Referral"
+msgstr "Neue Überweisung"
+
+#: referral/templates/referral/new-specialty-referral.html:7
+msgid "Create new specialty referral"
+msgstr "Neue Spezialisten-Überweisung anlegen"
+
+#: referral/templates/referral/new-specialty-referral.html:11
+msgid "New Specialty Referral"
+msgstr "Neue Spezialisten-Überweisung"
+
+#: referral/templates/referral/select-referral-type.html:9
+msgid "Choose a referral type"
+msgstr "Folgeuntersuchungs-Art auswählen"
+
+#: referral/templates/referral/select-referral-type.html:13
+msgid "Choose a Referral Type"
+msgstr "Überweisungsart auswählen"
+
+#: referral/templates/referral/select-referral-type.html:14
+msgid ""
+"Each patient should be provided referrals for ongoing care to several FQHCs "
+"from a pre-screened list of FQHCs. Specialty referral refers to any non-FQHC "
+"referral (e.g., the COH)"
+msgstr "Übersetzung folgt (vermutlich unwichtig für Deutschland)"
+
+#: referral/templates/referral/select-referral-type.html:22
+msgid "Create"
+msgstr " "
+
+#: referral/templates/referral/select-referral-type.html:22
+msgid "referral"
+msgstr "Überweisung erstellen"
+
+#: referral/templates/referral/select-referral.html:7
+msgid "Select referral"
+msgstr "Überweisung auswählen"
+
+#: referral/templates/referral/select-referral.html:11
+msgid "Select Referral"
+msgstr "Überweisung auswählen"
+
+#: referral/templates/referral/select-referral.html:12
+msgid "Specify which referral you would like to update"
+msgstr "Wählen Sie aus, welche Überweisung Sie aktualisieren möchten"
+
+#: referral/templates/referral/select-referral.html:24
+msgid "Oops! There aren't any active referrals for this patient"
+msgstr "Oops! Es gibt keine aktiven Überweisungen für diesen Patienten"
+
+#: referral/templates/referral/select-referral.html:25
+msgid "Do you want to"
+msgstr "Möchten Sie"
+
+#: referral/templates/referral/select-referral.html:25
+msgid "create one"
+msgstr "erstellen"
+
+#: workup/forms.py:19
+msgid "<h3>Clinical Team</h3>"
+msgstr "<h3>Team</h3>"
+
+#: workup/forms.py:20
+msgid "<h3>History</h3>"
+msgstr "<h3>Geschichte</h3>"
+
+#: workup/forms.py:21
+msgid "<h3>Assessment, Plan, & Orders</h3>"
+msgstr "<h3>Bewertung, Plan und Bestellungen</h3>"
+
+#: workup/forms.py:22
+msgid "<h3>Physical Exam</h3>"
+msgstr "<h3>Körperliche Untersuchung</h3>"
+
+#: workup/forms.py:23
+msgid "<h4>Vital Signs</h4>"
+msgstr "<h4>Vitalparameter</h4>"
+
+#: workup/forms.py:24
+msgid "<h4>Imaging Voucher</h4>"
+msgstr "<h4>Gutschein-Betrag</h4>"
+
+#: workup/forms.py:25
+msgid "<h4>Medication Voucher</h4>"
+msgstr "<h4>Medikamenten-Gutschein</h4>"
+
+#: workup/forms.py:166 workup/templates/workup/progressnote_detail.html:31
+#: workup/templates/workup/workup_body.html:21
+msgid "Attending"
+msgstr "Anwesender Arzt"
+
+#: workup/forms.py:174
+msgid "Other volunteer"
+msgstr "Andere Freiwillige"
+
+#: workup/forms.py:232 workup/forms.py:233 workup/forms.py:237
+#: workup/forms.py:238
+msgid "$"
+msgstr "€"
+
+#: workup/forms.py:242
+msgid "Save"
+msgstr "Speichern"
+
+#: workup/models.py:134
+msgid "Title"
+msgstr "Titel"
+
+#: workup/models.py:135
+msgid "Text"
+msgstr "Untersuchungs-Text"
+
+#: workup/models.py:162
+msgid "attending_physician"
+msgstr "Anwesender Arzt"
+
+#: workup/models.py:164
+msgid "Which attending saw the patient?"
+msgstr "Welcher Freiwillige hat den Patienten untersucht?"
+
+#: workup/models.py:166
+msgid "other_volunteer"
+msgstr "Andere Freiwillige"
+
+#: workup/models.py:167
+msgid "Which other volunteer(s) did you work with (if any)?"
+msgstr "Mit welchen anderen Frewilligen hast du noch zusammen gearbeitet?"
+
+#: workup/models.py:170
+msgid "When was the patient seen?"
+msgstr "Wann wurde der Patient untersucht?"
+
+#: workup/models.py:170
+msgid "clinic day"
+msgstr "Kliniktag"
+
+#: workup/models.py:172
+msgid "CC"
+msgstr "Hauptbeschwerde"
+
+#: workup/models.py:173
+msgid "Dx"
+msgstr "Diagnose"
+
+#: workup/models.py:174
+msgid "Diagnosis categories"
+msgstr "Diagnose-Kategorie"
+
+#: workup/models.py:176 workup/templates/workup/workup_body.html:51
+msgid "HPI"
+msgstr "Beschreibung der aktuellen Erkrankung"
+
+#: workup/models.py:177 workup/templates/workup/workup_body.html:54
+msgid "PMH/PSH"
+msgstr "Vergangene Erkrankungen, vergangene Operationen"
+
+#: workup/models.py:178 workup/templates/workup/workup_body.html:57
+msgid "Medications"
+msgstr "Aktuelle Medikation"
+
+#: workup/models.py:179 workup/templates/workup/workup_body.html:60
+msgid "Allergies"
+msgstr "Allergien"
+
+#: workup/models.py:180
+msgid "Family History"
+msgstr "Patienten-Geschichte"
+
+#: workup/models.py:181
+msgid "Social History"
+msgstr "Patienten-Geschichte"
+
+#: workup/models.py:182 workup/templates/workup/workup_body.html:69
+msgid "ROS"
+msgstr "Review of system (wird entfernt)"
+
+#: workup/models.py:186
+msgid "Heart Rate"
+msgstr "Herzfrequenz"
+
+#: workup/models.py:190
+msgid "Systolic"
+msgstr "Systolischer Blutdruck"
+
+#: workup/models.py:193
+msgid "Diastolic"
+msgstr "Diastolischer Blutdruck"
+
+#: workup/models.py:198
+msgid "Respiratory Rate"
+msgstr "Atemfrequenz"
+
+#: workup/models.py:204
+msgid "Temperature"
+msgstr "Temperatur"
+
+#: workup/models.py:208 workup/templates/workup/workup_body.html:91
+msgid "Height"
+msgstr "Körpergröße"
+
+#: workup/models.py:212 workup/templates/workup/workup_body.html:94
+msgid "Weight"
+msgstr "Gewicht"
+
+#: workup/models.py:214
+msgid "Physical Examination"
+msgstr "Körperliche Untersuchung"
+
+#: workup/models.py:217
+msgid "Labs Ordered from Quest"
+msgstr "Labor bestellt bei Amedes"
+
+#: workup/models.py:219
+msgid "Labs Ordered Internally"
+msgstr "Labor bestellt bei ... (wird entfernt)"
+
+#: workup/models.py:222
+msgid "Prescription Orders"
+msgstr "Rezepte"
+
+#: workup/models.py:224
+msgid "Got voucher"
+msgstr "Patient hat Gutschein erhalten"
+
+#: workup/models.py:227
+msgid "Voucher amount"
+msgstr "Gutschein-Betrag"
+
+#: workup/models.py:230
+msgid "Patient pays"
+msgstr "Patient bezahlt"
+
+#: workup/models.py:232
+msgid "Got imaging voucher"
+msgstr "Patient hat Bildgebungs-Gutschein erhalten"
+
+#: workup/models.py:235
+msgid "Imaging voucher amount"
+msgstr "Gutschein-Betrag"
+
+#: workup/models.py:238
+msgid "Patient pays imaging"
+msgstr "Patient bezahlt Bildgebung"
+
+#: workup/models.py:246
+msgid "Will the pt. return to SNHC?"
+msgstr "Wird der Patient nochmal kommen?"
+
+#: workup/models.py:248 workup/templates/workup/workup_body.html:148
+msgid "A and P"
+msgstr "Bewertung des Falls und weiteres Vorgehen"
+
+#: workup/models.py:253
+msgid "signed_workups"
+msgstr ""
+
+#: workup/templates/workup/clindate-list.html:6
+#: workup/templates/workup/clindate-list.html:10
+#, fuzzy
+#| msgid "Clinic Day"
+msgid "Recent Clinic Dates"
+msgstr "Kliniktag"
+
+#: workup/templates/workup/clindate-list.html:19
+msgid "Attending(s)"
+msgstr "Teilnehmende"
+
+#: workup/templates/workup/clindate-list.html:22
+msgid "Volunteers(s)"
+msgstr "Freiwillige"
+
+#: workup/templates/workup/clindate-list.html:26
+#: workup/templates/workup/workup_body.html:28
+msgid "Chief Complaint"
+msgstr ""
+
+#: workup/templates/workup/clindate-list.html:27
+#, fuzzy
+#| msgid "Case Manager"
+msgid "Case Manage"
+msgstr "Fallmanager"
+
+#: workup/templates/workup/clindate-list.html:28
+msgid "Note Author"
+msgstr ""
+
+#: workup/templates/workup/new-note-dispatch.html:16
+#: workup/templates/workup/new-note-dispatch.html:20
+msgid "Create a New Note"
+msgstr "Neue Untersuchung anlegen"
+
+#: workup/templates/workup/new-note-dispatch.html:29
+msgid "Note Type"
+msgstr "Untersuchungsform"
+
+#: workup/templates/workup/progressnote_detail.html:29
+#: workup/templates/workup/workup_body.html:17
+#: workup/templates/workup/workup_detail.html:14
+msgid "Attested by"
+msgstr ""
+
+#: workup/templates/workup/progressnote_detail.html:31
+#: workup/templates/workup/workup_body.html:21
+#: workup/templates/workup/workup_detail.html:16
+msgid "Workup unattested"
+msgstr "Untersuchung nicht unterschrieben"
+
+#: workup/templates/workup/progressnote_detail.html:38
+msgid "written by"
+msgstr "Geschrieben von"
+
+#: workup/templates/workup/workup-create.html:18
+msgid ""
+"Please write this in a word document, then paste into the appropriate "
+"fields. Poor internet connection may cause work to be lost"
+msgstr ""
+
+#: workup/templates/workup/workup_body.html:13
+#: workup/templates/workup/workup_detail.html:12
+msgid "Seen on"
+msgstr "Gesehen am"
+
+#: workup/templates/workup/workup_body.html:26
+msgid "At a Glance"
+msgstr "Übersicht"
+
+#: workup/templates/workup/workup_body.html:31
+msgid "Author"
+msgstr "Autor"
+
+#: workup/templates/workup/workup_body.html:34
+msgid "Other Volunteer(s)"
+msgstr "Andere Freiwillige"
+
+#: workup/templates/workup/workup_body.html:39
+msgid "Diagnosis"
+msgstr "Diagnose"
+
+#: workup/templates/workup/workup_body.html:42
+msgid "Dx Category"
+msgstr "Diagnose-Kategorie"
+
+#: workup/templates/workup/workup_body.html:45
+#, fuzzy
+#| msgid "Patient is Active"
+msgid "Patient will Return"
+msgstr "Patient aktiv"
+
+#: workup/templates/workup/workup_body.html:49
+msgid "H and P"
+msgstr "Anamnese und körperliche Untersuchung"
+
+#: workup/templates/workup/workup_body.html:63
+msgid "FamHx"
+msgstr "Familien-Anamnese"
+
+#: workup/templates/workup/workup_body.html:66
+msgid "SocHx"
+msgstr "Sozialanamnese"
+
+#: workup/templates/workup/workup_body.html:74
+#: workup/templates/workup/workup_body.html:100
+msgid "Physical Exam"
+msgstr "Körperliche Untersuchung"
+
+#: workup/templates/workup/workup_body.html:76
+msgid "Vital Signs"
+msgstr "Vitalparameter"
+
+#: workup/templates/workup/workup_body.html:79
+msgid "HR"
+msgstr "Herzfrequenz"
+
+#: workup/templates/workup/workup_body.html:82
+msgid "BP"
+msgstr "Blutdruck"
+
+#: workup/templates/workup/workup_body.html:85
+msgid "RR"
+msgstr "Blutdruck"
+
+#: workup/templates/workup/workup_body.html:85
+msgid "per min"
+msgstr "pro min"
+
+#: workup/templates/workup/workup_body.html:88
+msgid "T"
+msgstr "Temperatur"
+
+#: workup/templates/workup/workup_body.html:103
+msgid "Labs (Quest)"
+msgstr "Labor"
+
+#: workup/templates/workup/workup_body.html:106
+msgid "Labs (In House)"
+msgstr "Labor (wird entfernt)"
+
+#: workup/templates/workup/workup_body.html:109
+msgid "Rx"
+msgstr "Rezept"
+
+#: workup/templates/workup/workup_body.html:113
+msgid "Discharge"
+msgstr "Entlassen"
+
+#: workup/templates/workup/workup_body.html:115
+msgid "Patient got Voucher"
+msgstr "Patient hat Gutschein erhalten"
+
+#: workup/templates/workup/workup_body.html:119
+#: workup/templates/workup/workup_body.html:127
+msgid "Voucher Amount"
+msgstr "Gutschein-Betrag"
+
+#: workup/templates/workup/workup_body.html:122
+#: workup/templates/workup/workup_body.html:130
+msgid "Pt Pays"
+msgstr "Patient bezahlt selbst"
+
+#: workup/templates/workup/workup_body.html:134
+msgid "Referral Type"
+msgstr "Überweisungsart"
+
+#: workup/templates/workup/workup_body.html:140
+#, fuzzy
+#| msgid "Referral"
+msgid "Referral Location"
+msgstr "Überweisung"
+
+#: workup/templates/workup/workup_detail.html:27
+msgid "Update"
+msgstr "Update"
+
+#: workup/templates/workup/workup_detail.html:30
+msgid "Attest"
+msgstr "Attestieren"
+
+#: workup/templates/workup/workup_detail.html:32
+#, fuzzy
+#| msgid "New Action Item"
+msgid "Add Action Item"
+msgstr "Neue Aktion"
+
+#: workup/templates/workup/workup_detail.html:34
+msgid "PDF"
+msgstr "PDF"
+
+#: workup/views.py:36
+msgid "Standard Note"
+msgstr "Normale Untersuchung"
+
+#: workup/views.py:37 workup/views.py:142 workup/views.py:152
+msgid "Clinical Psychology Note"
+msgstr "Psychologische Untersuchung"
+
+#~ msgid "due_date"
+#~ msgstr "Fälligkeitsdatum"
+
+#~ msgid "attending"
+#~ msgstr "Teilnehmende"

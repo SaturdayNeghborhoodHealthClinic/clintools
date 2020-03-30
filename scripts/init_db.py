@@ -10,12 +10,20 @@ from pttrack import models as core
 from followup import models as followup
 from workup import models as workup
 from referral import models as referral
+from django.contrib.auth.models import User
+
+
+user = User.objects.create_superuser('jrporter', 'justinrporter@wustl.edu',
+                                     'password')
+user.first_name = "Justin"
+user.last_name = "Porter"
+user.save()
 
 for lang_name in ["English", "Arabic", "Armenian", "Bengali", "Chinese",
                   "Croatian", "Czech", "Danish", "Dutch", "Finnish", "French",
                   "French Creole", "German", "Greek", "Hebrew", "Hindi/Urdu",
                   "Hungarian", "Italian", "Japanese", "Korean", "Lithuanian",
-                  "Persian", "Polish", "Portuguese", "Romanian", "Russian",
+                  "Persisch", "Polish", "Portuguese", "Romanian", "Russian",
                   "Samoan", "Serbocroatian", "Slovak", "Spanish", "Swedish",
                   "Tagalog", "Thai/Laotian", "Turkish", "Ukrainian",
                   "Vietnamese", "Yiddish"]:
@@ -28,7 +36,7 @@ for ethnic_name in ["White", "Native Hawaiian or Other Pacific Islander",
     e = core.Ethnicity(name=ethnic_name)
     e.save()
 
-for lname in ["Male", "Female", "Other"]:
+for lname in ["Männlich", "Weiblich", "Andere"]:
     g = core.Gender(long_name=lname, short_name=lname[0])
     g.save()
 
