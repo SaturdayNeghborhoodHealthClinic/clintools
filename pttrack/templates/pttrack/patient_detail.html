@@ -14,7 +14,7 @@
 		</a></h2>
 		<p class="lead">{{ patient.age }} {% trans 'y/o' %} {{ patient.ethnicities.iterator | join:", " }} {{ patient.gender | lower }}</p>
 		<p class="lead"><strong>{% trans 'Status' %}:</strong> {{ patient.status }}</p>
-		<p class="lead"><strong>{% trans 'FQHC ReferralStatus' %}</strong> {{ referral_status }}</p>
+		<p class="lead"><strong>{% trans 'FQHC Referral Status' %}</strong> {{ referral_status }}</p>
 		<p class="lead"><strong>{% trans 'Referrals' %}:</strong> {{ referrals.iterator | join:", " }}</p>
 		<p class="lead"><strong>{% trans 'Case Manager' %}:</strong> {{patient.case_managers.iterator | join:"; "}}
 		{% if request.session.staff_view %}
