@@ -1,17 +1,20 @@
 {% extends "pttrack/base.html" %}
 
+{% load i18n %}
+<!-- trans finished -->
+
 {% block title %}
-New followup request
+{% blocktrans %}New followup request{% endblocktrans %}
 {% endblock %}
 
 {% block header %}
-<h1>Request referral followup</h1>
-<p class="lead">Referral to 
+<h1>{% blocktrans %}Request referral followup{% endblocktrans %}</h1>
+<p class="lead">{% blocktrans %}Referral to{% endblocktrans %}
 {% for ref in referral.location.all %}
 	{{ref.name}}
 	{% if forloop.last %}
 	{% else %}
-	or
+	{% blocktrans %}or{% endblocktrans %}
 	{% endif %}
 {% endfor %}
 </p>

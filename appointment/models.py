@@ -3,6 +3,7 @@ from django.utils.timezone import now
 from django.core.exceptions import ValidationError
 from django.conf import settings
 from pttrack.models import Note
+from django.utils.translation import gettext as _
 
 from simple_history.models import HistoricalRecords
 
@@ -31,19 +32,19 @@ class Appointment(Note):
         (VACCINE, "Vaccine Followup")
     )
 
-    clindate = models.DateField(verbose_name="Appointment Date")
+    clindate = models.DateField(verbose_name=_("Appointment Date"))
     clintime = models.TimeField(
-        verbose_name="Time of Appointment",
+        verbose_name=_("Time of Appointment"),
         default=generate_default_appointment_time)
     appointment_type = models.CharField(
         max_length=15, choices=APPOINTMENT_TYPES,
-        verbose_name='Appointment Type', default=CHRONIC_CARE)
-    comment = models.TextField(
-        help_text="What should happen at this appointment?")
+        verbose_name=_('Appointment Type'), default=CHRONIC_CARE)
+    comment = models.TextField(verbose_name=_('Comment'),
+        help_text=_("What should happen at this appointment?"))
 
     pt_showed = models.NullBooleanField(
-        verbose_name="Patient Showed",
-        blank=True, help_text="Did the patient come to this appointment?")
+        verbose_name=_("Patient Showed"),
+        blank=True, help_text=_("Did the patient come to this appointment?"))
 
     history = HistoricalRecords()
 

@@ -2,6 +2,7 @@ Django==1.11.28
 django-bootstrap3==11.0.0
 git+https://github.com/inducer/django-bootstrap3-datetimepicker.git
 django-crispy-forms==1.7.2
+django-debug-toolbar==1.11
 django-simple-history==2.7.0
 djangorestframework==3.4.0
 ecdsa==0.13.3

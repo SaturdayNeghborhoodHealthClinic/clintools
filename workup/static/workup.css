@@ -1,0 +1,39 @@
+.jumbotron {
+  font-weight: bold;
+  background-color: white;
+  border-bottom-right-radius: 25px;
+  border-bottom-left-radius: 25px;
+  text-align: center
+}
+
+.custom-table-outer {
+  font-weight: 600;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 15px;
+  background-color: white;
+}
+
+.custom-table-inner {
+  border: none !important;
+  color: #214d5c !important;
+}
+
+.h4-custom {
+  border: none !important;
+  font-weight: 700 !important;
+}
+
+.td-custom {
+  border-color: rgba(33, 77, 92, 0.5);
+}
+
+.a-custom {
+  color: #214d5c !important;
+  font-weight: 600
+}
+
+.p-custom {
+  color: #214d5c !important;
+  font-weight: 500;
+  opacity: 0.6
+}

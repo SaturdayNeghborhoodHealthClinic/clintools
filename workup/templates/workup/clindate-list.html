@@ -1,11 +1,13 @@
 {% extends "pttrack/base.html" %}
 
+{% load i18n %}
+<!-- trans finished -->
 {% block title %}
-Recent Clinic Dates
+{% blocktrans %}Recent Clinic Dates{% endblocktrans %}
 {% endblock %}
 
 {% block header %}
-<h1>Recent Clinic Dates</h1>
+<h1>{% blocktrans %}Recent Clinic Dates{% endblocktrans %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -14,16 +16,16 @@ Recent Clinic Dates
 
 	{% for clinic_date in object_list %}
 		<h3>{{clinic_date.clinic_type}} &mdash; {{clinic_date.clinic_date | date:"l, F d, Y" }}</h3>
-		<p><strong>Attending(s):</strong> {{clinic_date.infer_attendings | join:", " }}</p>
-		{% comment %}<p><strong>Coordinators(s):</strong> {{clinic_date.infer_coordinators | join:", " }}</p> {% endcomment %}
-		<p><strong>Volunteers(s):</strong> {{clinic_date.infer_volunteers | join:", " }}</p>
+		<p><strong>{% blocktrans %}Attending(s){% endblocktrans %}:</strong> {{clinic_date.infer_attendings | join:", " }}</p>
+		{% comment %}<p><strong>{% blocktrans %}Coordinators(s){% endblocktrans %}:</strong> {{clinic_date.infer_coordinators | join:", " }}</p> {% endcomment %}
+		<p><strong>{% blocktrans %}Volunteers(s){% endblocktrans %}:</strong> {{clinic_date.infer_volunteers | join:", " }}</p>
 		<table class="table table-striped">
 	    <tr>
-		    <th>Patient</th>
-		    <th>Chief Complaint</th>
-		    <th>Case Manager</th> 
-		    <th>Note Author</th>
-		    <th>Attestation</th>
+		    <th>{% blocktrans %}Patient{% endblocktrans %}</th>
+		    <th>{% blocktrans %}Chief Complaint{% endblocktrans %}</th>
+		    <th>{% blocktrans %}Case Manage{% endblocktrans %}r</th>
+		    <th>{% blocktrans %}Note Author{% endblocktrans %}</th>
+		    <th>{% blocktrans %}Attestation{% endblocktrans %}</th>
 		</tr>
 		{% for wu in clinic_date.workup_set.all %}
 			<tr {% if wu.signer == None %} class="warning" {% endif %}>

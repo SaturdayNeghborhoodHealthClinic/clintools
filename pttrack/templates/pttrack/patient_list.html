@@ -1,11 +1,11 @@
 {% extends "pttrack/base.html" %}
-
+{% load i18n %}
 {% block title %}
-Osler: {{ title | default:"All Patients"}}
+Osler: {% trans 'All Patients' %}
 {% endblock %}
 
 {% block header %}
-<h1>{{ title | default:"All Patients" }}</h1>
+<h1>{% trans 'All Patients' %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -51,13 +51,13 @@ Osler: {{ title | default:"All Patients"}}
                 class:"table",
             }).append(
             $("<tr>").append( // headings
-                $("<th>").text("Name"),
-                $("<th>").text("Age / Gender"),
-                $("<th>").text("Case Manager"),
-                $("<th>").text("Latest Activity"),
-                $("<th>").text("Next AI Due"),
-                $("<th>").text("Attestation"),
-                $("<th>").text("Status")
+                $("<th>").text({% trans 'Name' %}),
+                $("<th>").text({% trans 'Age/Gender' %}),
+                $("<th>").text({% trans 'Case Manager' %}),
+                $("<th>").text({% trans 'Latest Activity' %}),
+                $("<th>").text({% trans 'Next AI Due' %}),
+                $("<th>").text({% trans 'Attestation' %}),
+                $("<th>").text({% trans 'Status' %})
                 )
             );
 

@@ -7,11 +7,18 @@ from django.conf import settings
 from django.utils.timezone import now
 from django.utils.text import slugify
 import os
-from django.core.urlresolvers import reverse
+# from django.core.urlresolvers import reverse
+from django.urls import reverse
+
+import datetime
 
 from simple_history.models import HistoricalRecords
 
 from . import validators
+from django.utils.translation import gettext as _
+
+
+
 
 # pylint: disable=I0011,missing-docstring,E1305
 
@@ -45,7 +52,7 @@ def make_filepath(instance, filename):
 
 
 class ContactMethod(models.Model):
-    '''Simple text-contiaining class for storing the method of contacting a
+    '''Simple text-contsaining class for storing the method of contacting a
     patient for followup followed up with (i.e. phone, email, etc.)'''
 
     name = models.CharField(max_length=50, primary_key=True)
@@ -138,16 +145,16 @@ class Person(models.Model):
         abstract = True
 
     first_name = models.CharField(
-        max_length=100, validators=[validators.validate_name])
+        max_length=100, validators=[validators.validate_name], verbose_name=_('first name'))
     last_name = models.CharField(
-        max_length=100, validators=[validators.validate_name])
+        max_length=100, validators=[validators.validate_name], verbose_name=_('last name'))
     middle_name = models.CharField(
-        max_length=100, blank=True, validators=[validators.validate_name])
+        max_length=100, blank=True, validators=[validators.validate_name], verbose_name=_('middle name'))
 
-    phone = models.CharField(max_length=40, null=True, blank=True)
-    languages = models.ManyToManyField(Language, help_text="Specify here languages that are spoken at a level sufficient to be used for medical communication.")
+    phone = models.CharField(max_length=40, null=True, blank=True, verbose_name=_('phone'))
+    languages = models.ManyToManyField(Language, verbose_name=_('languages'), help_text=_("Specify here languages that are spoken at a level sufficient to be used for medical communication."))
 
-    gender = models.ForeignKey(Gender)
+    gender = models.ForeignKey(Gender, verbose_name=_('gender'))
 
     def name(self, reverse=True, middle_short=True):
         if self.middle_name:
@@ -194,29 +201,29 @@ class Patient(Person):
 
     outcome = models.ForeignKey(Outcome, null=True, blank=True)
 
-    address = models.CharField(max_length=200)
+    address = models.CharField(max_length=200, verbose_name=_('address'))
 
     city = models.CharField(max_length=50,
-                            default="St. Louis")
+                            default="St. Louis", verbose_name=_('city'))
     state = models.CharField(max_length=2,
-                             default="MO")
+                             default="MO", verbose_name=_('state'))
     zip_code = models.CharField(max_length=5,
-                                validators=[validators.validate_zip])
+                                validators=[validators.validate_zip], verbose_name=_("Zip Code"))
     country = models.CharField(max_length=100,
-                               default="USA")
+                               default=_("USA"), verbose_name=_('country'))
 
 
     pcp_preferred_zip = models.CharField(max_length=5,
                                          validators=[validators.validate_zip],
                                          blank=True,
-                                         null=True)
+                                         null=True, verbose_name=_("pcp preferred zip"))
 
-    date_of_birth = models.DateField(help_text='MM/DD/YYYY',
-        validators=[validators.validate_birth_date])
+    date_of_birth = models.DateField(default=datetime.date.today, help_text=_('MM/DD/YYYY'),
+        validators=[validators.validate_birth_date], verbose_name=_('Date of Birth'))
 
-    patient_comfortable_with_english = models.BooleanField(default=True)
+    patient_comfortable_with_english = models.BooleanField(default=True, verbose_name=_("Patient comfortable with English"))
 
-    ethnicities = models.ManyToManyField(Ethnicity)
+    ethnicities = models.ManyToManyField(Ethnicity, verbose_name=_("ethnicities"))
 
     # Alternative phone numbers have up to 4 fields and each one is associated
     # with the person that owns phone
@@ -236,16 +243,16 @@ class Patient(Person):
     alternate_phone_4_owner = models.CharField(max_length=40, blank=True, null=True)
     alternate_phone_4 = models.CharField(max_length=40, blank=True, null=True)
 
-    preferred_contact_method = models.ForeignKey(ContactMethod, blank=True, null=True)
+    preferred_contact_method = models.ForeignKey(ContactMethod, blank=True, null=True, verbose_name=_("Preferred contact method"))
 
-    email = models.EmailField(blank=True, null=True)
+    email = models.EmailField(blank=True, null=True, verbose_name=_("Email"))
 
     # If the patient is in clinic and needs a workup, that is specified by
     # needs_workup. Default value is false for all the previous patients
 
-    needs_workup = models.BooleanField(default=True)
+    needs_workup = models.BooleanField(default=True, verbose_name=_("Needs workup"))
 
-    history = HistoricalRecords()
+    history = HistoricalRecords(verbose_name=_("History"))
 
     def age(self):
         return (now().date() - self.date_of_birth).days//365
@@ -308,9 +315,9 @@ class Patient(Person):
             tdelta = next_item.due_date - now().date()
             return "next action in "+str(tdelta.days)+" days"
         elif len(done) > 0:
-            return "all actions complete"
+            return _("all actions complete")
         else:
-            return "no pending actions"
+            return _("no pending actions")
 
     def followup_set(self):
         followups = []

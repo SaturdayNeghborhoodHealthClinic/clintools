@@ -1,25 +1,27 @@
 {% extends "pttrack/base.html" %}
 
+{% load i18n %}
+
 {% block title %}
-Osler: {{ title | default:"All Patients"}}
+Osler: {% trans 'All Patients' %}
 {% endblock %}
 
 {% block header %}
-<h1>{{ title | default:"All Patients" }}</h1>
+<h1>{% trans 'All Patients' %}</h1>
 {% endblock %}
 
 {% block content %}
    <div class="container">
       <div class="form-group">
-          <label for="all-patients-filter-input"  class="sr-only" >Filter</label>
+          <label for="all-patients-filter-input"  class="sr-only" >{% trans 'Filter' %}</label>
           <div class="input-group">
               <div class="input-group-addon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></div>
-              <input type="text" id="all-patients-filter-input" placeholder="Filter by patient or case manager name" class="form-control" onkeyup="filterAllPatientsTable()">
+              <input type="text" id="all-patients-filter-input" placeholder={% trans "Search" %} class="form-control" onkeyup="filterAllPatientsTable()">
           </div>
       </div>
 
       <table class="table" id="all-patients-table">
-          <tr><th>Patient Name</th><th>Age/Gender</th><th>Case Managers</th><th>Latest Activity</th><th>Next AI Due</th><th>Attestation</th></td>
+          <tr><th>{% trans 'Patient Name' %}</th><th>{% trans 'Age/Gender' %}</th><th>{% trans 'Case Manager' %}</th><th>{% trans 'Latest Acticity' %}</th><th>{% trans 'Next AI Due' %}</th><th>{% trans 'Attestation' %}</th></td>
 
           {% for patient in object_list %}
               {% with latest_workup=patient.workup_set.all.0 %}
@@ -30,17 +32,17 @@ Osler: {{ title | default:"All Patients"}}
                       <td>{{ patient.case_managers.all | join:"; " }}</td>
                       <td>
                           {% if latest_workup %}
-                              <a href="{% url 'workup' pk=latest_workup.pk %}">Seen {{ latest_workup.clinic_day.clinic_date }}</a>: {{latest_workup.chief_complaint}}
+                              <a href="{% url 'workup' pk=latest_workup.pk %}">{% trans 'Seen' %} {{ latest_workup.clinic_day.clinic_date }}</a>: {{latest_workup.chief_complaint}}
                           {% else %}
-                              <a href="{% url 'patient-update' pk=patient.id %}">Intake</a>: {{patient.history.last.history_date}}
+                              <a href="{% url 'patient-update' pk=patient.id %}">{% trans 'Intake' %}</a>: {{patient.history.last.history_date}}
                           {% endif %}
                       </td>
                       <td>{{patient.status}}</td>
                       <td>
                           {% if not latest_workup %}
-                              No Note
+                              {% trans 'No Note' %}
                           {% elif not latest_workup.signer %}
-                              Unattested
+                              {% trans 'Unattested' %}
                           {% else %}
                               {{ latest_workup.signer }}
                           {% endif %}

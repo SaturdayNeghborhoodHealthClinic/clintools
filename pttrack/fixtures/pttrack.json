@@ -1,4 +1,5 @@
 [
+{% load i18n %}
 {
     "model": "pttrack.contactmethod",
     "pk": "Email",
@@ -200,7 +201,7 @@
 },
 {
     "model": "pttrack.language",
-    "pk": "German",
+    "pk": "{% trans 'German' %}",
     "fields": {}
 },
 {
@@ -245,7 +246,7 @@
 },
 {
     "model": "pttrack.language",
-    "pk": "Persian",
+    "pk": "Persisch",
     "fields": {}
 },
 {
@@ -355,7 +356,7 @@
 },
 {
     "model": "pttrack.ethnicity",
-    "pk": "White",
+    "pk": "{% trans 'white'%}",
     "fields": {}
 },
 {
@@ -416,21 +417,21 @@
 },
 {
     "model": "pttrack.gender",
-    "pk": "Female",
+    "pk": "{% trans 'Female' %}",
     "fields": {
         "short_name": "F"
     }
 },
 {
     "model": "pttrack.gender",
-    "pk": "Male",
+    "pk": "{% trans 'Male' %}",
     "fields": {
         "short_name": "M"
     }
 },
 {
     "model": "pttrack.gender",
-    "pk": "Other",
+    "pk": "{% trans 'Other' %}",
     "fields": {
         "short_name": "O"
     }
@@ -505,7 +506,7 @@
         ],
         "case_managers": [],
         "ethnicities": [
-            "White"
+            "{% trans 'white'%}"
         ]
     }
 },

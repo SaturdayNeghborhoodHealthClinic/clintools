@@ -1,16 +1,19 @@
 {% extends "pttrack/base.html" %}
 
+{% load i18n %}
+<!-- trans finished -->
+
 {% block title %}
-Workup: {{ workup.patient.name }}
+{% blocktrans %}Workup{% endblocktrans %}: {{ workup.patient.name }}
 {% endblock %}
 
 {% block header %}
-    <h1>Workup on {{ workup.patient.name }}</h1>
-    <p class="lead">Seen on {{ workup.clinic_day.clinic_date }}</p>
+    <h1>{% blocktrans %}Workup on{% endblocktrans %} {{ workup.patient.name }}</h1>
+    <p class="lead">{% blocktrans %}Seen on{% endblocktrans %} {{ workup.clinic_day.clinic_date }}</p>
     {% if workup.signed %}
-    <p class="lead">Attested by {{workup.signer}} on {{workup.signed_date}} </p>
+    <p class="lead">{% blocktrans %}Attested by{% endblocktrans %} {{workup.signer}} {% blocktrans %}on{% endblocktrans %} {{workup.signed_date}} </p>
     {% else %}
-    <p class="lead">Workup unattested.</p>
+    <p class="lead">{% blocktrans %}Workup unattested{% endblocktrans %}.</p>
     {% endif%}
 {% endblock %}
 
@@ -18,17 +21,17 @@ Workup: {{ workup.patient.name }}
 
 <div class="container">
     <div class="row text-center">
-        <h4>Actions</h4>
+        <h4>{% blocktrans %}Actions{% endblocktrans %}</h4>
         <div class="btn-group">
             {% if workup.signed and request.session.signs_charts or not workup.signed %}
-            <a class="btn btn-primary" href="{% url 'workup-update' pk=workup.pk %}" role="button">Update</a>
+            <a class="btn btn-primary" href="{% url 'workup-update' pk=workup.pk %}" role="button">{% blocktrans %}Update{% endblocktrans %}</a>
             {% endif %}
             {% if not workup.signed and request.session.signs_charts %}
-            <a class="btn btn-success" href="{% url 'workup-sign' pk=workup.pk %}" role="button">Attest</a>
+            <a class="btn btn-success" href="{% url 'workup-sign' pk=workup.pk %}" role="button">{% blocktrans %}Attest{% endblocktrans %}</a>
             {% endif %}
-            <a class="btn btn-info" href="{% url 'new-action-item' pt_id=workup.patient.pk %}" role="button">Add Action Item</a>
+            <a class="btn btn-info" href="{% url 'new-action-item' pt_id=workup.patient.pk %}" role="button">{% blocktrans %}Add Action Item{% endblocktrans %}</a>
             {% if request.session.staff_view %}
-            <a class="btn btn-warning" href="{% url 'workup-pdf' pk=workup.pk %}" target="_blank" role="button">PDF</a>
+            <a class="btn btn-warning" href="{% url 'workup-pdf' pk=workup.pk %}" target="_blank" role="button">{% blocktrans %}PDF{% endblocktrans %}</a>
             {% endif %}
         </div>
     </div>
