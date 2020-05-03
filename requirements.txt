@@ -3,7 +3,7 @@ django-bootstrap3==11.0.0
 git+https://github.com/inducer/django-bootstrap3-datetimepicker.git
 django-crispy-forms==1.7.2
 django-simple-history==2.7.0
-djangorestframework==3.4.0
+djangorestframework==3.9.1
 ecdsa==0.13.3
 future==0.18.2
 html5lib==1.0.1
