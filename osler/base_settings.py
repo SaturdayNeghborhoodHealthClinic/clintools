@@ -29,6 +29,7 @@ INSTALLED_APPS = (
     'demographics',
     'dashboard',
     'appointment',
+    'visualization',
     'referral',
     'api',
     'crispy_forms',

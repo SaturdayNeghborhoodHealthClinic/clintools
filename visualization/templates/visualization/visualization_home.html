@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+test
+{% load static %}
+
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <title>{% block title %}{% endblock %}</title>
+
+  <link rel="apple-touch-icon" href={% static "pttrack/apple-touch-icon.png" %}>
+
+  <!-- Bootstrap -->
+	<link rel="stylesheet" href={% static "pttrack/css/bootstrap.min.css" %}>
+  <link rel="stylesheet" href={% static "pttrack/css/bootstrap-theme.min.css" %}>
+  <link rel="stylesheet" href={% static "pttrack/css/styles.css" %}>
+
+	<script src={% static "pttrack/js/jquery-1.11.2.min.js" %}></script>
+  <script src={% static "pttrack/js/bootstrap.min.js" %}></script>
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+  {{ form.media }}
+
+  {% block extra_head %}
+  {% endblock %}
+
+  <style>
+    body {
+      padding-top: 50px;
+      padding-bottom: 5%;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="{% url 'root' %}">Osler Home</a>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+          <li><a href="{% url 'preintake' %}">New Patient</a></li>
+          <li><a href="{% url 'all-patients' %}">All Patients</a></li>
+          <li><a href="{% url 'appointment-list' %}">Appointments</a></li>
+          <li><a href="//snhc.wustl.edu/wiki" target="_blank">Wiki</a></li>
+          <li><a href="{% url 'about' %}">About</a></li>
+          {% if user.is_superuser or user.is_staff %}
+          {% endif %}
+        </ul>
+				{% if user.is_authenticated %}
+				<ul class="nav navbar-nav pull-right">
+            {% if user.is_superuser or user.is_staff %}
+            <li><a href="{% url 'admin:index' %}">Admin</a></li>
+            {% endif %}
+            <li><a href="{% url 'logout' %}">Logout 
+              {{ request.user.provider.first_name }} ({{ request.session.clintype_pk | default:"[no role]" }})
+            </a></li>
+        </ul>
+        {% endif %}
+      </div><!--/.nav-collapse -->
+    </div>
+  </nav>
+
+  <!--[if lt IE 7]>
+	<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+  <![endif]-->
+  
+  
+<!--Side Bar-->
+	<div class="page-wrapper chiller-theme toggled">
+    <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+      <i class="fas fa-bars"></i>
+    </a>
+    <nav id="sidebar" class="sidebar-wrapper">
+      <div class="sidebar-content">
+        <div class="sidebar-menu">
+          <ul>
+            <li class="sidebar-dropdown main-sidebar">
+              <a id="option1" href="#">
+                <span>Option 1</span>
+              </a>
+            </li>
+            <li class="sidebar-dropdown main-sidebar">
+              <a id="option2" href="#">
+                <span>Option 2</span>
+              </a>
+            </li>
+            <li class="sidebar-dropdown main-sidebar">
+              <a id="option3" href="#">
+                <span>Option 3</span>
+              </a>
+            </li>
+            <li class="sidebar-dropdown main-sidebar">
+              <a id="option4" href="#">
+                <span>Option 4</span>
+              </a>
+            </li>
+            <li class="sidebar-dropdown main-sidebar">
+              <a id="option5" href="#">
+                <span>Option 5</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <!-- sidebar-menu  -->
+      </div>
+      <!-- sidebar-content  -->
+      <div class="sidebar-footer">
+        
+      </div>
+    </nav>
+
+    <nav id="sidebar2" class="sidebar-wrapper test">
+      <div class="sidebar-content">
+        <div class="sidebar-menu">
+          <div id="slideout1" class="slideout active-submenu">
+            <ul>
+              <li class="sidebar-dropdown">
+                <a href="#">
+                  <span>Option 1a</span>
+                </a>
+              </li>
+              <li class="sidebar-dropdown">
+                <a href="#">
+                  <span>Option 1b</span>
+                </a>
+              </li>
+              <li class="sidebar-dropdown">
+                <a href="#">
+                  <span>Option 1c</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div id="slideout2" class="inactive-submenu">
+            <ul>
+              <li class="sidebar-dropdown">
+                <a href="#">
+                  <span>Option 2a</span>
+                </a>
+              </li>
+              <li class="sidebar-dropdown">
+                <a href="#">
+                  <span>Option 2b</span>
+                </a>
+              </li>
+              <li class="sidebar-dropdown">
+                <a href="#">
+                  <span>Option 2c</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div id="slideout3" class="inactive-submenu">
+            <ul>
+              <li class="sidebar-dropdown">
+                <a href="#">
+                  <span>Option 3a</span>
+                </a>
+              </li>
+              <li class="sidebar-dropdown">
+                <a href="#">
+                  <span>Option 3b</span>
+                </a>
+              </li>
+              <li class="sidebar-dropdown">
+                <a href="#">
+                  <span>Option 3c</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div id="slideout4" class="inactive-submenu">
+            <ul>
+              <li class="sidebar-dropdown">
+                <a href="#">
+                  <span>Option 4a</span>
+                </a>
+              </li>
+              <li class="sidebar-dropdown">
+                <a href="#">
+                  <span>Option 4b</span>
+                </a>
+              </li>
+              <li class="sidebar-dropdown">
+                <a href="#">
+                  <span>Option 4c</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div id="slideout5" class="inactive-submenu">
+            <ul>
+              <li class="sidebar-dropdown">
+                <a href="#">
+                  <span>Option 5a</span>
+                </a>
+              </li>
+              <li class="sidebar-dropdown">
+                <a href="#">
+                  <span>Option 5b</span>
+                </a>
+              </li>
+              <li class="sidebar-dropdown">
+                <a href="#">
+                  <span>Option 5c</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+        <!-- sidebar-menu  -->
+      </div>
+      <!-- sidebar-content  -->
+    </nav>
+
+<!--script for sidebar-->
+    <script>
+      $(".main-sidebar > a").click(function() {
+        console.log($(this));
+        
+        if (
+          $(this)
+            .closest('nav').next()
+            .hasClass('test')
+        ) {
+          if (
+            $(this).attr('id') == 'option1'
+          ) {
+            $('.active-submenu').removeClass('active-submenu').addClass('inactive-submenu');
+            $('#slideout1').removeClass('inactive-submenu').addClass("active-submenu");
+          } else if (
+            $(this).attr('id') == 'option2'
+          ) {
+            $('.active-submenu').removeClass('active-submenu').addClass('inactive-submenu');
+            $('#slideout2').removeClass('inactive-submenu').addClass("active-submenu");
+          } else if (
+            $(this).attr('id') == 'option3'
+          ) {
+            $('.active-submenu').removeClass('active-submenu').addClass('inactive-submenu');
+            $('#slideout3').removeClass('inactive-submenu').addClass("active-submenu");
+          } else if (
+            $(this).attr('id') == 'option4'
+          ) {
+            $('.active-submenu').removeClass('active-submenu').addClass('inactive-submenu');
+            $('#slideout4').removeClass('inactive-submenu').addClass("active-submenu");
+          } else if (
+            $(this).attr('id') == 'option5'
+          ) {
+            $('.active-submenu').removeClass('active-submenu').addClass('inactive-submenu');
+            $('#slideout5').removeClass('inactive-submenu').addClass("active-submenu");
+          }
+          
+
+
+          $(this)
+            .closest('nav').next()
+            .removeClass('test')
+            .addClass('pullout-active')
+        } else {
+          $(this)
+            .closest('nav').next()
+            .removeClass('pullout-active')
+            .addClass('test')
+        }
+        
+      });
+    </script>
+
+<!--code for dropdown in header-->
+      <header class="page-header;">
+        <nav>
+          <button class ="toggle-mob-menu" aria-expanded="false" aria-label = "open menu">
+            <svg width="20" height="20" aria-hidden="true">
+              <use xlink:href="#down"></use>
+            </svg>
+          </button>
+          <ul class ="data-menu">
+            <li class ="menu-heading">
+              <h3>Data</h3>
+            </li>
+            <li>
+            <a href="#0">
+              <svg>
+                <use xlink:href="#datachoice1"></use>
+              </svg>
+              <span>DataChoice1</span>
+            </a>
+              <a href="1">
+                <svg>
+                  <use xlink:href="#datachoice2"></use>
+                </svg>
+                <span>DataChoice2</span>
+              </a>
+               <a href="2">
+                <svg>
+                  <use xlink:href="#datachoice3"></use>
+                </svg>
+                <span>DataChoice3</span>
+              </a>
+            </li>
+
+            <li>
+            <button class="collapse-btn" aria-expanded="true" aria-label="collapse menu">
+              <svg aria-hidden="true">
+                <use xlink:href="'#collapse"></use>
+              </svg>svg>
+              <span>Collapse</span>span>
+            </button>
+            </li>
+          </ul>
+        </nav>
+      </header>
+
+      <section class="page-content">
+      <section class="data-display">
+        <article></article>
+        <article></article>
+        <article></article>
+        </section>
+      </section>
+
+      //script for dropdown
+      <script>
+      .toggle-mob-menu{
+      background-color: #4CAF50;
+      color: white;
+      padding: 16px
+      font-size: 16px;
+      border: none;
+      }
+      .page-header{
+      position:relative;
+      display: inline-block;
+      }
+      .data-menu{
+      display:none;
+      position: absolute;
+      background-color: #f1f1f1;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgb(0,0,0,0,0.2);
+      z-index: 1;
+      }
+      .data-menu a{
+      color: black
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      }
+      .data-menu a:hover {background-color: #ddd;}
+      .page-header:hover .data-menu {display: block;}
+      .page-header:hover .toggle-mob-menu {background-color: #3e8e41;}
+      </script>
+
+      //script for page content
+      <script>
+      .page-content{
+      position: relative;
+      left: var(--page-header-width);
+      width: calc(100% - bar(--page-header-width));
+      min-height: 100vh;
+      padding: 30px;
+      color: var(--page-content-txtColor);
+      background: var(--page-content-bgColor);
+      }
+      //to-do code something for the page content, so that when the data is chosen you can select a graph
+      </script>
+      
+
+      </div>
+  </body>
+</html>

@@ -1,0 +1,55 @@
+###DASHBOARD VISUALIZATION PROJECT###
+
+TIMELINE
+	Project planned to be in shippable form by August 24th, 2020. This time is set so that the project is eligible for Google’s developer competition.
+
+PROJECT GOALS
+The core principle here is that most free clinics write grants, or otherwise engage in scholarly activity as part of their core mission. Osler does a pretty good job of tracking information
+about patients and so forth, but doesn’t give it out that easily—this is in part for security reasons.
+My vision for this product is that there would be some flexible way of visualizing:
+1) distributions (as pie charts, histograms, or bar charts) of distributions (i.e. 30% of patients speak Spanish, etc)
+2) Trends over time (as a line graph probably) for things such as patients seen, number of notes written etc
+3) Relationships between the above as scatterplots (patients seen vs notes written per week, for example)
+all in a arbitrary or semi-arbitrary way, so that we could empower the clinics that use our software to make the best use of the data they collect. The Django “admin interface” already provides fairly generic read/write/edit ability to models, and so that would be a natural jumping-off point for how to do this.
+
+EXPECTATIONS
+1)	Clear and honest communication regarding status of project issues and/or encountered problems. The group cannot help you if we don’t know what’s wrong!
+2)	Regular and punctual attendance for Zoom meetings.
+3)	Timely communication with group in the event you need to miss a project meeting or other project function.
+4)	Adherence to repo and project management schema. This includes using separate branches, updating issue status on project board, opening and closing issues as needed.
+5)	Regularly checking Git to review pull requests. Depending on interaction with Git, I may assign “code owners” to review certain pull requests.
+
+
+COMMUNICATION
+	Communication will be done exclusively through GroupMe. Meetings will be scheduled through Zoom, and reminders will be placed on Outlook Calendars.
+
+
+
+
+
+
+PROJECT AND REPO MANAGEMENT
+The repository schema is pretty simple and is designed around the principle that “everything on master is ready to ship.” 
+1)	Developer creates a branch off “dashboard-develop” with a name that reflects an issue or task, e.g. “filter-dropdown-v1.”
+2)	Developer does work on that branch.
+3)	Developer pushes branch to Git, where it is subject to a code review by at least two team members.
+4)	Branch is merged into dashboard-develop after pull request is sufficiently reviewed.
+5)	If no further work is being done on the task branch, that branch is deleted to ensure that branches do not become too unwieldy.
+6)	Periodically, dashboard-develop will be merged into master and vice versa to allow a deployable version of the dashboard.
+
+
+
+PROJECT MANAGEMENT
+This project will make use of Github issues and Github projects, which can be used to concurrently track the status of bugs, features, etc. within the project.
+
+USING THE KANBAN BOARD
+The Kanban board is used to provide an organized, visual way of tracking issues within the project. It also prevents duplication of effort.
+1)	Go to the Github repositoryProjectsDashboard Tasks
+2)	If you are creating a new task, create it in the “To Do” column. Assign an issue and a person to the task.
+3)	If you are working on a task, move it to the “In Progress” column so that nobody else works on the same thing.
+4)	When the issue is complete, move it to the “Finished” column. Right click on it and you will see information about the issue. Select “close issue” and add comments (time, branch) as appropriate.
+
+TURNING A KANBAN BOARD ITEM INTO AN ISSUE
+https://help.github.com/en/github/managing-your-work-on-github/adding-notes-to-a-project-board
+
+
