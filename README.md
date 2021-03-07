@@ -1,6 +1,8 @@
 [![Circle CI](https://circleci.com/gh/SaturdayNeighborhoodHealthClinic/osler.svg?style=svg)](https://circleci.com/gh/SaturdayNeighborhoodHealthClinic/osler)
 [![codecov.io](https://codecov.io/github/SaturdayNeighborhoodHealthClinic/osler/coverage.svg?branch=master)](https://codecov.io/github/SaturdayNeighborhoodHealthClinic)
 
+**The SNHC is closed as of April 2020. No further work will occur on this fork. See [here](https://github.com/oslerproject/osler) for a maintained fork.**
+
 # Osler
 
 This is our osler project, which is a collection for all our
