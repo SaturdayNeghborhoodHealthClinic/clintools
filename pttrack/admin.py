@@ -2,9 +2,60 @@ from __future__ import unicode_literals
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
 from simple_history.admin import SimpleHistoryAdmin
+from django.contrib.admin import ModelAdmin
+from django.db.models import Count, Sum, When, IntegerField, Case
+from django.db.models.functions import Coalesce
 from django.utils.translation import gettext_lazy as _
 
+from .utils import binary_count_qs
 from . import models
+
+
+@admin.register(models.PatientSummary)
+class PatientSummaryAdmin(ModelAdmin):
+    change_list_template = 'admin/patient_summary_change_list.html'
+
+    def changelist_view(self, request, extra_content=None):
+        response = super(PatientSummaryAdmin, self).changelist_view(
+            request, extra_content)
+
+        try:
+            qs = response.context_data['cl'].queryset
+        except (AttributeError, KeyError):
+            return response
+
+        response.context_data['languages'] = list(
+            models.Language.objects
+            .annotate(count_spoken=Count('patient'))
+            .order_by('-count_spoken')[:10]
+        )
+
+        response.context_data['ethnicities'] = list(
+            models.Ethnicity.objects
+            .annotate(count=Count('patient'))
+            .order_by('-count')
+        )
+
+        response.context_data['ethnicities_total'] = dict(
+            models.Ethnicity.objects
+            .annotate(count=Count('patient'))
+            .aggregate(Sum('count'))
+        )
+
+        response.context_data['english_speaking'] = binary_count_qs(
+            qs, 'patient_comfortable_with_english',
+            true_name='Comfortable', false_name='Uncomfortable'
+        )
+
+        # In future, this code can be used for bar chart data
+        # dict_eth = {
+        #     str(item.name): item.count
+        #     for item in response.context_data['ethnicities']
+        # }
+
+        # response.context_data['ethnicities_dict'] = dict_eth
+
+        return response
 
 
 class CompletionFilter(SimpleListFilter):
