@@ -6,7 +6,7 @@ import datetime
 from django.utils.timezone import now
 
 from django.test import TestCase, override_settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.conf import settings
 
 from pttrack.test_views import log_in_provider, build_provider
@@ -64,7 +64,7 @@ class TestAttendingDashboard(TestCase):
             phone='+49 178 236 5288', gender=Gender.objects.first(),
             address='Schulstrasse 9', city='Munich', state='BA',
             zip_code='63108', pcp_preferred_zip='63018',
-            date_of_birth=datetime.date(1994, 0o1, 22),
+            date_of_birth=datetime.date(1994, 1, 22),
             patient_comfortable_with_english=False,
             preferred_contact_method=ContactMethod.objects.first(),
         )
@@ -103,7 +103,7 @@ class TestAttendingDashboard(TestCase):
             phone='454545', gender=Gender.objects.first(),
             address='A', city='B', state='C',
             zip_code='12345', pcp_preferred_zip='12345',
-            date_of_birth=datetime.date(1992, 0o4, 22),
+            date_of_birth=datetime.date(1992, 4, 22),
             patient_comfortable_with_english=False,
             preferred_contact_method=ContactMethod.objects.first(),
         )

@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect, HttpResponseServerError
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Prefetch
 from django.utils.http import is_safe_url
@@ -305,7 +305,7 @@ def choose_clintype(request):
     RADIO_CHOICE_KEY = 'radio-roles'
 
     redirect_to = request.GET['next']
-    if not is_safe_url(url=redirect_to, host=request.get_host()):
+    if not is_safe_url(url=redirect_to, allowed_hosts=request.get_host()):
         redirect_to = reverse("home")
 
     if request.POST:

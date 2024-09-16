@@ -2,15 +2,13 @@ from __future__ import unicode_literals
 from datetime import date
 
 from django.test import TestCase
-from django.core.urlresolvers import reverse
-from django.db import transaction
+from django.urls import reverse
 
 from pttrack.test_views import build_provider, log_in_provider
 from pttrack.models import Patient, Gender, ContactMethod
 
 from . import models
 from . import forms
-# Create your tests here.
 
 
 class ViewsExistTest(TestCase):
@@ -104,7 +102,7 @@ class FormSubmissionTest(TestCase):
         Test submission of a demographics form
         '''
 
-        for i in list(dict(models.Demographics.NULL_BOOLEAN_CHOICES).keys()):
+        for i in [True, False, None]:
 
             pt = self.make_patient()
 
@@ -114,13 +112,15 @@ class FormSubmissionTest(TestCase):
                 'education_level': models.EducationLevel.objects.all()[0],
                 'transportation': models.TransportationOption.objects.all()[0],
                 'work_status': models.WorkStatus.objects.all()[0],
-                'has_insurance': i,
-                'ER_visit_last_year': i,
                 'last_date_physician_visit': date.today(),
-                'lives_alone': i,
                 'dependents': 4,
-                'currently_employed': i,
             }
+
+            if i is True or i is False:
+                valid_dg_dict['has_insurance'] = i
+                valid_dg_dict['ER_visit_last_year'] = i
+                valid_dg_dict['lives_alone'] = i
+                valid_dg_dict['currently_employed'] = i
 
             final_url = reverse('demographics-create', args=(pt.id,))
 
@@ -162,12 +162,10 @@ class FormSubmissionTest(TestCase):
             'education_level': models.EducationLevel.objects.all()[0],
             'transportation': models.TransportationOption.objects.all()[0],
             'work_status': models.WorkStatus.objects.all()[0],
-            'has_insurance': None,
             'ER_visit_last_year': True,
             'last_date_physician_visit': date.today(),
             'lives_alone': False,
             'dependents': 4,
-            'currently_employed': None,
         }
 
         # Submit demographics object twice
@@ -178,11 +176,13 @@ class FormSubmissionTest(TestCase):
             response, 'pttrack/patient_detail.html')
         self.assertEqual(models.Demographics.objects.count(), 1)
 
-        # Send in submission with the same patient ID
-        response2 = self.client.post(dg_url, dg)
+        # Send in submission with the same patient ID; we should see no new
+        # Demographics objects, and a successful redirect to patient-detail
+        response2 = self.client.post(dg_url, dg, follow=True)
         self.assertEqual(response2.status_code, 200)
+        self.assertEqual(models.Demographics.objects.count(), 1)
         self.assertTemplateUsed(
-            response2, 'demographics/demographics-resolve.html')
+            response2, 'pttrack/patient_detail.html')
 
     def test_demographics_form_double_submission_errors(self):
         '''
@@ -198,18 +198,21 @@ class FormSubmissionTest(TestCase):
             'education_level': models.EducationLevel.objects.first(),
             'transportation': models.TransportationOption.objects.first(),
             'work_status': models.WorkStatus.objects.first(),
-            'has_insurance': None,
             'ER_visit_last_year': True,
             'last_date_physician_visit': date.today(),
             'lives_alone': False,
             'dependents': 4,
-            'currently_employed': None,
         }
 
         dg_url = reverse('demographics-create', args=(pt.pk,))
-        response = self.client.post(dg_url, dg)
+
+        response1 = self.client.post(dg_url, dg, follow=True)
+        self.assertTemplateUsed(response1, 'pttrack/patient_detail.html')
+
         response2 = self.client.post(dg_url, dg, follow=True)
+        #  success here means redirection to patient detail page
         self.assertNotContains(response2, 'Clash')
+        self.assertTemplateUsed(response2, 'pttrack/patient_detail.html')
 
         # Test case 2 - two different forms submitted
         # In this case, all fields should have errors
@@ -227,19 +230,22 @@ class FormSubmissionTest(TestCase):
             'last_date_physician_visit': date.today(),
             'lives_alone': False,
             'dependents': 6,
-            'currently_employed': None,
         }
 
         response3 = self.client.post(dg_url, dg2, follow=True)
 
-        self.assertFormError(response3, 'form_old', 'has_insurance',
-                             "Clash in this field. Database entry is 'Not Answered'")
-        self.assertFormError(response3, 'form_new', 'ER_visit_last_year',
-                             "Clash in this field. You entered 'No'")
-        self.assertFormError(response3, 'form_old', 'dependents',
-                             "Clash in this field. Database entry is '4'")
-        self.assertFormError(response3, 'form_new','dependents',
-                             "Clash in this field. You entered '6'")
+        self.assertFormError(
+            response3, 'form_old', 'has_insurance',
+            "Clash in this field. Database entry is 'None'")
+        self.assertFormError(
+            response3, 'form_new', 'ER_visit_last_year',
+            "Clash in this field. You entered 'False'")
+        self.assertFormError(
+            response3, 'form_old', 'dependents',
+            "Clash in this field. Database entry is '4'")
+        self.assertFormError(
+            response3, 'form_new', 'dependents',
+            "Clash in this field. You entered '6'")
 
         # Verify that there are 6 errors on page (3 fields x 2 messages)
         self.assertContains(response3, 'Clash', count=6)

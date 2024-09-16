@@ -60,23 +60,19 @@ class TransportationOption(models.Model):
 
 class Demographics(models.Model):
 
-    NULL_BOOLEAN_CHOICES = (
-        (None, "Not Answered"),
-        (True, "Yes"),
-        (False, "No")
-    )
-
-    patient = models.OneToOneField(Patient, null=True)
+    patient = models.OneToOneField(
+        Patient, on_delete=models.CASCADE, null=True)
 
     creation_date = models.DateField(blank=True, null=True)
 
     chronic_condition = models.ManyToManyField(ChronicCondition, blank=True)
 
-    has_insurance = models.NullBooleanField(choices=NULL_BOOLEAN_CHOICES)
+    has_insurance = models.BooleanField(null=True, blank=True)
 
-    ER_visit_last_year = models.NullBooleanField(
-        verbose_name="Visited ER in the Past Year",
-        choices=NULL_BOOLEAN_CHOICES)
+    ER_visit_last_year = models.BooleanField(
+        null=True, blank=True,
+        verbose_name="Visited ER in the Past Year"
+    )
 
     last_date_physician_visit = models.DateField(
         blank=True, null=True,
@@ -86,20 +82,32 @@ class Demographics(models.Model):
         ResourceAccess, blank=True,
         verbose_name="Access to Resources")
 
-    lives_alone = models.NullBooleanField(choices=NULL_BOOLEAN_CHOICES)
+    lives_alone = models.BooleanField(null=True, blank=True)
 
     dependents = models.PositiveSmallIntegerField(
         blank=True, null=True, verbose_name="Number of Dependents")
 
-    currently_employed = models.NullBooleanField(choices=NULL_BOOLEAN_CHOICES)
+    currently_employed = models.BooleanField(null=True, blank=True)
 
-    work_status = models.ForeignKey(WorkStatus, blank=True, null=True)
+    work_status = models.ForeignKey(
+        WorkStatus,
+        on_delete=models.PROTECT,
+        blank=True, null=True
+    )
 
-    education_level = models.ForeignKey(EducationLevel, blank=True, null=True)
+    education_level = models.ForeignKey(
+        EducationLevel,
+        on_delete=models.PROTECT,
+        blank=True, null=True)
 
-    annual_income = models.ForeignKey(IncomeRange, blank=True, null=True)
+    annual_income = models.ForeignKey(
+        IncomeRange,
+        on_delete=models.PROTECT,
+        blank=True, null=True)
 
     transportation = models.ForeignKey(
-        TransportationOption, blank=True, null=True)
+        TransportationOption,
+        on_delete=models.PROTECT,
+        blank=True, null=True)
 
     history = HistoricalRecords()

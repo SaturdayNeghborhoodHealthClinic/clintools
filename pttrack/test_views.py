@@ -8,7 +8,7 @@ import datetime
 import json
 
 from django.test import TestCase
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.auth.models import User
 from django.utils.timezone import now
 from django.core.files import File
@@ -311,7 +311,7 @@ class LiveTesting(SeleniumLiveTestCase):
         existance of a jumbotron at the top.
         '''
         from . import urls
-        from django.core.urlresolvers import NoReverseMatch
+        from django.urls import NoReverseMatch
 
         # build a provider and log in.
         build_provider(username='timmy', password='password',
@@ -411,7 +411,7 @@ class LiveTestPatientLists(SeleniumLiveTestCase):
             'state': 'BA',
             'zip_code': '63108',
             'pcp_preferred_zip': '63018',
-            'date_of_birth': datetime.date(1990, 0o1, 0o1),
+            'date_of_birth': datetime.date(1990, 1, 1),
             'patient_comfortable_with_english': False,
             'preferred_contact_method': models.ContactMethod.objects.first(),
         }
@@ -946,7 +946,7 @@ class IntakeTest(TestCase):
             'country': 'Germany',
             'zip_code': '63108',
             'pcp_preferred_zip': '63018',
-            'date_of_birth': datetime.date(1990, 0o1, 0o1),
+            'date_of_birth': datetime.date(1990, 1, 1),
             'patient_comfortable_with_english': False,
             'ethnicities': [models.Ethnicity.objects.first()],
             'preferred_contact_method':
@@ -1219,7 +1219,7 @@ class TestReferralPatientDetailIntegration(TestCase):
             state='BA',
             zip_code='63108',
             pcp_preferred_zip='63018',
-            date_of_birth=datetime.date(1990, 0o1, 0o1),
+            date_of_birth=datetime.date(1990, 1, 1),
             patient_comfortable_with_english=False,
             preferred_contact_method=self.contact_method,
         )

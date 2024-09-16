@@ -3,7 +3,7 @@ from builtins import str
 from django.test import TestCase
 from django.core import mail
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.management import call_command
 from django.utils.timezone import now
 
@@ -53,7 +53,6 @@ class TestEmailForUnsignedNotes(TestCase):
         models.ClinicDate.objects.create(
             clinic_type=models.ClinicType.objects.first(),
             clinic_date=now().date())
-
 
     def test_unsigned_email(self):
 

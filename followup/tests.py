@@ -6,12 +6,7 @@ from builtins import range
 import datetime
 
 from django.test import TestCase
-from django.core.urlresolvers import reverse
-
-# For live tests.
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
+from django.urls import reverse
 
 from pttrack.models import Gender, Patient, Provider, ProviderType
 from pttrack.test import SeleniumLiveTestCase
@@ -163,12 +158,11 @@ class FollowupLiveTesting(SeleniumLiveTestCase):
 
         # and the submission with this comment should be in the db
         self.assertGreater(
-            models.ReferralFollowup.objects.\
-                filter(comments=COMMENT).count(),
+            models.ReferralFollowup.objects.filter(comments=COMMENT).count(),
             0)
 
     def test_followup_view_rendering(self):
-        from django.core.urlresolvers import NoReverseMatch
+        from django.urls import NoReverseMatch
 
         for url in urls.urlpatterns:
             if url.name in ['new-followup', 'followup']:
@@ -211,7 +205,7 @@ class TestReferralFollowupForms(TestCase):
             state='BA',
             zip_code='63108',
             pcp_preferred_zip='63018',
-            date_of_birth=datetime.date(1990, 0o1, 0o1),
+            date_of_birth=datetime.date(1990, 1, 1),
             patient_comfortable_with_english=False,
             preferred_contact_method=self.contact_method,
         )
@@ -229,21 +223,22 @@ class TestReferralFollowupForms(TestCase):
         self.noshow_reason = models.NoShowReason.objects.create(
             name="Hella busy.")
 
+    def build_form(self, contact_successful, has_appointment, apt_location,
+                   noapt_reason, noshow_reason, pt_showed=None):
+        """Construct a ReferralFollowup form to suit the needs of the
+        testing subroutines based upon what is provided and not provided.
+        """
 
-    def build_form(self, contact_successful, has_appointment, apt_location, noapt_reason, noshow_reason, pt_showed=None):
-        '''
-        Construct a ReferralFollowup form to suit the needs of the testing
-        subroutines based upon what is provided and not provided.
-        '''
-
-        contact_resolution = self.successful_res if contact_successful else self.unsuccessful_res
+        contact_resolution = (
+            self.successful_res if contact_successful
+            else self.unsuccessful_res)
 
         form_data = {
             'contact_method': self.contact_method,
             'contact_resolution': contact_resolution,
             'patient': self.pt,
             'referral_type': self.reftype,
-            }
+        }
 
         # Has appointment could (at least in principle) be True, False, or
         # unspecified.
@@ -389,6 +384,12 @@ class FollowupTest(TestCase):
     def setUp(self):
         from pttrack.test_views import log_in_provider, build_provider
         log_in_provider(self.client, build_provider())
+
+    def tearDown(self):
+        models.GeneralFollowup.objects.all().delete()
+        models.LabFollowup.objects.all().delete()
+        models.VaccineFollowup.objects.all().delete()
+        models.ReferralFollowup.objects.all().delete()
 
     def test_followup_view_urls(self):
 

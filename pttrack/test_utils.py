@@ -84,7 +84,7 @@ def create_pts():
         'zip_code': '63108',
         'gender': models.Gender(long_name="Male", short_name="m"),
         'pcp_preferred_zip': '63018',
-        'date_of_birth': datetime.date(1990, 0o1, 0o1),
+        'date_of_birth': datetime.date(1990, 1, 1),
         'patient_comfortable_with_english': False,
         'preferred_contact_method': models.ContactMethod.objects.first(),
     }
@@ -131,6 +131,10 @@ class return_duplicatesTests(TestCase):
     results.  First name may also be abbreviated (to cover cases like
     ben and benjamin)
     """
+
+    def tearDown(self):
+        # necessary because of the ForeignKey on_delete=PROTECT directives
+        models.Patient.objects.all().delete()
 
     def test_empty_first_name(self):
         """If first and last name is empty string should return None

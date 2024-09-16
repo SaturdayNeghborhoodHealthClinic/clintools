@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from builtins import range
 from django.test import TestCase
 from django.utils.timezone import now
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from pttrack.models import Patient, ProviderType
 from pttrack.test_views import build_provider, log_in_provider
@@ -43,6 +43,7 @@ class ViewsExistTest(TestCase):
         clindate create page.'''
 
         # First delete clindate that's created in setUp.
+        models.Workup.objects.all().delete()
         models.ClinicDate.objects.all().delete()
 
         pt = Patient.objects.first()
@@ -234,20 +235,20 @@ class TestProgressNoteViews(TestCase):
 
     def setUp(self):
 
+        provider = build_provider()
+        log_in_provider(self.client, provider)
+
         self.formdata = {
             'title': 'Depression',
             'text': 'so sad does testing work???',
             'patient': Patient.objects.first(),
-            'author': models.Provider.objects.first(),
+            'author': provider,
             'author_type': ProviderType.objects.first()
         }
 
         models.ClinicDate.objects.create(
             clinic_type=models.ClinicType.objects.first(),
             clinic_date=now().date())
-
-        provider = build_provider()
-        log_in_provider(self.client, provider)
 
     def test_progressnote_urls(self):
         url = reverse('new-progress-note', args=(1,))
