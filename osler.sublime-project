@@ -50,7 +50,8 @@
 				"__init__.py"
 			],
 			"path": "audit"
-		},		{
+		},
+		{
 			"file_exclude_patterns":
 			[
 				"__init__.py"
@@ -98,6 +99,9 @@
 				"__init__.py"
 			],
 			"path": "workup"
+		},
+		{
+			"path": "labs"
 		}
 	]
 }
