@@ -132,7 +132,9 @@ OSLER_CLINIC_DAYS_PER_PAGE = 20
 
 OSLER_DEFAULT_DASHBOARD = 'home'
 OSLER_PROVIDERTYPE_DASHBOARDS = {
-    'Attending': 'dashboard-attending'
+    'Attending': 'dashboard-attending',
+    'Clinical': 'dashboard-volunteer',
+    'Preclinical':'dashboard-volunteer',
 }
 
 # List of IP addresses to exclude from audit
